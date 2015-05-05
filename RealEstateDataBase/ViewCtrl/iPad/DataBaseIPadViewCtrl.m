@@ -19,8 +19,9 @@
     UINavigationController  *_databaseNAC;
     DataBaseTableViewCtrl   *_databaseVC;
     UINavigationController  *_itemNAC;
-    UIViewController        *_itemVC;
-    UIViewController        *_infoVC;
+    ItemSettingViewCtrl     *_itemVC;
+    UINavigationController  *_infoNAC;
+    InfoViewCtrl            *_infoVC;
     UITabBarController      *_tbc;
     Pos                     *_pos;
 }
@@ -38,17 +39,23 @@
         _databaseNAC        = [[UINavigationController alloc]initWithRootViewController:_databaseVC];
         _itemVC             = [[ItemSettingViewCtrl  alloc]init];
         _itemNAC            = [[UINavigationController alloc]initWithRootViewController:_itemVC];
-    
-        _databaseVC.detailVC  = _itemVC;
-
-        
         _infoVC             = [[InfoViewCtrl alloc]init ];
+        _infoNAC            = [[UINavigationController alloc]initWithRootViewController:_infoVC];
+    
+        // TabBarControllerの設定
         _tbc = [[UITabBarController alloc]init];
-        NSArray *views = [NSArray arrayWithObjects:_itemNAC,_infoVC,nil];
+        NSArray *views = [NSArray arrayWithObjects:_itemNAC,_infoNAC,nil];
         [_tbc setViewControllers:views animated:YES];
         
+        // Viewの関連付け
         self.viewControllers = [NSArray arrayWithObjects:_databaseNAC, _tbc, nil];
-    
+        _databaseVC.detailTab   = _tbc;
+        _databaseVC.detailVC    = _itemVC;
+        _infoVC.masterVC        = _databaseVC;
+        _itemVC.masterVC        = _databaseVC;
+        
+
+        // Viewのサイズ設定
         _pos = [[Pos alloc]initWithUIViewCtrl:self];
         [_databaseVC.view   setFrame:_pos.masterFrame];
         [_itemVC.view       setFrame:_pos.detailFrame];

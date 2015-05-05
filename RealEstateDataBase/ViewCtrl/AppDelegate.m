@@ -46,14 +46,14 @@
     ViewMgr  *viewMgr   = [ViewMgr sharedManager];
     viewMgr.stage   = STAGE_TOP;
     
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         NSLog(@"iPhone");
         _iPhoneVC           = [[DataBaseIPhoneViewCtrl alloc]init];
         [_iPhoneVC.view setFrame:appFrame];
         [_window.rootViewController.view setFrame:appFrame];
         _window.rootViewController  = _iPhoneVC;
         
-    } else if ( [model isEqualToString:@"iPad"]){
+    } else if ( [model hasPrefix:@"iPad"]){
         NSLog(@"iPad");
         _iPadVC             = [[DataBaseIPadViewCtrl alloc]init];
         _iPadVC.delegate  = self;

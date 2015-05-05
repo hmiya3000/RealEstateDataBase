@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface TotalAnalysisViewCtrl : UIViewController
-
+{
+    UIViewController    *_masterVC;
+}
+/****************************************************************/
+@property   (nonatomic,readwrite)    UIViewController    *masterVC;
+/****************************************************************/
 @end
+/****************************************************************/

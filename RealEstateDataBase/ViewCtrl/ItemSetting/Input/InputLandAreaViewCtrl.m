@@ -40,14 +40,14 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_landArea   = [UIUtil makeLabel:[NSString stringWithFormat:@"%g ㎡",_value]];
+    _l_landArea   = [UIUtil makeLabel:[NSString stringWithFormat:@"%g㎡",_value]];
     [_scrollView addSubview:_l_landArea];
     /****************************************/
     _tv_tips                = [[UITextView alloc]init];
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = [NSString stringWithFormat:@"土地面積によって固定資産税などが決まります"];
+    _tv_tips.text           = @"土地面積によって固定資産税などが決まります\n1坪≒3.3㎡, 1㎡=0.3025坪";
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];

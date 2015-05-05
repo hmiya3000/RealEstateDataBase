@@ -170,6 +170,32 @@ static AddonMgr* sharedAddonMgr = nil;
     }
     return str;
 }
+
+/****************************************************************
+ * 対応リストを返す
+ ****************************************************************/
+- (NSArray*) getAddonArray
+{
+    
+    NSMutableArray *addonList = [NSMutableArray array];
+    NSArray *item;
+    item = [NSArray arrayWithObjects:@"アドオン",@"複数年分析",@"運営設定",@"売却分析",@"データベース",@"外部データ",nil];
+    [addonList addObject:item];
+    
+    item = [NSArray arrayWithObjects:@"Free",   @"×",       @"×",      @"×",     @"×",        @"×",                   nil];
+    [addonList addObject:item];
+    
+    item = [NSArray arrayWithObjects:@"Lite",   @"◯",       @"◯",      @"×",     @"×",        @"×",                   nil];
+    [addonList addObject:item];
+
+    item = [NSArray arrayWithObjects:@"S.A.",   @"◯",       @"◯",      @"◯",     @"◯",        @"×",                   nil];
+    [addonList addObject:item];
+    
+    item = [NSArray arrayWithObjects:@"Network",@"◯",       @"◯",      @"◯",     @"◯",        @"◯",                   nil];
+    [addonList addObject:item];
+    
+    return addonList;
+}
 /****************************************************************/
 @end
 /****************************************************************/

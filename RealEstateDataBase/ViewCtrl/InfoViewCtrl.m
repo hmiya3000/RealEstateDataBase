@@ -67,8 +67,9 @@
 }
 @end
 
+/****************************************************************/
 @implementation InfoViewCtrl
-
+/****************************************************************/
 #define BTAG_INITIAL    1
 #define BTAG_IMPORT     2
 #define BTAG_EXPORT     3
@@ -81,6 +82,9 @@
 #define STAG_DATABASE   4
 #define STAG_IMPORT     5
 #define STAG_PDFOUT     6
+/****************************************************************/
+@synthesize masterVC    = _masterVC;
+/****************************************************************/
 
 /****************************************************************
  *
@@ -92,7 +96,7 @@
         self.title = @"Info";
         self.tabBarItem.image = [UIImage imageNamed:@"info-s.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
-        _modelDB = [ModelDB sharedManager];
+        _masterVC   = nil;
     }
     return self;
 }
@@ -102,8 +106,8 @@
  ****************************************************************/
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
+    [super viewDidLoad];    
+    _modelDB    = [ModelDB sharedManager];
     _addOnMgr   = [AddonMgr sharedManager];
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
@@ -156,7 +160,7 @@
     _sw_saleAnalysis.tag   = STAG_SALE;
     [_scrollView addSubview:_sw_saleAnalysis];
     /****************************************/
-    _l_importExport     = [UIUtil makeLabel:@"インポート・エクスポート"];
+    _l_importExport     = [UIUtil makeLabel:@"外部データ"];
     [_l_importExport setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_importExport];
     /*--------------------------------------*/
@@ -215,11 +219,17 @@
     [self viewMake];
 
     ViewMgr  *viewMgr   = [ViewMgr sharedManager];
-    if ( [viewMgr isReturnDataList ] == true ){
-        [self dismissViewControllerAnimated:YES completion:nil];
-        viewMgr.stage   = STAGE_DATALIST;
+    if ( viewMgr.stage == STAGE_DATALIST ){
+        //すでにDATALISTステージにいる場合
+        if ( viewMgr.reqViewInit == true ){
+            self.tabBarController.selectedIndex = 0;
+        }
+    } else {
+        if ( [viewMgr isReturnDataList ] == true ){
+            [self dismissViewControllerAnimated:YES completion:nil];
+            viewMgr.stage   = STAGE_DATALIST;
+        }
     }
-
     return;
 }
 /****************************************************************
@@ -239,7 +249,7 @@
     [_scrollView setFrame:_pos.frame];
     /*--------------------------------------*/
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         if ( _pos.isPortrait == true ){
 //            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.6);
             _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*(1.6-0.5));
@@ -353,7 +363,11 @@
             [self presentViewController:_importNAC animated:YES completion:nil];
         } else {
             _importVC       = [[ImportExportHelpViewCtrl alloc]init];
-            [self.navigationController pushViewController:_importVC animated:YES];
+            if ( self.navigationController != nil ){
+                [self.navigationController pushViewController:_importVC animated:YES];
+            } else {
+                [self presentViewController:_importVC animated:YES completion:nil];
+            }
         }
 
     } else if ( sender.tag == BTAG_EXPORT){
@@ -363,7 +377,11 @@
             [self presentViewController:_exportNAC animated:YES completion:nil];
         } else {
             _exportVC       = [[ImportExportHelpViewCtrl alloc]init];
-            [self.navigationController pushViewController:_exportVC animated:YES];
+            if ( self.navigationController != nil ){
+                [self.navigationController pushViewController:_exportVC animated:YES];
+            } else {
+                [self presentViewController:_exportVC animated:YES completion:nil];
+            }
         }
     } else if ( sender.tag == BTAG_PDF){
         _pdfVC       = [[PDFViewCtrl alloc]init];
@@ -390,11 +408,16 @@
     ViewMgr *viewMgr = [ViewMgr sharedManager];
     switch (buttonIndex){
         case 0:
+            //AlertViewで「実行」が選択されたのでデータ削除
             [_modelDB  deleteAllFiles];
             viewMgr.reqViewInit = true;
             if ( [viewMgr isReturnDataList ] == true ){
                 [self dismissViewControllerAnimated:YES completion:nil];
                 viewMgr.stage   = STAGE_DATALIST;
+            }
+            if ( self.masterVC != nil ){
+                self.tabBarController.selectedIndex = 0;
+                [self.masterVC viewWillAppear:YES];
             }
             break;
         case 1:

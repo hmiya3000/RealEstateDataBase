@@ -32,6 +32,9 @@
 @end
 
 @implementation GraphViewCtrl
+/****************************************************************/
+@synthesize masterVC    = _masterVC;
+
 /****************************************************************
  *
  ****************************************************************/
@@ -42,6 +45,7 @@
         self.title  = @"グラフ";
         self.tabBarItem.image = [UIImage imageNamed:@"graph.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
+        _masterVC   = nil;
     }
     return self;
 }
@@ -55,7 +59,7 @@
     _addonMgr       = [AddonMgr sharedManager];
     /****************************************/
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         if ( _addonMgr.database == true ){
             UIBarButtonItem *retButton =
             [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
@@ -80,8 +84,10 @@
     _g_cf   = [[Graph alloc]init];
     [_scrollView addSubview:_g_cf];
     /****************************************/
-    _g_loan     = [[Graph alloc]init];
-    [_scrollView addSubview:_g_loan];
+    if ( _addonMgr.saleAnalysys == true ){
+        _g_loan     = [[Graph alloc]init];
+        [_scrollView addSubview:_g_loan];
+    }
     /****************************************/
 }
 /****************************************************************
@@ -111,11 +117,19 @@
     [_scrollView setFrame:_pos.frame];
     /*--------------------------------------*/
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
-        if ( _pos.isPortrait == true ){
-            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.6);
+    if ( [model hasPrefix:@"iPhone"] ){
+        if ( _addonMgr.saleAnalysys == true ){
+            if ( _pos.isPortrait == true ){
+                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
+            } else {
+                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
+            }
         } else {
-            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
+            if ( _pos.isPortrait == true ){
+                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1);
+            } else {
+                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.5);
+            }
         }
         _scrollView.bounces = YES;
     } else {
@@ -130,9 +144,11 @@
     pos_y = pos_y + dy*5;
     [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
     [_g_cf setNeedsDisplay];
-    pos_y = pos_y + dy*5;
-    [_g_loan    setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-    [_g_loan setNeedsDisplay];
+    if ( _addonMgr.saleAnalysys == true ){
+        pos_y = pos_y + dy*5;
+        [_g_loan    setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+        [_g_loan setNeedsDisplay];
+    }
     return;
 }
 

@@ -8,6 +8,7 @@
 
 #import "ModelCF.h"
 #import "GraphData.h"
+#import "AddonMgr.h"
 
 @interface ModelCF ()
 
@@ -19,7 +20,8 @@
  ****************************************************************/
 + (void) setGraphData:(Graph*)gData ModelRE:(ModelRE*)modelRE
 {
-
+    AddonMgr *addonMgr = [AddonMgr sharedManager];
+    
     CGFloat graphMin;
     CGFloat graphMax;
 
@@ -29,18 +31,37 @@
     NSArray *arr_atcf       = [modelRE getATCashFlowAccum];
     NSArray *arr_loanTmp    = [loan getLbArrayYear];
     NSMutableArray *arr_loan = [[NSMutableArray alloc]init];
+
+    NSInteger graphPeriod;
+    if ( addonMgr.saleAnalysys == true ){
+        graphPeriod = modelRE.holdingPeriod+1;
+    } else {
+        graphPeriod = modelRE.holdingPeriod;
+    }
     
-    for( int i=0; i<=modelRE.holdingPeriod+1; i++){
+    for( int i=0; i<= graphPeriod; i++){
         if ( i == 0 ){
             [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(0,loan.loanBorrow)]];
-        } else if ( i <= modelRE.holdingPeriod ){
-            if ( i < [arr_loanTmp count] ){
-                [arr_loan addObject:[arr_loanTmp objectAtIndex:i-1]];
-            } else {
-                [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(i,0)]];
-            }
         } else {
-            [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(i,0)]];
+            if ( addonMgr.saleAnalysys == true ){
+                //保有期間の運営と最後は売却
+                if ( i <= graphPeriod-1 ){
+                    if ( i < [arr_loanTmp count] ){
+                        [arr_loan addObject:[arr_loanTmp objectAtIndex:i-1]];
+                    } else {
+                        [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(i,0)]];
+                    }
+                } else {
+                    [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(i,0)]];
+                }
+            } else {
+                //保有期間の運営
+                if ( i < [arr_loanTmp count] ){
+                    [arr_loan addObject:[arr_loanTmp objectAtIndex:i-1]];
+                } else {
+                    [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(i,0)]];
+                }
+            }
         }
     }
     
@@ -69,7 +90,7 @@
         graphMax = loan.loanBorrow;
     }
     /*--------------------------------------*/
-    [gData setGraphtMinMax_xmin:-1 ymin:graphMin xmax:modelRE.holdingPeriod+1.5 ymax:(graphMax)];
+    [gData setGraphtMinMax_xmin:-1 ymin:graphMin xmax:graphPeriod+0.5 ymax:(graphMax)];
     return;
 }
 

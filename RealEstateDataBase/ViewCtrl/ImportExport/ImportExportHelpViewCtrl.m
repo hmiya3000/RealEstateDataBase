@@ -136,15 +136,18 @@
     [self viewMake];
 }
 
-/**
+/****************************************************************
  * ビューがタップされたとき
- */
+ ****************************************************************/
 - (void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    NSLog(@"タップされました．");
-    //    [self dismissViewControllerAnimated:YES completion:nil];
-    [self.navigationController popViewControllerAnimated:YES];
-    
+    if ( self.navigationController == nil ){
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
-
+/****************************************************************/
 @end
+/****************************************************************/

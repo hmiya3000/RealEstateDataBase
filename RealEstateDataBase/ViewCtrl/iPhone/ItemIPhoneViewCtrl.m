@@ -13,6 +13,7 @@
 #import "TotalAnalysisViewCtrl.h"
 #import "InfoViewCtrl.h"
 #import "AddonMgr.h"
+#import "ViewMgr.h"
 
 @interface ItemIPhoneViewCtrl ()
 {
@@ -73,6 +74,9 @@
             }
         }
         [self setViewControllers:views animated:YES];
+        ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+        viewMgr.stage       = STAGE_ANALYSIS;
+
     }
     return self;
 }

@@ -8,12 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DataBaseTableViewCtrl : UITableViewController
+/****************************************************************/
+@interface DataBaseTableViewCtrl : UITableViewController<UISplitViewControllerDelegate>
 {
     UIViewController    *_detailVC;
+    UITabBarController  *_detailTab;
+    
 }
-@property   (nonatomic,readwrite)    UIViewController    *detailVC;
-
+/****************************************************************/
+@property   (nonatomic,readwrite)       UIViewController    *detailVC;
+@property   (nonatomic,readwrite)       UITabBarController  *detailTab;
+/****************************************************************/
 - (void)selectCell:(NSIndexPath*)indexPath;
-
+/****************************************************************/
 @end
+/****************************************************************/

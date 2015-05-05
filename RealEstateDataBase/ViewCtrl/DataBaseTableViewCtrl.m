@@ -10,6 +10,7 @@
 #import "InfoViewCtrl.h"
 #import "InputItemViewCtrl.h"
 #import "ItemIPhoneViewCtrl.h"
+#import "ItemIPadViewCtrl.h"
 #import "ItemSettingViewCtrl.h"
 #import "Pos.h"
 #import "ModelDB.h"
@@ -31,6 +32,8 @@
     
     NSIndexPath                 *_selIndexPath;
     BOOL                        _selIndex;
+    
+    ViewMgr                     *_viewMgr;
 
     
 }
@@ -38,7 +41,9 @@
 @end
 
 @implementation DataBaseTableViewCtrl
+/****************************************************************/
 @synthesize detailVC    = _detailVC;
+@synthesize detailTab   = _detailTab;
 /****************************************************************
  * 初期化
  ****************************************************************/
@@ -49,10 +54,13 @@
         _db = [ModelDB sharedManager];
         self.title = @"物件リスト";
         self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
-        _selIndex = false;
-        
+        _detailVC       = nil;
+        _detailTab      = nil;
+        _selIndex       = false;
+        _viewMgr        = [ViewMgr sharedManager];
+
         NSString *model = [UIDevice currentDevice].model;
-        if ([model isEqualToString:@"iPad"] ){
+        if ([model hasPrefix:@"iPad"] ){
             if ( _db.list.count > 0 ){
                 _selIndex       = true;
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -74,21 +82,25 @@
     [_db loadIndex:indexPath.row];        /* ロードしてからview作成 */
     
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         _tbc = [[ItemIPhoneViewCtrl alloc]init];
 //        _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 //        _tbc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         _tbc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
         [self presentViewController:_tbc animated:YES completion:nil];
-        ViewMgr  *viewMgr   = [ViewMgr sharedManager];
-        viewMgr.stage   = STAGE_ANALYSIS;
+        _viewMgr.stage   = STAGE_ANALYSIS;
 
-    } else if ([model isEqualToString:@"iPad"] ){
+    } else if ([model hasPrefix:@"iPad"] ){
         // Detail Viewを更新
         _selIndex       = true;
         _selIndexPath   = indexPath;
+        self.detailTab.selectedIndex = 0;
+
         [self.detailVC viewWillAppear:YES];
+        [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
+
+    
     return;
 }
 
@@ -155,19 +167,28 @@
     if ( _selIndex == true ){
         [self.tableView selectRowAtIndexPath:_selIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
+    _viewMgr.stage       = STAGE_DATALIST;
 
+    
+    // そのまま表示するか、STAGE_ANALYSISに遷移するか
     AddonMgr *addonMgr = [AddonMgr sharedManager];
     if ( addonMgr.database == false ){
+        // 物件の選択
         [self selectCell:0];
+
+        // その後の追加処理
         NSString *model = [UIDevice currentDevice].model;
-        if ( [model isEqualToString:@"iPhone"] ){
+        if ( [model hasPrefix:@"iPhone"] ){
+            // IPhoneは selectCellでSTAGE_ANALYSISに遷移するので何もしない
         } else {
-            ItemSettingViewCtrl *tmpVC;
-            tmpVC = (ItemSettingViewCtrl*)(self.detailVC);
-            [tmpVC moveAnalysisView];
+            // IPadは selectCellは選択のみなので、STAGE_ANALYSISに遷移する処理を記述
+            _spVc = [[ItemIPadViewCtrl alloc]init];
+            _spVc.delegate  = self;
+            _spVc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:_spVc animated:YES completion:nil];
+            _viewMgr.stage       = STAGE_ANALYSIS;
         }
     }
-    
     return;
 }
 #pragma mark - Table view data source
@@ -200,7 +221,7 @@
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
     [self selectCell:indexPath];
@@ -289,6 +310,9 @@
 - (void)didTapEditButton
 {
     [self setEditing:!self.editing animated:YES];
+    if ( self.detailTab != nil ){
+        self.detailTab.selectedIndex = 0;
+    }
     if (self.editing) {
         self.navigationItem.rightBarButtonItem.title = @"戻る";
     } else {
@@ -304,6 +328,10 @@
 - (void)inputItem
 {
     [self clrEditing];      /* 編集モードを戻す */
+    if ( self.detailTab != nil ){
+        self.detailTab.selectedIndex = 0;
+    }
+    
     _inputVC    = [[InputItemViewCtrl alloc]init];
     _infoVC     = [[InfoViewCtrl alloc]init];
 
@@ -314,20 +342,12 @@
     _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [self presentViewController:_tbc animated:YES completion:nil];
 
-    
-//    [self presentViewController:_inputVC animated:YES completion:nil];
-    
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+/****************************************************************
+ * UISplitViewControllerDelegate
+ ****************************************************************/
+- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    return NO;
 }
-*/
-
 @end

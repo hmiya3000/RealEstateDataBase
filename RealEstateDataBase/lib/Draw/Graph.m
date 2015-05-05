@@ -44,7 +44,7 @@
  ****************************************************************/
 -(NSArray*)calcScale_min:(CGFloat)min max:(CGFloat)max
 {
-    NSLog(@"min:%f,max:%f",min,max);
+//    NSLog(@"min:%f,max:%f",min,max);
     
     float diff;
 
@@ -60,10 +60,10 @@
     }
 
     float scale;
-    NSLog(@"divnum %d",divnum);
+//    NSLog(@"divnum %d",divnum);
 
     int num = (int)(diff/divnum);       //目盛りの個数
-    NSLog(@"num %d",num);
+//    NSLog(@"num %d",num);
     if ( num <= 2 ){
         /* 5単位ごとに目盛り 1-2 -> 2-4 */
         scale = divnum/2;
@@ -76,13 +76,13 @@
     }
     
     
-    NSLog(@"scale %g",scale);
+//    NSLog(@"scale %g",scale);
 
 
     int tmp;
     tmp = (int)(min/scale)*scale;
     
-    NSLog(@"tmp:%d",tmp);
+//    NSLog(@"tmp:%d",tmp);
 
     NSMutableArray *arr = [[NSMutableArray alloc]init];
     while( 1 ){

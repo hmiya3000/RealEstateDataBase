@@ -187,7 +187,7 @@
         pos_y = pos_y + dy*0.6;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*1.2);
         /****************************************/
-        pos_y = pos_y + dy*2;
+        pos_y = pos_y + dy*1.5;
         [_g_pmt setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
     }else {
         /****************************************/
@@ -218,7 +218,7 @@
 
         /****************************************/
         pos_y = 2.2*dy;
-        [_g_pmt setFrame:CGRectMake(_pos.x_center, pos_y, _pos.len15, dy*3.5)];
+        [_g_pmt setFrame:CGRectMake(_pos.x_center, pos_y, _pos.len15, dy*4.5)];
     }
     [_g_pmt setNeedsDisplay];
     return;
@@ -289,11 +289,16 @@
 {
     [super clickButton:sender];
     if (sender.tag == BTAG_LOAN_PATTERN){
+#if 0
         if ( _loan.levelPayment == true){
             _loan.levelPayment = false;
         } else {
             _loan.levelPayment = true;
         }
+#else
+        //元利金等方式のみ。切り替えナシ
+        _loan.levelPayment = true;
+#endif
         [self rewriteProperty];
     } else {
         _modelRE.investment.loan.rateYear       = _loan.rateYear;
@@ -351,14 +356,5 @@
     _g_pmt.title        = @"借入返済内訳";
     [_g_pmt setNeedsDisplay];
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

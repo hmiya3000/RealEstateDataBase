@@ -13,16 +13,19 @@
 
 @interface InputViewCtrl : UIViewController<UITextFieldDelegate>
 {
-    ModelRE         *_modelRE;
-    Pos             *_pos;
+    ModelRE             *_modelRE;
+    Pos                 *_pos;
     
-    UIScrollView    *_scrollView;
+    UIScrollView        *_scrollView;
     UIViewController    *_masterVC;
     
 }
+/****************************************************************/
 - (void)clickButton:(UIButton*)sender;
 - (void)view_Tapped:(UITapGestureRecognizer *)sender;
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
-
+/****************************************************************/
 @property   (nonatomic,readwrite)    UIViewController    *masterVC;
+/****************************************************************/
 @end
+/****************************************************************/

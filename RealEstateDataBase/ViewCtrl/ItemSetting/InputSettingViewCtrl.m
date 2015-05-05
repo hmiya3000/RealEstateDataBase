@@ -51,6 +51,8 @@
 @end
 
 @implementation InputSettingViewCtrl
+/****************************************************************/
+@synthesize detailVC    = _detailVC;
 @synthesize detailTab   = _detailTab;
 
 /****************************************************************
@@ -62,6 +64,8 @@
     if (self) {
         self.title  = @"データ入力";
         self.tabBarItem.image = [UIImage imageNamed:@"input-s.png"];
+        _detailVC       = nil;
+        _detailTab      = nil;
         _openInputVC    = false;
         _addonMgr       = [AddonMgr sharedManager];
     }
@@ -141,14 +145,16 @@
     if ( _inputVC != nil ){
         _inputVC.hidesBottomBarWhenPushed = YES;
         NSString *model = [UIDevice currentDevice].model;
-        if ( [model isEqualToString:@"iPhone"] ){
+        if ( [model hasPrefix:@"iPhone"] ){
             [self.navigationController pushViewController:_inputVC animated:YES];
-        } else if ([model isEqualToString:@"iPad"] ){
+        } else if ([model hasPrefix:@"iPad"] ){
             UINavigationController  *tmpNAC;
             tmpNAC   = (UINavigationController*)self.detailTab.selectedViewController;
             if ( _openInputVC == false ){
+                // 項目入力ビューを開いてないので普通に開く
                 [tmpNAC pushViewController:_inputVC animated:YES];
             } else {
+                // 項目入力ビューを開いた状態だったので一旦戻してから開く
                 [tmpNAC popToRootViewControllerAnimated:NO];
                 [tmpNAC pushViewController:_inputVC animated:NO];
             }
@@ -204,6 +210,8 @@
 {
     [super viewWillAppear:animated];
     _openInputVC = false;
+    
+    //DataListへ戻る要求があったら表示前に戻る
     ViewMgr  *viewMgr   = [ViewMgr sharedManager];
     if ( [viewMgr isReturnDataList ] == true ){
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -213,7 +221,7 @@
 }
 
 /****************************************************************
- *
+ * ModalViewから戻る
  ****************************************************************/
 - (IBAction)retButtonTapped:(id)sender
 {

@@ -294,12 +294,19 @@ static ModelRE* sharedModelRE = nil;
         tmpPoint = CGPointMake(year, cfSum);
         [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
     }
-
-    if ( mode == BTCF ){
-        cfSum = cfSum + _btcfSales;
-    } else {
-        cfSum = cfSum + _atcfSales;
+    
+    if ( _addonMgr.saleAnalysys == true ){
+        //売却益を追加
+        if ( mode == BTCF ){
+            cfSum = cfSum + _btcfSales;
+        } else {
+            cfSum = cfSum + _atcfSales;
+        }
+        tmpPoint = CGPointMake(_holdingPeriod+1, cfSum);
+        [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
     }
+
+
     /* 最大値・最小値を更新 */
     if ( cfSumMax < cfSum ){
         cfSumMax = cfSum;
@@ -307,10 +314,6 @@ static ModelRE* sharedModelRE = nil;
     if ( cfSumMin > cfSum ){
         cfSumMin = cfSum;
     }
-    
-    tmpPoint = CGPointMake(_holdingPeriod+1, cfSum);
-    [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
-
     _tmpCfAccumMax  = cfSumMax;
     _tmpCfAccumMin  = cfSumMin;
     return cfArr;
@@ -882,41 +885,6 @@ static ModelRE* sharedModelRE = nil;
     
 }
 
-#if 0
-/****************************************************************
- *
- ****************************************************************/
--(NSData*)str2data:(NSString*)str
-{
-    return [str dataUsingEncoding:NSUTF8StringEncoding];
-}
-/****************************************************************
- *
- ****************************************************************/
--(BOOL)data2file:(NSData *)data fileName:(NSString*)fileName
-{
-    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    path = [path stringByAppendingPathComponent:fileName];
-    return [data writeToFile:path atomically:YES];
-    
-}
-/****************************************************************
- *
- ****************************************************************/
--(NSData*)file2data:(NSString*)filenName
-{
-    NSString* path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    path = [path stringByAppendingPathComponent:filenName];
-    return [NSData dataWithContentsOfFile:path];
-}
-/****************************************************************
- *
- ****************************************************************/
--(NSString*)data2str:(NSData*)data
-{
-    return [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-}
-#endif
 /****************************************************************/
 @end
 /****************************************************************/

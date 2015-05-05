@@ -33,6 +33,7 @@
 - (void) setAppModeLite;
 - (void) setAppModeStandAlone;
 - (void) setAppModeNetwork;
+- (NSArray*) getAddonArray;
 /****************************************************************/
 #define APP_FREE                0
 #define APP_LITE                1

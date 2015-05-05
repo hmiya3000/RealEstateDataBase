@@ -18,9 +18,9 @@
 
 @interface ItemSettingViewCtrl ()
 {
-    ModelRE                 *_modelRE;
-    NSArray                 *_sectionList;
-    NSDictionary            *_dataSource;
+    ModelRE                     *_modelRE;
+    NSArray                     *_sectionList;
+    NSDictionary                *_dataSource;
     
     UIViewController            *_infoVC;           /* バージョン情報VC */
     
@@ -28,19 +28,24 @@
     UISplitViewController       *_spVc;
     
     
-    NSArray             *_settingList0;
-    NSArray             *_settingList1;
-    NSArray             *_settingList2;
-    NSArray             *_settingList3;
-    NSArray             *_settingList4;
-    NSArray             *_settingList5;
-    NSArray             *_settingList6;
-    Pos                 *_pos;
-    AddonMgr            *_addonMgr;
+    NSArray                     *_settingList0;
+    NSArray                     *_settingList1;
+    NSArray                     *_settingList2;
+    NSArray                     *_settingList3;
+    NSArray                     *_settingList4;
+    NSArray                     *_settingList5;
+    NSArray                     *_settingList6;
+    Pos                         *_pos;
+    AddonMgr                    *_addonMgr;
 }
 @end
 
+/****************************************************************/
 @implementation ItemSettingViewCtrl
+/****************************************************************/
+@synthesize masterVC    = _masterVC;
+/****************************************************************/
+
 
 /****************************************************************
  *
@@ -408,14 +413,6 @@
  ****************************************************************/
 - (IBAction)selectButtonTapped:(id)sender
 {
-    [self moveAnalysisView];
-    return;
-}
-/****************************************************************
- *
- ****************************************************************/
-- (void) moveAnalysisView
-{
     _spVc = [[ItemIPadViewCtrl alloc]init];
     _spVc.delegate  = self;
     
@@ -424,8 +421,8 @@
     ViewMgr  *viewMgr   = [ViewMgr sharedManager];
     viewMgr.stage   = STAGE_ANALYSIS;
     
+    return;
 }
-
 /****************************************************************
  *
  ****************************************************************/

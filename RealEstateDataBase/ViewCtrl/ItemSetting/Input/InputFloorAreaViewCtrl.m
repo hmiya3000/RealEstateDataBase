@@ -46,7 +46,7 @@
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = [NSString stringWithFormat:@"床面積によって建物評価額や固定資産税などが決まります"];
+    _tv_tips.text           = @"床面積によって建物評価額や固定資産税などが決まります\n1坪≒3.3㎡, 1㎡=0.3025坪";
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];

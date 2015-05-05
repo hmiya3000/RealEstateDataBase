@@ -51,10 +51,11 @@
                 _y_page     = appFrame.size.width;
                 _x_page     = uivc.view.frame.size.width;
                 _y_page     = appFrame.size.height;
-                if ( [model isEqualToString:@"iPhone"] ){
+                if ( [model hasPrefix:@"iPhone"] ){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page + 20 )/ 9;
-                } else if ([model isEqualToString:@"iPad"]){
+                    if ( _dy < 36 ) _dy = 36;   //狭すぎる場合は補正
+                } else if ([model hasPrefix:@"iPad"]){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page + 20 )/ 8;
                 }
@@ -70,10 +71,11 @@
 //                _x_page     = appFrame.size.width;
                 _x_page     = uivc.view.frame.size.width;
                 _y_page     = appFrame.size.height;
-                if ( [model isEqualToString:@"iPhone"] ){
+                if ( [model hasPrefix:@"iPhone"] ){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page -150 )/ 11;
-                } else if ([model isEqualToString:@"iPad"]){
+                    if ( _dy < 36 ) _dy = 36;   //狭すぎる場合は補正
+                } else if ([model hasPrefix:@"iPad"]){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page -150 )/ 23;
                 }

@@ -15,6 +15,7 @@
 
 #import "Pos.h"
 #import "AddonMgr.h"
+#import "ViewMgr.h"
 
 //#import "InputItemViewCtrl.h"
 
@@ -25,11 +26,11 @@
     InputSettingViewCtrl        *_inputSettingVC;  /* データ入力VC */
     SummaryViewCtrl             *_summaryVC;
     UINavigationController      *_summaryNAC;
-    UIViewController            *_graphVC;
+    GraphViewCtrl               *_graphVC;
     UINavigationController      *_graphNAC;
-    UIViewController            *_totalVC;
+    TotalAnalysisViewCtrl       *_totalVC;
     UINavigationController      *_totalNAC;
-    UIViewController            *_infoVC;
+    InfoViewCtrl                *_infoVC;
     UINavigationController      *_infoNAC;
 
     UITabBarController          *_tbc;
@@ -61,6 +62,7 @@
         _infoVC             = [[InfoViewCtrl alloc]init];
         _infoNAC            = [[UINavigationController alloc]initWithRootViewController:_infoVC];
         
+        // TabBarControllerの設定
         _tbc = [[UITabBarController alloc]init];
         _addonMgr = [AddonMgr sharedManager];
         NSArray *views;
@@ -84,15 +86,24 @@
         [_tbc setViewControllers:views animated:YES];
 
         
+        // Viewの関連付け
         self.viewControllers = [NSArray arrayWithObjects:_inputSettingNAC, _tbc, nil];
         _inputSettingVC.detailTab   = _tbc;
-
+        _inputSettingVC.detailVC    = _summaryVC;
+        _summaryVC.masterVC         = _inputSettingVC;
+        _graphVC.masterVC           = _inputSettingVC;
+        _totalVC.masterVC           = _inputSettingVC;
+        _infoVC.masterVC            = _inputSettingVC;
         
+        // Viewのサイズ設定
         _pos = [[Pos alloc]initWithUIViewCtrl:self];
         [_inputSettingVC.view   setFrame:_pos.masterFrame];
         [_summaryVC.view        setFrame:_pos.detailFrame];
         [_graphVC.view          setFrame:_pos.detailFrame];
         [_totalVC.view          setFrame:_pos.detailFrame];
+
+        ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+        viewMgr.stage       = STAGE_ANALYSIS;
 
     }
     return self;

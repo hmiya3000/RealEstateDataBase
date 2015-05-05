@@ -8,6 +8,7 @@
 
 #import "AddonViewCtrl.h"
 #import "UIUtil.h"
+#import "GridTable.h"
 #import "Pos.h"
 #import "AddonMgr.h"
 
@@ -15,9 +16,12 @@
 {
     UIPickerView        *_pv;
     NSInteger           _selectIdx;
-    AddonMgr            *_addonMgr;
-    UIScrollView        *_scrollView;
     Pos                 *_pos;
+    AddonMgr            *_addonMgr;
+
+    UIScrollView        *_scrollView;
+    UIView              *_uv_grid;
+    UITextView          *_tv_comment;
     
     SKProductsRequest   *_productRequest;
     SKProduct           *_product;
@@ -29,7 +33,8 @@
 
 @implementation AddonViewCtrl
 
-#define PRODUCT_ID @"NonConsumableProduct"
+#define ADDON_COMMENT @"■複数年分析\n家賃下落を踏まえて数年に渡っての運営シミュレーションを行います\n\n■運営設定\n家賃下落率や空室率、税率等を詳細に設定できます\n\n■売却分析\n設定した保有期間後に売却した場合のシミュレーションを行います\n\n■データベース\n複数の物件データを保存できます\n\n■外部データ\n物件データをDropboxを使ってインポート・エクスポートできます\n"
+#define PRODUCT_ID @"upgrade_FreeToLite"
 /****************************************************************
  *
  ****************************************************************/
@@ -65,7 +70,17 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _pv   = [[UIPickerView alloc]init];
+    _uv_grid = [GridTable makeGridTable];
+    [_scrollView addSubview:_uv_grid];
+    /****************************************/
+    _tv_comment                = [[UITextView alloc]init];
+    _tv_comment.editable       = false;
+    _tv_comment.scrollEnabled  = true;
+    _tv_comment.backgroundColor = [UIUtil color_LightYellow];
+    _tv_comment.text           = ADDON_COMMENT;
+    [_scrollView addSubview:_tv_comment];
+    /****************************************/
+//    _pv   = [[UIPickerView alloc]init];
     [_pv setBackgroundColor:[UIColor whiteColor]];
     [_pv setDelegate:self];
     [_pv setDataSource:self];
@@ -91,6 +106,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self rewriteProperty];
     [self viewMake];
 }
 
@@ -112,6 +128,9 @@
     [_scrollView setFrame:_pos.frame];
     /****************************************/
     pos_y = 0.2*dy;
+    [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*3)];
+    pos_y = pos_y + 3.5*dy;
+    _tv_comment.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*4);
     if ( _pos.isPortrait == true ){
         [_pv setFrame:CGRectMake(_pos.x_left,   _pos.y_btm - 300, _pos.len30, 216)];
     } else {
@@ -121,7 +140,20 @@
     return;
 }
 
-
+/****************************************************************
+ *
+ ****************************************************************/
+-(void)rewriteProperty
+{
+    [GridTable setScroll:_uv_grid table:[_addonMgr getAddonArray]];
+}
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
 /****************************************************************
  *
  ****************************************************************/
@@ -158,6 +190,22 @@
     
     
     
+}
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************
+ * 回転時に処理したい内容
+ ****************************************************************/
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+    [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
+    [self viewMake];
+    return;
 }
 /****************************************************************
  *

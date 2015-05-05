@@ -57,6 +57,9 @@
 @end
 
 @implementation TotalAnalysisViewCtrl
+/****************************************************************/
+@synthesize masterVC    = _masterVC;
+
 /****************************************************************
  *
  ****************************************************************/
@@ -67,6 +70,7 @@
         self.title  = @"総合分析";
         self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
+        _masterVC   = nil;
     }
     return self;
 }
@@ -80,7 +84,7 @@
     _addonMgr       = [AddonMgr sharedManager];
     /****************************************/
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         if ( _addonMgr.database == true ){
             UIBarButtonItem *retButton =
             [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
@@ -239,9 +243,9 @@
     [_scrollView setFrame:_pos.frame];
     /*--------------------------------------*/
     NSString *model = [UIDevice currentDevice].model;
-    if ( [model isEqualToString:@"iPhone"] ){
+    if ( [model hasPrefix:@"iPhone"] ){
         if ( _pos.isPortrait == true ){
-            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.6);
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
         } else {
             _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
         }

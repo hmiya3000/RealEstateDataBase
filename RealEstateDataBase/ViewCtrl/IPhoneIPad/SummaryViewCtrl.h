@@ -10,5 +10,10 @@
 
 @interface SummaryViewCtrl : UIViewController
 {
+    UIViewController    *_masterVC;
 }
+/****************************************************************/
+@property   (nonatomic,readwrite)    UIViewController    *masterVC;
+/****************************************************************/
 @end
+/****************************************************************/

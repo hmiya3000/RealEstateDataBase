@@ -9,8 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @interface ItemSettingViewCtrl : UITableViewController<UISplitViewControllerDelegate>
+{
+    UIViewController    *_masterVC;
+}
+/****************************************************************/
 
 - (NSString*) getKeyIndexPath:(NSIndexPath*)indexPath;
-- (void) moveAnalysisView;
-
+/****************************************************************/
+@property   (nonatomic,readwrite)    UIViewController    *masterVC;
+/****************************************************************/
 @end
+/****************************************************************/

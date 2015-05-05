@@ -16,7 +16,8 @@
 {
     UINavigationController  *_databaseNAC;
     DataBaseTableViewCtrl   *_databaseVC;
-    UIViewController        *_infoVC;
+    UINavigationController  *_infoNAC;
+    InfoViewCtrl            *_infoVC;
     
 }
 @end
@@ -31,8 +32,9 @@
         _databaseVC         = [[DataBaseTableViewCtrl alloc]init];
         _databaseNAC        = [[UINavigationController alloc]initWithRootViewController:_databaseVC];
         _infoVC             = [[InfoViewCtrl alloc]init ];
+        _infoNAC            = [[UINavigationController alloc]initWithRootViewController:_infoVC];
         
-        NSArray *views = [NSArray arrayWithObjects:_databaseNAC,_infoVC,nil];
+        NSArray *views = [NSArray arrayWithObjects:_databaseNAC,_infoNAC,nil];
         [self setViewControllers:views animated:YES];
         ViewMgr  *viewMgr   = [ViewMgr sharedManager];
         viewMgr.stage   = STAGE_DATALIST;

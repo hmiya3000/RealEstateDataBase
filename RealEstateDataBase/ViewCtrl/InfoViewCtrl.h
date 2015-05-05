@@ -9,5 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface InfoViewCtrl : UIViewController
+/****************************************************************/
+#define VERSION         @"version 0.99"
+#define APP_COMMENT     @"AIREES(エアリス) - Analysis of Investment for REal EState -\nは収益不動産の投資分析アプリです\n以下のスイッチをオンにすることでアドオン購入手続きへ進みます\n(現在、開発中につき購入できません)"
 
+/****************************************************************/
 @end
+/****************************************************************/

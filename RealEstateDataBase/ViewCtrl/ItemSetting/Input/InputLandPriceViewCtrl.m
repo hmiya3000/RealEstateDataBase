@@ -45,7 +45,7 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_landPrice   = [UIUtil makeLabel:[NSString stringWithFormat:@"%ld万円",(long)_value]];
+    _l_landPrice   = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_landPrice];
     /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格"];
@@ -128,11 +128,11 @@
     }else {
         [UIUtil setRectLabel:_l_landPrice    x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_price           x:pos_x         y:pos_y length:_pos.len10];
-        [UIUtil setLabel:_l_priceVal        x:pos_x+dx      y:pos_y length:_pos.len10/2];
+        [UIUtil setLabel:_l_price           x:pos_x         y:pos_y length:_pos.len15];
+        [UIUtil setLabel:_l_priceVal        x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_housePrice      x:pos_x         y:pos_y length:_pos.len10/2];
-        [UIUtil setLabel:_l_housePriceVal   x:pos_x+dx      y:pos_y length:_pos.len10/2];
+        [UIUtil setLabel:_l_housePrice      x:pos_x         y:pos_y length:_pos.len15/2];
+        [UIUtil setLabel:_l_housePriceVal   x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
     }
@@ -216,7 +216,7 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_landPrice.text       = [NSString stringWithFormat:@"%ld万円",(long)_value];
+    _l_landPrice.text       = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
     NSInteger price         = _modelRE.estate.prices.price;
     _l_priceVal.text        = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:price/10000]];
     _l_housePriceVal.text   = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:(price/10000-_value)]];

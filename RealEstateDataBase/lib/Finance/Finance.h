@@ -3,7 +3,7 @@
 //  RealEstate
 //
 //  Created by MiyazakiHironobu on 2014/06/07.
-//  Copyright (c) 2014å¹´ Beetre. All rights reserved.
+//  Copyright (c) 2014”N Beetre. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

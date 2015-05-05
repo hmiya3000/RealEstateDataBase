@@ -12,12 +12,14 @@
 /****************************************************************/
 @interface Graph : DrawTool
 {
+    NSString    *_title;
     NSArray     *_GraphDataAll;
 }
 /****************************************************************/
 - (void)setGraphtMinMax_xmin:(CGFloat)xmin ymin:(CGFloat)ymin xmax:(CGFloat)xmax ymax:(CGFloat)ymax;
 /****************************************************************/
-@property   (nonatomic)     NSArray     *GraphDataAll;
+@property   (nonatomic,readwrite)   NSString    *title;
+@property   (nonatomic,readwrite)   NSArray     *GraphDataAll;
 /****************************************************************/
 #define LINE_GRAPH  @1
 #define BAR_GPAPH   @2

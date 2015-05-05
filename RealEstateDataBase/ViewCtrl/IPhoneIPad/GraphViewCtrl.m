@@ -13,6 +13,7 @@
 #import "Pos.h"
 #import "Graph.h"
 #import "GraphData.h"
+#import "AddonMgr.h"
 
 @interface GraphViewCtrl ()
 {
@@ -26,6 +27,7 @@
     Graph               *_g_cf;
     Graph               *_g_loan;
 
+    AddonMgr            *_addonMgr;
 }
 @end
 
@@ -38,9 +40,8 @@
     self = [super init];
     if (self){
         self.title  = @"グラフ";
-        self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
+        self.tabBarItem.image = [UIImage imageNamed:@"graph.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
-        _modelRE = [ModelRE sharedManager];
     }
     return self;
 }
@@ -50,6 +51,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _modelRE        = [ModelRE sharedManager];
+    _addonMgr       = [AddonMgr sharedManager];
+    /****************************************/
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model isEqualToString:@"iPhone"] ){
+        if ( _addonMgr.database == true ){
+            UIBarButtonItem *retButton =
+            [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
+                                             style:UIBarButtonItemStylePlain
+                                            target:self
+                                            action:@selector(retButtonTapped:)];
+            self.navigationItem.leftBarButtonItem = retButton;
+        } else {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
+    }
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
@@ -92,20 +109,30 @@
     length30    = _pos.len30;
     /****************************************/
     [_scrollView setFrame:_pos.frame];
+    /*--------------------------------------*/
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model isEqualToString:@"iPhone"] ){
+        if ( _pos.isPortrait == true ){
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.6);
+        } else {
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
+        }
+        _scrollView.bounces = YES;
+    } else {
+    }
     /****************************************/
     pos_y = 0.2*dy;
-    if ( _pos.isPortrait == true ){
-        [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
-        /****************************************/
-        pos_y = pos_y + dy*2;
-        [_g_pmt     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-        pos_y = pos_y + dy*5;
-        [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-        pos_y = pos_y + dy*5;
-        [_g_loan    setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-    }else {
-        [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
-    }
+    [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
+    /****************************************/
+    pos_y = pos_y + dy*2;
+    [_g_pmt     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_pmt setNeedsDisplay];
+    pos_y = pos_y + dy*5;
+    [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_cf setNeedsDisplay];
+    pos_y = pos_y + dy*5;
+    [_g_loan    setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_loan setNeedsDisplay];
     return;
 }
 

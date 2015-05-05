@@ -11,4 +11,6 @@
 @interface ItemSettingViewCtrl : UITableViewController<UISplitViewControllerDelegate>
 
 - (NSString*) getKeyIndexPath:(NSIndexPath*)indexPath;
+- (void) moveAnalysisView;
+
 @end

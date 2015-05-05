@@ -11,6 +11,7 @@
 #import "ItemSettingViewCtrl.h"
 #import "InfoViewCtrl.h"
 #import "Pos.h"
+#import "ViewMgr.h"
 
 /****************************************************************/
 @interface DataBaseIPadViewCtrl ()
@@ -36,7 +37,6 @@
         _databaseVC         = [[DataBaseTableViewCtrl alloc]init];
         _databaseNAC        = [[UINavigationController alloc]initWithRootViewController:_databaseVC];
         _itemVC             = [[ItemSettingViewCtrl  alloc]init];
-//        _itemVC             = [[UIViewController alloc]init];
         _itemNAC            = [[UINavigationController alloc]initWithRootViewController:_itemVC];
     
         _databaseVC.detailVC  = _itemVC;
@@ -54,6 +54,8 @@
         [_itemVC.view       setFrame:_pos.detailFrame];
         [_infoVC.view       setFrame:_pos.detailFrame];
         
+        ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+        viewMgr.stage   = STAGE_DATALIST;
     }
     return self;
 }

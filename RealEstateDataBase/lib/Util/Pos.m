@@ -49,8 +49,15 @@
 //                _x_page     = appFrame.size.height;
                 _x_page     = uivc.view.frame.size.height;
                 _y_page     = appFrame.size.width;
-                _dx         = (_x_page -20 )/3;
-                _dy         = (_y_page + 20 )/ 8;
+                _x_page     = uivc.view.frame.size.width;
+                _y_page     = appFrame.size.height;
+                if ( [model isEqualToString:@"iPhone"] ){
+                    _dx         = (_x_page -20 )/3;
+                    _dy         = (_y_page + 20 )/ 9;
+                } else if ([model isEqualToString:@"iPad"]){
+                    _dx         = (_x_page -20 )/3;
+                    _dy         = (_y_page + 20 )/ 8;
+                }
                 break;
             default:
             case UIDeviceOrientationPortrait:
@@ -65,7 +72,7 @@
                 _y_page     = appFrame.size.height;
                 if ( [model isEqualToString:@"iPhone"] ){
                     _dx         = (_x_page -20 )/3;
-                    _dy         = (_y_page -150 )/ 10;
+                    _dy         = (_y_page -150 )/ 11;
                 } else if ([model isEqualToString:@"iPad"]){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page -150 )/ 23;

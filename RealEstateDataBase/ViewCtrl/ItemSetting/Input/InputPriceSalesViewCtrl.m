@@ -11,6 +11,10 @@
 @interface InputPriceSalesViewCtrl ()
 {
     UILabel         *_l_price;
+    UILabel         *_l_noiLast;
+    UILabel         *_l_noiLastVal;
+    UILabel         *_l_capLast;
+    UILabel         *_l_capLastVal;
     UITextView      *_tv_tips;
     NSInteger       _value;
     
@@ -33,13 +37,30 @@
     _value  = _modelRE.priceSales /10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
+    [_modelRE calcAll];
     
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_price        = [UIUtil makeLabel:[NSString stringWithFormat:@"%d 万円",(int)_modelRE.priceSales/10000]];
+    _l_price        = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_price];
+    /****************************************/
+    _l_noiLast      = [UIUtil makeLabel:[NSString stringWithFormat:@"%d年目NOI",(int)_modelRE.holdingPeriod]];
+    [_l_noiLast setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_noiLast];
+    /****************************************/
+    _l_noiLastVal   = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.opeLast.noi /10000]]];
+    [_l_noiLastVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_noiLastVal];
+    /****************************************/
+    _l_capLast      = [UIUtil makeLabel:@"売却時キャプレート"];
+    [_l_capLast setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_capLast];
+    /****************************************/
+    _l_capLastVal   = [UIUtil makeLabel:[NSString stringWithFormat:@"%2.2f%%",((CGFloat)_modelRE.opeLast.noi/_value/10000 *100)]];
+    [_l_capLastVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_capLastVal];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];
     [_l_workArea setTextAlignment:NSTextAlignmentRight];
@@ -50,7 +71,7 @@
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = @"売却時NOIをもとにキャップレートを設定して売却価格を決定します";
+    _tv_tips.text           = @"売却価格 = 売却時NOI / キャップレート \nで設定します";
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     [_uicalc uvinit:_scrollView];
@@ -92,20 +113,30 @@
     if ( _pos.isPortrait == true ){
         [UIUtil setRectLabel:_l_price       x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*2);
-    }else {
-        [UIUtil setRectLabel:_l_price       x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        [UIUtil setLabel:_l_noiLast           x:pos_x         y:pos_y length:_pos.len10*2];
+        [UIUtil setLabel:_l_noiLastVal        x:pos_x+dx*2    y:pos_y length:_pos.len10];
         pos_y = pos_y + dy;
-        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*2);
-    }
-    
-    if ( _pos.isPortrait == true ){
+        [UIUtil setLabel:_l_capLast           x:pos_x         y:pos_y length:_pos.len10*2];
+        [UIUtil setLabel:_l_capLastVal        x:pos_x+dx*2    y:pos_y length:_pos.len10];
+        pos_y = pos_y + dy;
+        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*1.5);
+        /****************************************/
         pos_y = _pos.y_btm - dy -dy - _pos.y_page/2;
-        [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        [UIUtil setRectLabel:_l_workArea    x:pos_x         y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
         [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2)];
         
     }else {
+        [UIUtil setRectLabel:_l_price       x:pos_x         y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_noiLast         x:pos_x         y:pos_y length:_pos.len15];
+        [UIUtil setLabel:_l_noiLastVal      x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
+        pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_capLast         x:pos_x         y:pos_y length:_pos.len15];
+        [UIUtil setLabel:_l_capLastVal      x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
+        pos_y = pos_y + dy;
+        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*2);
+        /****************************************/
         pos_y = 0;
         [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
@@ -177,17 +208,11 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_price.text                   = [NSString stringWithFormat:@"%d 万円",(int)_value];
+    _l_price.text       = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
+    _l_capLastVal.text  = [NSString stringWithFormat:@"%2.2f%%",((CGFloat)_modelRE.opeLast.noi/_value/10000 *100)];
+
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+/****************************************************************/
 @end
+/****************************************************************/
+

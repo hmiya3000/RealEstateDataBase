@@ -51,7 +51,7 @@
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
     _tv_tips.text           = @"地図を表示予定...";
-    [_scrollView addSubview:_tv_tips];
+//    [_scrollView addSubview:_tv_tips];
     /****************************************/
     
     UITapGestureRecognizer *tapGesture =

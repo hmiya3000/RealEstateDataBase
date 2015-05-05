@@ -30,6 +30,7 @@
 - (void)inputBackSpace;
 - (void)inputAllClear;
 - (void)inputEnter;
+- (void)inputInv;
 - (BOOL)isEnterKeyMode;
 - (BOOL)isEnterIn;
 

@@ -16,11 +16,15 @@
     CGFloat     _xmax;
     CGFloat     _ymin;
     CGFloat     _ymax;
-    CGRect      _GraphArea;
+    CGRect      _GraphArea;     // Graphの描画エリア
+    CGRect      _GradArea;      // 目盛り含むエリア
+    CGRect      _ValidArea;     // 有効エリア
     NSArray     *_xscales;
     NSArray     *_yscales;
     
 }
+@synthesize title           = _title;
+@synthesize GraphDataAll    = _GraphDataAll;
 /****************************************************************
  * XY座標系でグラフ領域の設定をする
  ****************************************************************/
@@ -186,8 +190,73 @@
 /****************************************************************
  *
  ****************************************************************/
+- (NSDictionary*)graphFont
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            [UIFont fontWithName:@"HelveticaNeue-Light" size:10],
+            NSFontAttributeName,[UIColor blackColor],
+            NSForegroundColorAttributeName,nil];
+    
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (NSDictionary*)titleFont
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            [UIFont fontWithName:@"HelveticaNeue-Light" size:12],
+            NSFontAttributeName,[UIColor blackColor],
+            NSForegroundColorAttributeName,nil];
+}
+/****************************************************************
+ *
+ ****************************************************************/
 - (void)drawPrecedent:(CGRect)rect
 {
+    GraphData   *tmpGD;
+    NSString    *str;
+    CGSize      strSize;
+    CGFloat     preAreaLen;
+
+    preAreaLen = 0;
+    if ( [_GraphDataAll count ] > 0 ){
+        for(int i=0; i < [_GraphDataAll count]; i++){
+            tmpGD = [_GraphDataAll objectAtIndex:i];
+            str = tmpGD.precedent;
+            if ( str != nil ){
+                strSize = [str sizeWithAttributes:[self graphFont]];
+                preAreaLen = preAreaLen + strSize.width + 20;
+            }
+        }
+        /*---------------------------*/
+        CGFloat preHeight = strSize.height *1.1;
+        CGFloat pos_x = rect.origin.x + ( rect.size.width - preAreaLen)/2;
+        CGFloat pos_y = rect.origin.y + rect.size.height - preHeight;
+        
+        [self setColor_r:255 g:255 b:255];
+        [self fillRect_x:pos_x y:pos_y w:preAreaLen h:preHeight];
+        [self setLineWidth:1 ];
+        for(int i=0; i < [_GraphDataAll count]; i++){
+            tmpGD = [_GraphDataAll objectAtIndex:i];
+            str = tmpGD.precedent;
+            if ( str != nil ){
+                strSize = [str sizeWithAttributes:[self graphFont]];
+                [self setColor_index:i ];
+                [self drawLine_x0:pos_x+1 y0:pos_y+strSize.height/2 x1:pos_x+16 y1:pos_y+strSize.height/2];
+                pos_x = pos_x + 18;
+                [str drawAtPoint:CGPointMake(pos_x, pos_y) withAttributes:[self graphFont]];
+                pos_x = pos_x + strSize.width +2;
+            }
+        }
+    }
+    return;
+}
+/****************************************************************
+ *
+ ****************************************************************/
+- (void)drawPrecedent2:(CGRect)rect
+{    
     NSString *str;
     [self setColor_r:255 g:255 b:255];
     float x_precedent,y_precedent,w_precedent,h_precedent;
@@ -220,38 +289,37 @@
 /****************************************************************
  *
  ****************************************************************/
-- (NSDictionary*)graphFont
-{
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            [UIFont fontWithName:@"HelveticaNeue-Light" size:10],
-            NSFontAttributeName,[UIColor blackColor],
-            NSForegroundColorAttributeName,nil];
-    
-}
-/****************************************************************
- *
- ****************************************************************/
 - (void)drawRect:(CGRect)rect
 {
     if ( _GraphDataAll == nil ){
         return;
     }
     
+
+    CGSize titleSize;
+    if ( _title != nil ){
+        titleSize = [_title sizeWithAttributes:[self titleFont]];
+    } else {
+        titleSize = CGSizeMake(0, 0);
+    }
     // Drawing code
     [self setContext:UIGraphicsGetCurrentContext()];
     
     /*--------------------------------------*/
     /* 背景 */
     CGFloat mergin = 1;
-    [self setColor_r:240 g:240 b:240];
-    
-    [self fillRect_x:mergin y:mergin w:self.frame.size.width-mergin*2 h:self.frame.size.height-mergin*2];
+    _ValidArea = [UIUtil mergin_rect:rect top:mergin bottom:mergin left:mergin right:mergin];
+
+    CGFloat grad_mergin = 14;
+    _GradArea   = [UIUtil mergin_rect:_ValidArea top:titleSize.height bottom:grad_mergin left:0 right:0];
 
     CGFloat ga_mergin = 5;
-    float garea_w = self.frame.size.width  - mergin*2 - ga_mergin*3;
-    float garea_h = self.frame.size.height - mergin*2 - ga_mergin*4;
-    _GraphArea = CGRectMake(ga_mergin,ga_mergin,garea_w,garea_h);
-
+    _GraphArea  = [UIUtil mergin_rect:_GradArea top:ga_mergin bottom:12 left:ga_mergin right:ga_mergin];
+    
+    [self setColor_r:240 g:240 b:240];
+    [self fillRect_x:_ValidArea.origin.x    y:_ValidArea.origin.y
+                   w:_ValidArea.size.width  h:_ValidArea.size.height ];
+    
     /*--------------------------------------*/
     /* 背景目盛り */
     float ys_tmp0,ys_tmp1;
@@ -273,10 +341,6 @@
     
     /*--------------------------------------*/
     /* X軸目盛り */
-    NSDictionary *NSDicFont = [NSDictionary dictionaryWithObjectsAndKeys:
-                               [UIFont fontWithName:@"HelveticaNeue-Light" size:10],
-                               NSFontAttributeName,[UIColor blackColor],
-                               NSForegroundColorAttributeName,nil];
     NSString *str;
     CGPoint  tmpP;
     float xs_tmp;
@@ -285,8 +349,8 @@
         str = [[NSString alloc]initWithFormat:@"%d",(int)xs_tmp];
         tmpP = [self xy2GArea:CGPointMake(xs_tmp+0.3,0)];
         tmpP.x = tmpP.x - 2*ga_mergin;
-        tmpP.y = self.frame.size.height - mergin*2 - ga_mergin*4 + ga_mergin;
-        [str drawAtPoint:tmpP withAttributes:NSDicFont];
+        tmpP.y = _GradArea.origin.y + _GradArea.size.height - 12;
+        [str drawAtPoint:tmpP withAttributes:[self graphFont]];
     }
     /*--------------------------------------*/
     /* Y軸目盛り */
@@ -297,7 +361,7 @@
             str = [[NSString alloc]initWithString:[UIUtil yenValue:ys_tmp1]];
             tmpP = [self xy2GArea:CGPointMake(0,ys_tmp1)];
             tmpP.x = ga_mergin + ga_mergin;
-            [str drawAtPoint:tmpP withAttributes:NSDicFont];
+            [str drawAtPoint:tmpP withAttributes:[self graphFont]];
         }
     }
 
@@ -309,13 +373,21 @@
     [self drawLine_p0:CGPointMake(0, _ymin) p1:CGPointMake(0, _ymax)];     /* Y軸 */
 
     /*--------------------------------------*/
+    /* グラフタイトル */
+    if ( _title != nil ){
+        [_title drawAtPoint:CGPointMake(_ValidArea.origin.x + (_ValidArea.size.width - titleSize.width)/2,
+                                        _ValidArea.origin.y) withAttributes:[self titleFont]];
+    }
+    
+    /*--------------------------------------*/
     /* 凡例 */
-    [self drawRect:rect];
+    [self drawPrecedent:_ValidArea];
+//    [self drawPrecedent2:_GraphArea];
     
     return;
 }
 /****************************************************************
- *
+ * グラフ描画
  ****************************************************************/
 -(void)paintGraph
 {
@@ -338,7 +410,7 @@
     return;
 }
 /****************************************************************
- *
+ * 折れ線グラフ
  ****************************************************************/
 -(void)lineGraph:(NSArray*)graphData no:(NSInteger)i
 {
@@ -359,7 +431,7 @@
 }
 
 /****************************************************************
- *
+ * 棒グラフ
  ****************************************************************/
 -(void)barGraph:(NSArray*)graphData no:(NSInteger)i
 {

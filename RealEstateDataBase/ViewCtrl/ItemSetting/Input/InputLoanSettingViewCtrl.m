@@ -338,16 +338,17 @@
     _l_payYearVal.text  = [NSString stringWithFormat:@"%@円",[UIUtil yenValue:[_loan getPmtYear:1]]];
     
 
-    GraphData *gd_ppmt  = [[GraphData alloc]initWithData:[_loan getPpmtArrayYear]];
-    gd_ppmt.precedent = @"年間返済額";
-    gd_ppmt.type        = BAR_GPAPH;
-    
     GraphData *gd_pmt   = [[GraphData alloc]initWithData:[_loan getPmtArrayYear]];
-    gd_pmt.precedent    = @"元金返済分";
+    gd_pmt.precedent    = @"利息返済分";
     gd_pmt.type         = BAR_GPAPH;
     
+    GraphData *gd_ppmt  = [[GraphData alloc]initWithData:[_loan getPpmtArrayYear]];
+    gd_ppmt.precedent   = @"元金返済分";
+    gd_ppmt.type        = BAR_GPAPH;
+    
     [_g_pmt setGraphDataAll:[[NSArray alloc]initWithObjects:gd_pmt,gd_ppmt,nil]];
-    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear ymax:[_loan getPmtYear:1]];
+    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear+1 ymax:[_loan getPmtYear:1]];
+    _g_pmt.title        = @"借入返済内訳";
     [_g_pmt setNeedsDisplay];
 }
 /*

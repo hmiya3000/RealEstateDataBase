@@ -37,7 +37,7 @@
     [super viewDidLoad];
     self.title = @"諸費用";
     
-    _value  = _modelRE.investment.expense/10000;
+    _value  = _modelRE.investment.expense;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -45,13 +45,15 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_expense     = [UIUtil makeLabel:[NSString stringWithFormat:@"%d万円",(int)_value]];
+    _l_expense     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_expense];
     /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格"];
+    [_l_price setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_price];
     /****************************************/
     _l_priceVal     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.estate.prices.price/10000]]];
+    [_l_priceVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_priceVal];
     /****************************************/
     _tv_tips                = [[UITextView alloc]init];
@@ -121,8 +123,8 @@
     }else {
         [UIUtil setRectLabel:_l_expense     x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len10/2];
-        [UIUtil setLabel:_l_priceVal    x:pos_x+dx      y:pos_y length:_pos.len10/2];
+        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len15/2];
+        [UIUtil setLabel:_l_priceVal    x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
         pos_y = pos_y + 1.5*dy;
@@ -177,7 +179,7 @@
         [self.navigationController pushViewController:_exampleVC animated:YES];
 
     } else {
-        _modelRE.investment.expense     = _value * 10000;
+        _modelRE.investment.expense     = _value;
         [_modelRE adjustEquity];
         [_modelRE valToFile];
 
@@ -215,7 +217,7 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_expense.text    = [NSString stringWithFormat:@"%ld万円",(long)_value];
+    _l_expense.text    = [NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]];
 }
 
 

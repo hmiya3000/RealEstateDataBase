@@ -36,7 +36,7 @@
     [super viewDidLoad];
     self.title = @"潜在総収入";
     
-    _value  = _modelRE.estate.prices.gpi /10000;
+    _value  = _modelRE.estate.prices.gpi;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -44,10 +44,11 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_gpi     = [UIUtil makeLabel:[NSString stringWithFormat:@"%ld %%",(long)_value]];
+    _l_gpi     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_gpi];
     /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格"];
+    [_l_price setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_price];
     /****************************************/
     _l_priceVal     = [UIUtil makeLabel:@"9999万円"];
@@ -55,6 +56,7 @@
     [_scrollView addSubview:_l_priceVal];
     /****************************************/
     _l_interest         = [UIUtil makeLabel:@"表面利回り"];
+    [_l_interest setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_interest];
     /****************************************/
     _l_interestVal      = [UIUtil makeLabel:@"9.99%%"];
@@ -125,11 +127,11 @@
     }else {
         [UIUtil setRectLabel:_l_gpi     x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len10/2];
-        [UIUtil setLabel:_l_priceVal    x:pos_x+dx      y:pos_y length:_pos.len10/2];
+        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len15/2];
+        [UIUtil setLabel:_l_priceVal    x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_interest    x:pos_x         y:pos_y length:_pos.len10/2];
-        [UIUtil setLabel:_l_interestVal x:pos_x+dx      y:pos_y length:_pos.len10/2];
+        [UIUtil setLabel:_l_interest    x:pos_x         y:pos_y length:_pos.len15/2];
+        [UIUtil setLabel:_l_interestVal x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
     }
@@ -176,8 +178,8 @@
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.estate.prices.gpi      = _value * 10000;
-    _modelRE.investment.prices.gpi  = _value * 10000;
+    _modelRE.estate.prices.gpi      = _value;
+    _modelRE.investment.prices.gpi  = _value;
     [_modelRE valToFile];
     
     [self.navigationController popViewControllerAnimated:YES];
@@ -213,9 +215,9 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_gpi.text         = [NSString stringWithFormat:@"%ld万円",(long)_value];
+    _l_gpi.text         = [NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]];
     _l_priceVal.text    = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.estate.prices.price/10000]];
-    _l_interestVal.text = [NSString stringWithFormat:@"%2.2f%%",(float)_value/_modelRE.estate.prices.price*1000000 ];
+    _l_interestVal.text = [NSString stringWithFormat:@"%2.2f%%",(float)_value/_modelRE.estate.prices.price*100 ];
 
 }
 

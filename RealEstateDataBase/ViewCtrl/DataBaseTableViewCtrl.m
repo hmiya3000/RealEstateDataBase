@@ -10,8 +10,11 @@
 #import "InfoViewCtrl.h"
 #import "InputItemViewCtrl.h"
 #import "ItemIPhoneViewCtrl.h"
+#import "ItemSettingViewCtrl.h"
 #import "Pos.h"
 #import "ModelDB.h"
+#import "AddonMgr.h"
+#import "ViewMgr.h"
 
 @interface DataBaseTableViewCtrl ()
 {
@@ -22,12 +25,12 @@
 
     
     UISplitViewController       *_spVc;
-    Pos                     *_pos;
+    Pos                         *_pos;
     
-    ModelDB                 *_db;
+    ModelDB                     *_db;
     
-    NSIndexPath             *_selIndexPath;
-    BOOL                    _selIndex;
+    NSIndexPath                 *_selIndexPath;
+    BOOL                        _selIndex;
 
     
 }
@@ -73,17 +76,18 @@
     NSString *model = [UIDevice currentDevice].model;
     if ( [model isEqualToString:@"iPhone"] ){
         _tbc = [[ItemIPhoneViewCtrl alloc]init];
-        _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        _tbc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+//        _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//        _tbc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         _tbc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
         [self presentViewController:_tbc animated:YES completion:nil];
+        ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+        viewMgr.stage   = STAGE_ANALYSIS;
 
     } else if ([model isEqualToString:@"iPad"] ){
         // Detail Viewを更新
         _selIndex       = true;
         _selIndexPath   = indexPath;
         [self.detailVC viewWillAppear:YES];
-        
     }
     return;
 }
@@ -109,7 +113,6 @@
     [table setDataSource:self];
 
     [self viewMake];
-
 
 }
 
@@ -152,6 +155,19 @@
     if ( _selIndex == true ){
         [self.tableView selectRowAtIndexPath:_selIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
+
+    AddonMgr *addonMgr = [AddonMgr sharedManager];
+    if ( addonMgr.database == false ){
+        [self selectCell:0];
+        NSString *model = [UIDevice currentDevice].model;
+        if ( [model isEqualToString:@"iPhone"] ){
+        } else {
+            ItemSettingViewCtrl *tmpVC;
+            tmpVC = (ItemSettingViewCtrl*)(self.detailVC);
+            [tmpVC moveAnalysisView];
+        }
+    }
+    
     return;
 }
 #pragma mark - Table view data source

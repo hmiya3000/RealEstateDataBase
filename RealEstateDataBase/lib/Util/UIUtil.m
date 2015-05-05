@@ -55,7 +55,7 @@
     CGSize size = [label.text sizeWithAttributes:@{NSFontAttributeName:font}];
     CGRect rect = CGRectMake(x, y+size.height*0.1, viewWidth-2*x,size.height*1.8 );
     [label setFrame:rect];
-    [label setBackgroundColor:[UIColor  colorWithRed:84/255.f green:190/255.f blue:146/255.f alpha:1.0]]; //wakatake iro
+    [label setBackgroundColor:[self color_WakatakeIro]];
     return;
 }
 /****************************************************************
@@ -500,6 +500,31 @@ h
 //    [tv setEditable:editable];
     return tv;
     
+}
+/****************************************************************
+ *
+ ****************************************************************/
++ (CGRect)mergin_rect:(CGRect)rect top:(CGFloat)top bottom:(CGFloat)bottom left:(CGFloat)left right:(CGFloat)right
+{
+    CGFloat origin_x;
+    CGFloat origin_y;
+    CGFloat size_width;
+    CGFloat size_height;
+    
+    if ( top    < 0 )   top     = 0;
+    if ( bottom < 0 )   bottom  = 0;
+    if ( left   < 0 )   left    = 0;
+    if ( right  < 0 )   right   = 0;
+    
+    origin_x    = rect.origin.x     + left;
+    origin_y    = rect.origin.y     + top;
+    size_width  = rect.size.width   - left - right;
+    size_height = rect.size.height  - top - bottom;
+
+    if ( size_width  < 0 )  size_width = 1;
+    if ( size_height < 0 )  size_height = 1;
+
+    return CGRectMake(origin_x, origin_y, size_width, size_height);
 }
 /****************************************************************/
 /****************************************************************/

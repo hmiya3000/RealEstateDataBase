@@ -59,7 +59,11 @@
     
     _state          = STATE_INIT;
     _inCalckey      = INKEY_NON;
-    _wkAnswer       = [NSMutableString stringWithFormat:@"%g",value];
+    if ( value == (NSInteger)value ){
+        _wkAnswer       = [NSMutableString stringWithFormat:@"%ld",(long)value];
+    } else {
+        _wkAnswer       = [NSMutableString stringWithFormat:@"%f",value];
+    }
     _workArea       = [self dispStr:_wkAnswer];
     _inputArea      = [NSMutableString stringWithFormat:@"0"];
     
@@ -207,6 +211,17 @@
 {
     [self initInput:0];
 }
+/****************************************************************
+ * 逆数キーの入力
+ ****************************************************************/
+- (void)inputInv
+{
+    CGFloat tmp = [_wkAnswer floatValue];
+    if ( tmp != 0 ){
+        _wkAnswer = [NSString stringWithFormat:@"%g",(1 / tmp)];
+        _workArea   = [self dispStr:_wkAnswer];
+    }
+}
 /****************************************************************/
 /****************************************************************/
 /****************************************************************/
@@ -222,9 +237,61 @@
  ****************************************************************/
 -(NSString*)dispStr:(NSString*)orgStr
 {
-    return orgStr;
+    NSString *retStr;
+//    CGFloat     fnum;
+//    NSInteger   inum;
+    NSRange found = [orgStr rangeOfString:@"."];
+    if ( found.location == NSNotFound ){
+        //整数
+        retStr = [self yenValue:[orgStr intValue]];
+    } else {
+        //小数
+        NSString *orgStrInt = [orgStr substringToIndex:found.location];
+        NSString *orgStrDec = [orgStr substringFromIndex:found.location + found.length-1];
+
+        retStr = [self yenValue:[orgStrInt intValue]];
+        retStr = [retStr stringByAppendingString:orgStrDec];
+    }
+    return retStr;
 }
 
+/****************************************************************
+ *
+ ****************************************************************/
+-(NSString*)yenValue:(NSInteger)yen
+{
+    NSInteger yen_tmp;
+    if ( yen >= 0 ){
+        yen_tmp = yen;
+    }else {
+        yen_tmp = -yen;
+    }
+    
+    NSMutableString* str;
+    NSMutableString* str_tmp;
+    
+    str = [NSMutableString stringWithString:@""];
+    while (1) {
+        if ( (yen_tmp /1000) > 0 ){
+            str_tmp = [NSMutableString stringWithFormat:@",%03ld",(long)yen_tmp%1000];
+            [str_tmp appendString:str];
+            str = str_tmp;
+        } else {
+            str_tmp = [NSMutableString stringWithFormat:@"%d",(int)yen_tmp%1000];
+            [str_tmp appendString:str];
+            str = str_tmp;
+            break;
+        }
+        yen_tmp = yen_tmp /1000;
+    }
+    if ( yen < 0 ){
+        str_tmp = [NSMutableString stringWithString:@"-"];
+        [str_tmp appendString:str];
+        str = str_tmp;
+    }
+    
+    return str;
+}
 
 /****************************************************************
  * 演算キーをInputエリアに追加
@@ -259,7 +326,13 @@
     NSString *str0 = @"0";
     
     if ( [toStr isEqualToString:str0] == true ){
-        return inStr;
+        if ( [inStr isEqualToString:@"0000"] == true ){
+            // 0000等の場合は0に置き換え
+            return @"0";
+        } else {
+            // 通常は入力値を返す
+            return inStr;
+        }
     } else {
         return [toStr stringByAppendingString:inStr];
     }
@@ -326,4 +399,6 @@
     }
     
 }
+/****************************************************************/
 @end
+/****************************************************************/

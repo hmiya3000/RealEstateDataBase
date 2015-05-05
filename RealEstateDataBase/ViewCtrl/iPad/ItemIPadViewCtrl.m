@@ -11,7 +11,10 @@
 #import "SummaryViewCtrl.h"
 #import "GraphViewCtrl.h"
 #import "TotalAnalysisViewCtrl.h"
+#import "InfoViewCtrl.h"
+
 #import "Pos.h"
+#import "AddonMgr.h"
 
 //#import "InputItemViewCtrl.h"
 
@@ -26,8 +29,12 @@
     UINavigationController      *_graphNAC;
     UIViewController            *_totalVC;
     UINavigationController      *_totalNAC;
+    UIViewController            *_infoVC;
+    UINavigationController      *_infoNAC;
+
     UITabBarController          *_tbc;
     Pos                         *_pos;
+    AddonMgr                    *_addonMgr;
 }
 
 @end
@@ -51,9 +58,29 @@
         _graphNAC           = [[UINavigationController alloc]initWithRootViewController:_graphVC];
         _totalVC            = [[TotalAnalysisViewCtrl alloc] init];
         _totalNAC           = [[UINavigationController alloc]initWithRootViewController:_totalVC];
+        _infoVC             = [[InfoViewCtrl alloc]init];
+        _infoNAC            = [[UINavigationController alloc]initWithRootViewController:_infoVC];
         
         _tbc = [[UITabBarController alloc]init];
-        NSArray *views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_totalNAC,nil];
+        _addonMgr = [AddonMgr sharedManager];
+        NSArray *views;
+        if ( _addonMgr.database == true ){
+            views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_totalNAC,nil];
+        } else {
+            if ( _addonMgr.multiYear == true ){
+                if ( _addonMgr.saleAnalysys == true ){
+                    views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_totalNAC,_infoNAC,nil];
+                } else {
+                    views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_infoNAC,nil];
+                }
+            } else {
+                if ( _addonMgr.saleAnalysys == true ){
+                    views = [NSArray arrayWithObjects:_summaryNAC,_totalNAC,_infoNAC,nil];
+                } else {
+                    views = [NSArray arrayWithObjects:_summaryNAC,_infoNAC,nil];
+                }
+            }
+        }
         [_tbc setViewControllers:views animated:YES];
 
         
@@ -65,7 +92,8 @@
         [_inputSettingVC.view   setFrame:_pos.masterFrame];
         [_summaryVC.view        setFrame:_pos.detailFrame];
         [_graphVC.view          setFrame:_pos.detailFrame];
-        [_totalVC.view       setFrame:_pos.detailFrame];
+        [_totalVC.view          setFrame:_pos.detailFrame];
+
     }
     return self;
     

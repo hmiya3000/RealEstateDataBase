@@ -11,6 +11,7 @@
 #import "ModelRE.h"
 #import "Pos.h"
 #import "GridTable.h"
+#import "AddonMgr.h"
 
 @interface SummaryViewCtrl ()
 {
@@ -41,6 +42,8 @@
     
     UITextView          *_tv_comment1;
     UITextView          *_tv_comment2;
+    
+    AddonMgr            *_addonMgr;
 }
 
 @end
@@ -54,9 +57,8 @@
     self = [super init];
     if (self){
         self.title  = @"運営";
-        self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
+        self.tabBarItem.image = [UIImage imageNamed:@"operation.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
-        _modelRE = [ModelRE sharedManager];
     }
     return self;
 }
@@ -66,6 +68,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _modelRE        = [ModelRE sharedManager];
+    _addonMgr       = [AddonMgr sharedManager];    
+    /****************************************/
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model isEqualToString:@"iPhone"] ){
+        if ( _addonMgr.database == true ){
+            UIBarButtonItem *retButton =
+            [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
+                                             style:UIBarButtonItemStylePlain
+                                            target:self
+                                            action:@selector(retButtonTapped:)];
+            self.navigationItem.leftBarButtonItem = retButton;
+        } else {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
+    }
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];

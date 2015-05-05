@@ -10,11 +10,11 @@
 
 @interface InputBuildYearViewCtrl ()
 {
-    UILabel         *_l_buildYear;
-    UITextView      *_tv_tips;
-    UIPickerView    *_pv;
-    NSInteger       _selectIdx;
-    NSInteger       _thisYear;
+    UILabel             *_l_buildYear;
+    UITextView          *_tv_tips;
+    UIPickerView        *_pv;
+    NSInteger           _selectIdx;
+    NSInteger           _thisYear;
 }
 
 @end

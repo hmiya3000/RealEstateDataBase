@@ -12,6 +12,7 @@
 #import "SettingLoan.h"
 #import "Finance.h"
 #import "Operation.h"
+#import "AddonMgr.h"
 
 @implementation ModelRE
 {
@@ -22,6 +23,7 @@
     NSInteger           _tmpCfAccumMin;
     NSInteger           _tmpCfAccumMax;
     
+    AddonMgr            *_addonMgr;
     
 }
 /****************************************************************/
@@ -99,6 +101,7 @@ static ModelRE* sharedModelRE = nil;
     self = [super init];
     if (self) {
         [self setDefaultItem:@"未選択"];
+        _addonMgr = [AddonMgr sharedManager];
     }
     return self;
 }
@@ -176,6 +179,14 @@ static ModelRE* sharedModelRE = nil;
  ****************************************************************/
 - (NSArray*) getOperationArray
 {
+    NSInteger   tmpHoldingPeriod;
+    
+    if ( _addonMgr.multiYear == true ){
+        tmpHoldingPeriod = _holdingPeriod;
+    } else {
+        tmpHoldingPeriod = 1;
+    }
+    
     NSMutableArray *opeArrAll = [NSMutableArray array];
     NSArray *item = [NSArray arrayWithObjects:@"年数",@"潜在総収入(GPI)",@"空室損",@"実効総収入(EGI)",@"運営費(OPEx)",@"営業利益(NOI)",@"負債支払額(ADS)",@"税引前CF",@"所得税等",@"税引後CF",@"累積税引前CF",@"累積税引後CF",nil];
     [opeArrAll addObject:item];
@@ -186,7 +197,7 @@ static ModelRE* sharedModelRE = nil;
     NSArray *opeN = [self calcOperationAll:_holdingPeriod];
     Operation *ope;
     
-    for(int i=0; i<_holdingPeriod; i++){
+    for(int i=0; i<tmpHoldingPeriod; i++){
         ope = [opeN objectAtIndex:i];
         
         NSMutableArray *opeArr = [NSMutableArray array];
@@ -625,18 +636,25 @@ static ModelRE* sharedModelRE = nil;
     _estate.house.buildYear = [[settings objectForKey:@"建築年"] integerValue];
     _estate.house.construct = [[settings objectForKey:@"構造"] intValue];
     /*--------------------------------------*/
-    _yearAquisition             = [[settings objectForKey:@"取得年"] integerValue];
-    _declineRate                = [[settings objectForKey:@"家賃下落率"] floatValue];
-    _investment.emptyRate       = [[settings objectForKey:@"空室率"] floatValue];
-    _investment.mngRate         = [[settings objectForKey:@"管理費割合"] floatValue];
-    _investment.incomeTaxRate   = [[settings objectForKey:@"所得税・住民税"] floatValue];
+    if ( _addonMgr.opeSetting == true ){
+        _yearAquisition             = [[settings objectForKey:@"取得年"] integerValue];
+        _declineRate                = [[settings objectForKey:@"家賃下落率"] floatValue];
+        _investment.emptyRate       = [[settings objectForKey:@"空室率"] floatValue];
+        _investment.mngRate         = [[settings objectForKey:@"管理費割合"] floatValue];
+        _investment.incomeTaxRate   = [[settings objectForKey:@"所得税・住民税"] floatValue];
+    } else {
+        _yearAquisition             = [UIUtil getThisYear];
+    }
     /*--------------------------------------*/
-    _holdingPeriod          = [[settings objectForKey:@"保有期間"] intValue];
-    _priceSales             = [[settings objectForKey:@"売却価格"] intValue];
-    _improvementCosts       = [[settings objectForKey:@"改良費"] intValue];
-    _transferExpense        = [[settings objectForKey:@"譲渡費用"] intValue];
-    
-    _discountRate                   = 0.05;
+    if ( _addonMgr.saleAnalysys == true ){
+        _holdingPeriod          = [[settings objectForKey:@"保有期間"] intValue];
+        _priceSales             = [[settings objectForKey:@"売却価格"] intValue];
+        _improvementCosts       = [[settings objectForKey:@"改良費"] intValue];
+        _transferExpense        = [[settings objectForKey:@"譲渡費用"] intValue];
+        _discountRate           = 0.05;
+    } else {
+        _priceSales             = _investment.prices.price;
+    }
     return;
 }
 
@@ -795,6 +813,9 @@ static ModelRE* sharedModelRE = nil;
 {
     _estate.prices.price        = price;
     _investment.prices.price    = price;
+    if ( _addonMgr.saleAnalysys == false ){
+        _priceSales             = price;
+    }
     [self adjustEquity];
 }
 /****************************************************************

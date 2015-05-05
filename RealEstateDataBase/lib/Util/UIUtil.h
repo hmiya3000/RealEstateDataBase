@@ -52,6 +52,8 @@
 /****************************************************************/
 + (UIScrollView*)makeScrollView:(CGRect)rect  xpage:(CGFloat)xpage ypage:(NSInteger)ypage tgt:(id)obj;
 /****************************************************************/
++ (CGRect)mergin_rect:(CGRect)rect top:(CGFloat)top bottom:(CGFloat)bottom left:(CGFloat)left right:(CGFloat)right;
+/****************************************************************/
 + (UIColor*)color_Yellow;
 + (UIColor*)color_LightYellow;
 + (UIColor*)color_Ivory;

@@ -36,7 +36,7 @@
     [super viewDidLoad];
     self.title = @"借入金";
     
-    _value  = _modelRE.investment.loan.loanBorrow / 10000;
+    _value  = _modelRE.investment.loan.loanBorrow /10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -44,7 +44,7 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_loanBorrow   = [UIUtil makeLabel:[NSString stringWithFormat:@"%ld万円",(long)_value]];
+    _l_loanBorrow   = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_loanBorrow];
     /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格+諸費用"];
@@ -124,25 +124,22 @@
         [UIUtil setLabel:_l_selfFinanceVal  x:pos_x+dx*2    y:pos_y length:_pos.len10];
         pos_y = pos_y + dy*0.6;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*1.7);
-    }else {
-        [UIUtil setRectLabel:_l_loanBorrow    x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
-        pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len10];
-        [UIUtil setLabel:_l_priceVal    x:pos_x+dx      y:pos_y length:_pos.len10/2];
-        pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_selfFinance     x:pos_x         y:pos_y length:_pos.len10/2];
-        [UIUtil setLabel:_l_selfFinanceVal  x:pos_x+dx      y:pos_y length:_pos.len10/2];
-        pos_y = pos_y + dy;
-        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
-    }
-    
-    if ( _pos.isPortrait == true ){
+        /****************************************/
         pos_y = _pos.y_btm - dy -dy - _pos.y_page/2;
         [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
         [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2)];
-        
     }else {
+        [UIUtil setRectLabel:_l_loanBorrow    x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len15];
+        [UIUtil setLabel:_l_priceVal    x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
+        pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_selfFinance     x:pos_x         y:pos_y length:_pos.len15/2];
+        [UIUtil setLabel:_l_selfFinanceVal  x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
+        pos_y = pos_y + dy;
+        _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
+        /****************************************/
         pos_y = 0;
         [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
@@ -178,7 +175,7 @@
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.investment.loan.loanBorrow     = _value * 10000;
+    _modelRE.investment.loan.loanBorrow     = _value*10000;
     [_modelRE adjustEquity];
     [_modelRE valToFile];
     
@@ -215,7 +212,7 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_loanBorrow.text  = [NSString stringWithFormat:@"%ld万円",(long)_value];
+    _l_loanBorrow.text  = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
     NSInteger priceAll  = _modelRE.estate.prices.price+_modelRE.investment.expense;
     _l_priceVal.text    = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:priceAll/10000]];
     _l_selfFinanceVal.text  = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:(priceAll/10000-_value)]];

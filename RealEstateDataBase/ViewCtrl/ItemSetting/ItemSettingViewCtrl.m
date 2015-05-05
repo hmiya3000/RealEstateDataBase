@@ -9,6 +9,8 @@
 #import "ItemSettingViewCtrl.h"
 #import "ModelRE.h"
 #import "Pos.h"
+#import "AddonMgr.h"
+#import "ViewMgr.h"
 
 #import "ItemIPadViewCtrl.h"
 
@@ -34,6 +36,7 @@
     NSArray             *_settingList5;
     NSArray             *_settingList6;
     Pos                 *_pos;
+    AddonMgr            *_addonMgr;
 }
 @end
 
@@ -55,7 +58,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        self.title  = @"データ詳細";
+        self.title  = @"物件情報";
         self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
         [self initSettingList];
     }
@@ -82,6 +85,7 @@
     self.navigationItem.rightBarButtonItem = selectButton;
     
     _modelRE    = [ModelRE sharedManager];
+    _addonMgr   = [AddonMgr sharedManager];
     UITableView *settingView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, 480) style:UITableViewStyleGrouped];
     
     [settingView setDelegate:self];
@@ -137,7 +141,19 @@
  ****************************************************************/
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 6+1;
+    if ( _addonMgr.saleAnalysys == true ){
+        if ( _addonMgr.opeSetting == true ){
+            return 6+1;
+        } else {
+            return 5+1;
+        }
+    } else {
+        if ( _addonMgr.opeSetting == true ){
+            return 5+1;
+        } else {
+            return 4+1;
+        }
+    }
 }
 
 /****************************************************************
@@ -146,7 +162,6 @@
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     
     [self selectCell:indexPath];
 }
@@ -157,33 +172,50 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSInteger   count;
-    switch (section) {
-        case 0:
-            count = _settingList0.count;
-            break;
-        case 1:
-            count = _settingList1.count;
-            break;
-        case 2:
-            count = _settingList2.count;
-            break;
-        case 3:
-            count = _settingList3.count;
-            break;
-        case 4:
-            count = _settingList4.count;
-            break;
-        case 5:
-            count = _settingList5.count;
-            break;
-        case 6:
-            count = _settingList6.count;
-            break;
-            
-            
-        default:
-            count = 0;
-            break;
+    if ( _addonMgr.saleAnalysys == true ){
+        if ( _addonMgr.opeSetting == true ){
+            switch (section) {
+                case 0: count = _settingList0.count;    break;
+                case 1: count = _settingList1.count;    break;
+                case 2: count = _settingList2.count;    break;
+                case 3: count = _settingList3.count;    break;
+                case 4: count = _settingList4.count;    break;
+                case 5: count = _settingList5.count;    break;
+                case 6: count = _settingList6.count;    break;
+                default:count = 0;                      break;
+            }
+        } else {
+            switch (section) {
+                case 0: count = _settingList0.count;    break;
+                case 1: count = _settingList1.count;    break;
+                case 2: count = _settingList2.count;    break;
+                case 3: count = _settingList3.count;    break;
+                case 4: count = _settingList4.count;    break;
+                case 5: count = _settingList6.count;    break;
+                default:count = 0;                      break;
+            }
+        }
+    } else {
+        if ( _addonMgr.opeSetting == true ){
+            switch (section) {
+                case 0: count = _settingList0.count;    break;
+                case 1: count = _settingList1.count;    break;
+                case 2: count = _settingList2.count;    break;
+                case 3: count = _settingList3.count;    break;
+                case 4: count = _settingList4.count;    break;
+                case 5: count = _settingList5.count;    break;
+                default:count = 0;                      break;
+            }
+        } else {
+            switch (section) {
+                case 0: count = _settingList0.count;    break;
+                case 1: count = _settingList1.count;    break;
+                case 2: count = _settingList2.count;    break;
+                case 3: count = _settingList3.count;    break;
+                case 4: count = _settingList4.count;    break;
+                default:count = 0;                      break;
+            }
+        }
     }
     return count;
 }
@@ -269,30 +301,50 @@
 - (NSString*) getKeyIndexPath:(NSIndexPath*)indexPath
 {
     NSString  *key;
-    switch (indexPath.section) {
-        case 0:
-            key = [_settingList0 objectAtIndex:indexPath.row];
-            break;
-        case 1:
-            key = [_settingList1 objectAtIndex:indexPath.row];
-            break;
-        case 2:
-            key = [_settingList2 objectAtIndex:indexPath.row];
-            break;
-        case 3:
-            key = [_settingList3 objectAtIndex:indexPath.row];
-            break;
-        case 4:
-            key = [_settingList4 objectAtIndex:indexPath.row];
-            break;
-        case 5:
-            key = [_settingList5 objectAtIndex:indexPath.row];
-            break;
-        case 6:
-            key = [_settingList6 objectAtIndex:indexPath.row];
-            break;
-        default:
-            break;
+    if ( _addonMgr.saleAnalysys == true ){
+        if ( _addonMgr.opeSetting == true ){
+            switch (indexPath.section) {
+                case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
+                case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
+                case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 5: key = [_settingList5 objectAtIndex:indexPath.row];  break;
+                case 6: key = [_settingList6 objectAtIndex:indexPath.row];  break;
+                default:                                                    break;
+            }
+        } else {
+            switch (indexPath.section) {
+                case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
+                case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
+                case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 5: key = [_settingList6 objectAtIndex:indexPath.row];  break;
+                default:                                                    break;
+            }
+        }
+    } else {
+        if ( _addonMgr.opeSetting == true ){
+            switch (indexPath.section) {
+                case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
+                case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
+                case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 5: key = [_settingList5 objectAtIndex:indexPath.row];  break;
+                default:                                                    break;
+            }
+        } else {
+            switch (indexPath.section) {
+                case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
+                case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
+                case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                default:                                                    break;
+            }
+        }
     }
     return key;
 }
@@ -303,33 +355,50 @@
 - (NSString*) getSectionName:(NSInteger)section
 {
     NSString *str;
-    switch (section) {
-        case 0:
-            str = @"基本情報";
-            break;
-        case 1:
-            str = @"資金";
-            break;
-        case 2:
-            str = @"融資設定";
-            break;
-        case 3:
-            str = @"土地情報";
-            break;
-        case 4:
-            str = @"建物情報";
-            break;
-        case 5:
-            str = @"運営設定";
-            break;
-        case 6:
-            str = @"売却設定";
-            break;
-            
-        default:
-            str = @"その他";
-            break;
-            
+    if ( _addonMgr.saleAnalysys == true ){
+        if ( _addonMgr.opeSetting == true ){
+            switch (section) {
+                case 0: str = @"基本情報";      break;
+                case 1: str = @"資金";         break;
+                case 2: str = @"融資設定";      break;
+                case 3: str = @"土地情報";      break;
+                case 4: str = @"建物情報";      break;
+                case 5: str = @"運営設定";      break;
+                case 6: str = @"売却設定";      break;
+                default:str = @"その他";       break;
+            }
+        } else {
+            switch (section) {
+                case 0: str = @"基本情報";      break;
+                case 1: str = @"資金";         break;
+                case 2: str = @"融資設定";      break;
+                case 3: str = @"土地情報";      break;
+                case 4: str = @"建物情報";      break;
+                case 5: str = @"売却設定";      break;
+                default:str = @"その他";       break;
+            }
+        }
+    } else {
+        if ( _addonMgr.opeSetting == true ){
+            switch (section) {
+                case 0: str = @"基本情報";      break;
+                case 1: str = @"資金";         break;
+                case 2: str = @"融資設定";      break;
+                case 3: str = @"土地情報";      break;
+                case 4: str = @"建物情報";      break;
+                case 5: str = @"運営設定";      break;
+                default:str = @"その他";       break;
+            }
+        } else {
+            switch (section) {
+                case 0: str = @"基本情報";      break;
+                case 1: str = @"資金";         break;
+                case 2: str = @"融資設定";      break;
+                case 3: str = @"土地情報";      break;
+                case 4: str = @"建物情報";      break;
+                default:str = @"その他";       break;
+            }
+        }
     }
     return str;
 }
@@ -339,11 +408,21 @@
  ****************************************************************/
 - (IBAction)selectButtonTapped:(id)sender
 {
+    [self moveAnalysisView];
+    return;
+}
+/****************************************************************
+ *
+ ****************************************************************/
+- (void) moveAnalysisView
+{
     _spVc = [[ItemIPadViewCtrl alloc]init];
     _spVc.delegate  = self;
-
+    
     _spVc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentViewController:_spVc animated:YES completion:nil];
+    ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+    viewMgr.stage   = STAGE_ANALYSIS;
     
 }
 

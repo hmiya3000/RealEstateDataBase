@@ -8,18 +8,21 @@
 
 #import "AppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
+#import "UIUtil.h"
+#import "ViewMgr.h"
+
 #import "DataBaseIPhoneViewCtrl.h"
 #import "DataBaseIPadViewCtrl.h"
 
 @implementation AppDelegate
 {
-    UIWindow                *_window;
+    UIWindow                    *_window;
 
-    UISplitViewController   *_databaseIPad;
-    UITabBarController      *_databaseIPhone;
-    UIViewController        *_infoVC;
+    UISplitViewController       *_iPadVC;
+    DataBaseIPhoneViewCtrl      *_iPhoneVC;
+    UIViewController            *_infoVC;
 
-
+    
 }
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -32,7 +35,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    _window.backgroundColor = [UIColor  colorWithRed:1.0 green:1.0 blue:0.88 alpha:1.0]; //LightYellow
+    _window.backgroundColor = [UIUtil color_LightYellow];
     [_window makeKeyAndVisible];
     
     UIScreen *ms = [UIScreen mainScreen];
@@ -40,21 +43,21 @@
 
 
     NSString *model = [UIDevice currentDevice].model;
+    ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+    viewMgr.stage   = STAGE_TOP;
+    
     if ( [model isEqualToString:@"iPhone"] ){
-
-        _databaseIPhone     = [[DataBaseIPhoneViewCtrl alloc]init];
-        [_databaseIPhone.view setFrame:appFrame];
-
+        NSLog(@"iPhone");
+        _iPhoneVC           = [[DataBaseIPhoneViewCtrl alloc]init];
+        [_iPhoneVC.view setFrame:appFrame];
         [_window.rootViewController.view setFrame:appFrame];
-        _window.rootViewController = _databaseIPhone;
-
+        _window.rootViewController  = _iPhoneVC;
+        
     } else if ( [model isEqualToString:@"iPad"]){
         NSLog(@"iPad");
-        
-        _databaseIPad           = [[DataBaseIPadViewCtrl alloc]init];
-        _databaseIPad.delegate  = self;
-        
-        [self.window addSubview:_databaseIPad.view];
+        _iPadVC             = [[DataBaseIPadViewCtrl alloc]init];
+        _iPadVC.delegate  = self;
+        [self.window addSubview:_iPadVC.view];
 
     }
     [self.window makeKeyAndVisible];

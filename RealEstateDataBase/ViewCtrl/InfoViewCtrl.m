@@ -14,12 +14,34 @@
 #import "ExportViewCtrl.h"
 #import "ImportViewCtrl.h"
 #import "PDFViewCtrl.h"
+#import "ImportExportHelpViewCtrl.h"
+#import "AddonViewCtrl.h"
+#import "AddonMgr.h"
+#import "ViewMgr.h"
 
 @interface InfoViewCtrl ()
 {
     ModelDB                 *_modelDB;
-    UILabel                 *_l_version;
+
+    UIScrollView            *_scrollView;
+    UILabel                 *_l_appname;
+    UITextView              *_tv_comment;
+    UILabel                 *_l_TitleTools;
     Pos                     *_pos;
+
+    UILabel                 *_l_multiYear;
+    UILabel                 *_l_opeSetting;
+    UILabel                 *_l_database;
+    UILabel                 *_l_saleAnalysis;
+    UILabel                 *_l_importExport;
+    UILabel                 *_l_pdfOut;
+
+    UISwitch                *_sw_multiYear;
+    UISwitch                *_sw_opeSetting;
+    UISwitch                *_sw_database;
+    UISwitch                *_sw_saleAnalysis;
+    UISwitch                *_sw_importExport;
+    UISwitch                *_sw_pdfOut;
     
     UIButton                *_b_initial;
     UIButton                *_b_dropbox;
@@ -39,7 +61,9 @@
     UIViewController        *_dropboxVC;
     UINavigationController  *_dropboxNAC;
 
-
+    UIViewController        *_addonVC;
+    UINavigationController  *_addonNAC;
+    AddonMgr                *_addOnMgr;
 }
 @end
 
@@ -51,6 +75,13 @@
 #define BTAG_PDF        4
 #define BTAG_DROPBOX    5
 
+#define STAG_MULTIYEAR  1
+#define STAG_OPESETTING 2
+#define STAG_SALE       3
+#define STAG_DATABASE   4
+#define STAG_IMPORT     5
+#define STAG_PDFOUT     6
+
 /****************************************************************
  *
  ****************************************************************/
@@ -59,7 +90,7 @@
     self = [super init];
     if (self){
         self.title = @"Info";
-        self.tabBarItem.image = [UIImage imageNamed:@"building.png"];
+        self.tabBarItem.image = [UIImage imageNamed:@"info-s.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
         _modelDB = [ModelDB sharedManager];
     }
@@ -73,42 +104,124 @@
 {
     [super viewDidLoad];
     
+    _addOnMgr   = [AddonMgr sharedManager];
     /****************************************/
-    _l_version      = [UIUtil makeLabel:@"version 0.99"];
-    [self.view addSubview:_l_version];
+    _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
+    [self.view addSubview:_scrollView];
+    /****************************************/
+    _l_appname          = [UIUtil makeLabel:[NSString stringWithFormat:@"%@    %@",[_addOnMgr getStrAppMode:_addOnMgr.appMode],VERSION ]];
+    [_l_appname setTextAlignment:NSTextAlignmentCenter];
+    [_scrollView addSubview:_l_appname];
+    /****************************************/
+    _tv_comment    = [[UITextView alloc]init];
+    _tv_comment.editable       = false;
+    _tv_comment.scrollEnabled  = false;
+    _tv_comment.text           = [NSString stringWithFormat:@""];
+    _tv_comment.text       = APP_COMMENT;
+    [_scrollView addSubview:_tv_comment];
+    /****************************************/
+    _l_multiYear        = [UIUtil makeLabel:@"複数年分析"];
+    [_l_multiYear setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_multiYear];
+    /*--------------------------------------*/
+    _sw_multiYear       = [[UISwitch alloc]init];
+    [_sw_multiYear addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_multiYear.tag   = STAG_MULTIYEAR;
+    [_scrollView addSubview:_sw_multiYear];
+    /****************************************/
+    _l_opeSetting       = [UIUtil makeLabel:@"運営設定"];
+    [_l_opeSetting setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_opeSetting];
+    /*--------------------------------------*/
+    _sw_opeSetting       = [[UISwitch alloc]init];
+    [_sw_opeSetting addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_opeSetting.tag   = STAG_OPESETTING;
+    [_scrollView addSubview:_sw_opeSetting];
+    /****************************************/
+    _l_database         = [UIUtil makeLabel:@"データベース"];
+    [_l_database setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_database];
+    /*--------------------------------------*/
+    _sw_database       = [[UISwitch alloc]init];
+    [_sw_database addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_database.tag   = STAG_DATABASE;
+    [_scrollView addSubview:_sw_database];
+    /****************************************/
+    _l_saleAnalysis     = [UIUtil makeLabel:@"売却分析"];
+    [_l_saleAnalysis setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_saleAnalysis];
+    /*--------------------------------------*/
+    _sw_saleAnalysis       = [[UISwitch alloc]init];
+    [_sw_saleAnalysis addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_saleAnalysis.tag   = STAG_SALE;
+    [_scrollView addSubview:_sw_saleAnalysis];
+    /****************************************/
+    _l_importExport     = [UIUtil makeLabel:@"インポート・エクスポート"];
+    [_l_importExport setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_importExport];
+    /*--------------------------------------*/
+    _sw_importExport       = [[UISwitch alloc]init];
+    [_sw_importExport addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_importExport.tag   = STAG_IMPORT;
+    [_scrollView addSubview:_sw_importExport];
+    /****************************************/
+#if 0
+    _l_pdfOut           = [UIUtil makeLabel:@"PDF出力"];
+    [_l_pdfOut setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_pdfOut];
+    /*--------------------------------------*/
+    _sw_pdfOut          = [[UISwitch alloc]init];
+    [_sw_pdfOut addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_pdfOut.tag   = STAG_PDFOUT;
+    [_scrollView addSubview:_sw_pdfOut];
+#endif
+    /****************************************/
+    _l_TitleTools          = [UIUtil makeLabel:@"ツール"];
+    [_l_appname setTextAlignment:NSTextAlignmentCenter];
+    [_scrollView addSubview:_l_TitleTools];
     /****************************************/
     _b_initial  = [UIUtil makeButton:@"初期化" tag:BTAG_INITIAL];
     [_b_initial addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_b_initial];
+    [_scrollView addSubview:_b_initial];
     /****************************************/
     _b_import  = [UIUtil makeButton:@"Import" tag:BTAG_IMPORT];
     [_b_import addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_b_import];
+    [_scrollView addSubview:_b_import];
     /****************************************/
     _b_export  = [UIUtil makeButton:@"Export" tag:BTAG_EXPORT];
     [_b_export addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_b_export];
+    [_scrollView addSubview:_b_export];
+#if 0
     /****************************************/
     _b_pdf      = [UIUtil makeButton:@"PDF" tag:BTAG_PDF];
     [_b_pdf addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_b_pdf];
+    [_scrollView addSubview:_b_pdf];
     /****************************************/
-#if 1
     _b_dropbox  = [UIUtil makeButton:@"Dropbox" tag:BTAG_DROPBOX];
     [_b_dropbox addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_b_dropbox];
+    [_scrollView addSubview:_b_dropbox];
 #endif
     /****************************************/
-    [self viewMake];
 
-#if 0
-    self.datastore = [[DBDatastoreManager sharedManager] openDefaultDatastore:nil];
-    DBTable *tasksTbl = [self.datastore getTable:@"tasks"];
-    DBRecord *firstTask = [tasksTbl insert:@{ @"taskname": @"Buy milk", @"completed": @NO }];
-    [self.datastore sync:nil];
-#endif
 }
 
+/****************************************************************
+ * ビューの表示直前に呼ばれる
+ ****************************************************************/
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self rewriteProperty];
+    [self viewMake];
+
+    ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+    if ( [viewMgr isReturnDataList ] == true ){
+        [self dismissViewControllerAnimated:YES completion:nil];
+        viewMgr.stage   = STAGE_DATALIST;
+    }
+
+    return;
+}
 /****************************************************************
  *
  ****************************************************************/
@@ -123,14 +236,54 @@
     length      = _pos.len10;
     length30    = _pos.len30;
     /****************************************/
-    pos_y = _pos.y_top -dy;
+    [_scrollView setFrame:_pos.frame];
+    /*--------------------------------------*/
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model isEqualToString:@"iPhone"] ){
+        if ( _pos.isPortrait == true ){
+//            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.6);
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*(1.6-0.5));
+        } else {
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*(2.9-1.0));
+        }
+        _scrollView.bounces = YES;
+    } else {
+    }
+    /****************************************/
+    pos_y   = 0.2*dy;
+    [UIUtil setRectLabel:_l_appname x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /****************************************/
     pos_y   = pos_y + dy;
+    _tv_comment.frame      = CGRectMake(pos_x,         pos_y, length30, dy*3);
+    /****************************************/
+    pos_y   = pos_y + 3*dy;
+    [UIUtil setLabel:_l_multiYear       x:pos_x y:pos_y length:length*2];
+    _sw_multiYear.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+    /****************************************/
     pos_y   = pos_y + dy;
+    [UIUtil setLabel:_l_opeSetting      x:pos_x y:pos_y length:length*2];
+    _sw_opeSetting.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+    /****************************************/
     pos_y   = pos_y + dy;
+    [UIUtil setLabel:_l_saleAnalysis    x:pos_x y:pos_y length:length*2];
+    _sw_saleAnalysis.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+    /****************************************/
     pos_y   = pos_y + dy;
-    [UIUtil setLabel:_l_version x:pos_x y:pos_y length:length30];
-
+    [UIUtil setLabel:_l_database        x:pos_x y:pos_y length:length*2];
+    _sw_database.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+    /****************************************/
+    pos_y   = pos_y + dy;
+    [UIUtil setLabel:_l_importExport    x:pos_x y:pos_y length:length*3];
+    _sw_importExport.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+    /****************************************/
+#if 0
+    pos_y   = pos_y + dy;
+    [UIUtil setLabel:_l_pdfOut          x:pos_x y:pos_y length:length*2];
+    _sw_pdfOut.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+#endif
+    /****************************************/
+    pos_y   = pos_y + dy;
+    [UIUtil setRectLabel:_l_TitleTools  x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setButton:_b_initial x:pos_x y:pos_y length:length];
@@ -146,13 +299,37 @@
 }
 
 /****************************************************************
- * ビューの表示直前に呼ばれる
+ * 回転していいかの判別
  ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+- (BOOL)shouldAutorotate
 {
-    [super viewDidAppear:animated];
+    return YES;
+}
+
+/****************************************************************
+ * 回転処理の許可
+ ****************************************************************/
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskAll;
+}
+
+/****************************************************************
+ * 回転時に処理したい内容
+ ****************************************************************/
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+    UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+        case UIDeviceOrientationPortraitUpsideDown:
+        case UIDeviceOrientationFaceUp:
+        case UIDeviceOrientationFaceDown:
+            break;
+        default:
+            break;
+    }
     [self viewMake];
-    return;
 }
 
 /****************************************************************
@@ -163,31 +340,45 @@
     if ( sender.tag == BTAG_INITIAL ){
         UIAlertView *_as_clear;
         _as_clear = [[UIAlertView alloc] init];
-        _as_clear.title = @"設定を初期化しますか？";
+        _as_clear.title = @"全データを初期化しますか？(購入情報は初期化しません)";
         _as_clear.delegate = self;
         [_as_clear addButtonWithTitle:@"実行する" ];
         [_as_clear addButtonWithTitle:@"やめる" ];
         [_as_clear show];
         [_modelDB showAllFiles];
     } else if ( sender.tag == BTAG_IMPORT){
-        _importVC       = [[ImportViewCtrl alloc]init];
-        _importNAC      = [[UINavigationController alloc]initWithRootViewController:_importVC];
-        [self presentViewController:_importNAC animated:YES completion:nil];
+        if ( _addOnMgr.importExport == true ){
+            _importVC       = [[ImportViewCtrl alloc]init];
+            _importNAC      = [[UINavigationController alloc]initWithRootViewController:_importVC];
+            [self presentViewController:_importNAC animated:YES completion:nil];
+        } else {
+            _importVC       = [[ImportExportHelpViewCtrl alloc]init];
+            [self.navigationController pushViewController:_importVC animated:YES];
+        }
 
     } else if ( sender.tag == BTAG_EXPORT){
-        _exportVC       = [[ExportViewCtrl alloc]init];
-        _exportNAC      = [[UINavigationController alloc]initWithRootViewController:_exportVC];
-        [self presentViewController:_exportNAC animated:YES completion:nil];
-        
+        if ( _addOnMgr.importExport == true ){
+            _exportVC       = [[ExportViewCtrl alloc]init];
+            _exportNAC      = [[UINavigationController alloc]initWithRootViewController:_exportVC];
+            [self presentViewController:_exportNAC animated:YES completion:nil];
+        } else {
+            _exportVC       = [[ImportExportHelpViewCtrl alloc]init];
+            [self.navigationController pushViewController:_exportVC animated:YES];
+        }
     } else if ( sender.tag == BTAG_PDF){
         _pdfVC       = [[PDFViewCtrl alloc]init];
         _pdfNAC      = [[UINavigationController alloc]initWithRootViewController:_pdfVC];
         [self presentViewController:_pdfNAC animated:YES completion:nil];
 
     } else if ( sender.tag == BTAG_DROPBOX){
-        _dropboxVC  = [[DropboxTableVC alloc]init];
-        _dropboxNAC        = [[UINavigationController alloc]initWithRootViewController:_dropboxVC];
-        [self presentViewController:_dropboxNAC animated:YES completion:nil];
+        if ( _addOnMgr.importExport == true ){
+            _dropboxVC  = [[DropboxTableVC alloc]init];
+            _dropboxNAC        = [[UINavigationController alloc]initWithRootViewController:_dropboxVC];
+            [self presentViewController:_dropboxNAC animated:YES completion:nil];
+        } else {
+            _dropboxVC       = [[ImportExportHelpViewCtrl alloc]init];
+            [self.navigationController pushViewController:_dropboxVC animated:YES];
+        }
     }
 }
 
@@ -196,9 +387,15 @@
  ****************************************************************/
 - (void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    switch (buttonIndex) {
+    ViewMgr *viewMgr = [ViewMgr sharedManager];
+    switch (buttonIndex){
         case 0:
             [_modelDB  deleteAllFiles];
+            viewMgr.reqViewInit = true;
+            if ( [viewMgr isReturnDataList ] == true ){
+                [self dismissViewControllerAnimated:YES completion:nil];
+                viewMgr.stage   = STAGE_DATALIST;
+            }
             break;
         case 1:
             break;
@@ -206,15 +403,84 @@
             break;
     }
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+/****************************************************************
+ *
+ ****************************************************************/
+- (void) switchChange:(UISwitch *)sw
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    switch (sw.tag) {
+        case STAG_MULTIYEAR:
+            sw.on = _addOnMgr.multiYear;
+            if ( _addOnMgr.multiYear == false ){
+                [self startAddonViewCtrl];
+            } else {
+                if ( _addOnMgr.appMode == APP_NETWORK ){
+                    [self startAddonViewCtrl];
+                }
+            }
+            break;
+        case STAG_OPESETTING:
+            sw.on =  _addOnMgr.opeSetting;
+            if ( _addOnMgr.opeSetting == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+        case STAG_SALE:
+            sw.on = _addOnMgr.saleAnalysys;
+            if ( _addOnMgr.saleAnalysys == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+        case STAG_DATABASE:
+            sw.on = _addOnMgr.database;
+            if ( _addOnMgr.database == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+        case STAG_IMPORT:
+            sw.on = _addOnMgr.importExport;
+            if ( _addOnMgr.importExport == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+        case STAG_PDFOUT:
+            sw.on = _addOnMgr.pdfOut;
+            if ( _addOnMgr.pdfOut == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+        default:
+            break;
+    }
+    
 }
-*/
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (void) startAddonViewCtrl
+{
+    _addonVC        = [[AddonViewCtrl alloc]init];
+    _addonNAC         = [[UINavigationController alloc]initWithRootViewController:_addonVC];
+    [self presentViewController:_addonNAC animated:YES completion:nil];
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+-(void)rewriteProperty
+{
+
+    _l_appname.text = [NSString stringWithFormat:@"%@    %@",[_addOnMgr getStrAppMode:_addOnMgr.appMode],VERSION ];
+    /*--------------------------------------*/
+    _sw_multiYear.on    = _addOnMgr.multiYear;
+    _sw_opeSetting.on   = _addOnMgr.opeSetting;
+    _sw_saleAnalysis.on = _addOnMgr.saleAnalysys;
+    _sw_database.on     = _addOnMgr.database;
+    _sw_importExport.on = _addOnMgr.importExport;
+    _sw_pdfOut.on       = _addOnMgr.pdfOut;
+    /*--------------------------------------*/
+}
 
 @end

@@ -14,4 +14,6 @@
 }
 @property   (nonatomic,readwrite)    UIViewController    *detailVC;
 
+- (void)selectCell:(NSIndexPath*)indexPath;
+
 @end

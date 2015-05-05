@@ -72,9 +72,8 @@ static ModelDB* sharedModelDB = nil;
             [self setDefaultData];
             [self saveData];
 #endif
-            _exportFilename = nil;
         }
-
+        _exportFilename = nil;
     }
     return self;
 }
@@ -84,11 +83,13 @@ static ModelDB* sharedModelDB = nil;
  ****************************************************************/
 - (void) loadIndex:(NSInteger)index
 {
-    NSDictionary   *record = [_list objectAtIndex:index];
-    NSString *name       = [record objectForKey:@"name"];
-    NSString *serial    = [record objectForKey:@"serial"];
-    ModelRE *modelRE = [ModelRE sharedManager];
-    [modelRE fileToVal:serial name:name];
+    if ( [_list count] != 0){
+        NSDictionary   *record = [_list objectAtIndex:index];
+        NSString *name       = [record objectForKey:@"name"];
+        NSString *serial    = [record objectForKey:@"serial"];
+        ModelRE *modelRE = [ModelRE sharedManager];
+        [modelRE fileToVal:serial name:name];
+    }
     return;
 }
 
@@ -390,7 +391,7 @@ static ModelDB* sharedModelDB = nil;
             NSLog(@"%@",str);
         }
 #endif
-} else {
+    } else {
         NSLog(@"%@", @"データが存在しません。");
     }
     return;
@@ -438,8 +439,7 @@ static ModelDB* sharedModelDB = nil;
 - (void) setDefaultData
 {
     _list = [NSMutableArray arrayWithObjects:
-             @{@"name":@"ビーカーサ新大橋",     @"serial" : @"1"},
-             @{@"name":@"カスターニャ鶴見",     @"serial" : @"2"},
+             @{@"name":@"名称未設定",     @"serial" : @"0"},
              nil];
     return;
 }

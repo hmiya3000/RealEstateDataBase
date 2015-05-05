@@ -7,6 +7,8 @@
 //
 
 #import "InputSettingViewCtrl.h"
+#import "AddonMgr.h"
+#import "ViewMgr.h"
 
 #import "InputEstateNameViewCtrl.h"
 #import "InputPriceViewCtrl.h"
@@ -44,6 +46,7 @@
     InputViewCtrl               *_inputVC;          /* 物件名入力VC */
     BOOL                        _openInputVC;
     NSIndexPath                 *_openIndexPath;
+    AddonMgr                    *_addonMgr;
 }
 @end
 
@@ -58,7 +61,9 @@
     self = [super initWithStyle:style];
     if (self) {
         self.title  = @"データ入力";
+        self.tabBarItem.image = [UIImage imageNamed:@"input-s.png"];
         _openInputVC    = false;
+        _addonMgr       = [AddonMgr sharedManager];
     }
     return self;
 }
@@ -162,12 +167,16 @@
 {
     [super viewDidLoad];
     
-    UIBarButtonItem *retButton =
-    [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
-                                     style:UIBarButtonItemStylePlain
-                                    target:self
-                                    action:@selector(retButtonTapped:)];
-    self.navigationItem.leftBarButtonItem = retButton;
+    if ( _addonMgr.database == true ){
+        UIBarButtonItem *retButton =
+        [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(retButtonTapped:)];
+        self.navigationItem.leftBarButtonItem = retButton;
+    } else {
+        self.navigationItem.leftBarButtonItem = nil;
+    }
     self.navigationItem.rightBarButtonItem = nil;
     
 }
@@ -195,6 +204,11 @@
 {
     [super viewWillAppear:animated];
     _openInputVC = false;
+    ViewMgr  *viewMgr   = [ViewMgr sharedManager];
+    if ( [viewMgr isReturnDataList ] == true ){
+        [self dismissViewControllerAnimated:YES completion:nil];
+        viewMgr.stage   = STAGE_DATALIST;
+    }
     
 }
 

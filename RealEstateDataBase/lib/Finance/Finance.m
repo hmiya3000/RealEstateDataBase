@@ -161,8 +161,8 @@
     CGFloat npv;
     npv = 0;
     for ( int i=0; i< [array count]; i++){
-        val =  [array objectAtIndex:i];
-        npv = (npv + [val floatValue]) / ( 1 + rate);
+        val =  [array objectAtIndex:([array count]-i-1)];
+        npv = (npv + [val floatValue]) / (1 + rate);
     }
     return npv;
 }
@@ -188,7 +188,13 @@
         }
         x_pre = x;
     }
-    return x-1;
+
+    CGFloat retVal = x-1;
+    if ( retVal > 0 ){
+        return retVal;
+    } else {
+        return 0;
+    }
 }
 /****************************************************************/
 + (CGFloat) newton:(NSArray*)a x:(CGFloat)x

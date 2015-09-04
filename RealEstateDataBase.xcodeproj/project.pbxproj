@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AA1A35FE1AD02065001C41AE /* ModelCF.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1A35FD1AD02065001C41AE /* ModelCF.m */; };
 		AA5F0F0E1AEF851D003280D8 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		AA7A40CB1B972EDE005AFDB2 /* InputImproveViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */; };
 		AA9D63611AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */; };
 		AA9D63621AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63591AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m */; };
 		AA9D63721AF26C700078A5DE /* DataBaseIPadViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63671AF26C700078A5DE /* DataBaseIPadViewCtrl.m */; };
@@ -33,7 +34,7 @@
 		AA9D63C11AF26D4F0078A5DE /* InputPriceSalesViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D639D1AF26D4F0078A5DE /* InputPriceSalesViewCtrl.m */; };
 		AA9D63C21AF26D4F0078A5DE /* InputPriceViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D639F1AF26D4F0078A5DE /* InputPriceViewCtrl.m */; };
 		AA9D63C31AF26D4F0078A5DE /* InputRoomsViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A11AF26D4F0078A5DE /* InputRoomsViewCtrl.m */; };
-		AA9D63C41AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A31AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.m */; };
+		AA9D63C41AF26D4F0078A5DE /* InputEquityViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A31AF26D4F0078A5DE /* InputEquityViewCtrl.m */; };
 		AA9D63C51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m */; };
 		AA9D63C61AF26D4F0078A5DE /* InputTransferExpViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A71AF26D4F0078A5DE /* InputTransferExpViewCtrl.m */; };
 		AA9D63C71AF26D4F0078A5DE /* InputItemViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63A91AF26D4F0078A5DE /* InputItemViewCtrl.m */; };
@@ -109,7 +110,6 @@
 		AAAC7CEB199F83CC00778EF5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAAC7CE9199F83CC00778EF5 /* InfoPlist.strings */; };
 		AAAC7CED199F83CC00778EF5 /* RealEstateDataBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7CEC199F83CC00778EF5 /* RealEstateDataBaseTests.m */; };
 		AAAC7D42199F94D900778EF5 /* DrawTool.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D21199F94D900778EF5 /* DrawTool.m */; };
-		AAAC7D43199F94D900778EF5 /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D23199F94D900778EF5 /* Graph.m */; };
 		AAAC7D44199F94D900778EF5 /* Finance.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D26199F94D900778EF5 /* Finance.m */; };
 		AAAC7D45199F94D900778EF5 /* Estate.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D29199F94D900778EF5 /* Estate.m */; };
 		AAAC7D46199F94D900778EF5 /* House.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D2B199F94D900778EF5 /* House.m */; };
@@ -131,7 +131,6 @@
 		AAAC7D6F19A072E300778EF5 /* InfoViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D6E19A072E300778EF5 /* InfoViewCtrl.m */; };
 		AAAC7D7219A0B27E00778EF5 /* ModelRE.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D7119A0B27E00778EF5 /* ModelRE.m */; };
 		AAAC7D7519A0B3B800778EF5 /* Investment.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7D7419A0B3B800778EF5 /* Investment.m */; };
-		AAB0003119DFEBA1006A8272 /* Sales.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB0003019DFEBA1006A8272 /* Sales.m */; };
 		AAB0005319E22F74006A8272 /* GridTable.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB0005219E22F74006A8272 /* GridTable.m */; };
 		AAB25A3F19C6DA1D006A31D1 /* CalcKey.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB25A3C19C6DA1D006A31D1 /* CalcKey.m */; };
 		AAB25A4019C6DA1D006A31D1 /* Calculator.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB25A3E19C6DA1D006A31D1 /* Calculator.m */; };
@@ -142,6 +141,11 @@
 		AACAB9E91A0603FC001067C7 /* PDFViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AACAB9E81A0603FC001067C7 /* PDFViewCtrl.m */; };
 		AACAB9EC1A075004001067C7 /* PDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = AACAB9EB1A075004001067C7 /* PDFView.m */; };
 		AACAB9EE1A0753D2001067C7 /* sample2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AACAB9ED1A0753D2001067C7 /* sample2.pdf */; };
+		AAE466981AFDC93E00D8DC93 /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466971AFDC93E00D8DC93 /* Graph.m */; };
+		AAE4669B1B0624D300D8DC93 /* SaleViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */; };
+		AAE4669E1B074B0C00D8DC93 /* OpeAll.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE4669D1B074B0C00D8DC93 /* OpeAll.m */; };
+		AAE466A11B0818D100D8DC93 /* Sale.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466A01B0818D100D8DC93 /* Sale.m */; };
+		AAE466A41B089BCF00D8DC93 /* ModelSale.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466A31B089BCF00D8DC93 /* ModelSale.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +162,8 @@
 		AA1A35FC1AD02065001C41AE /* ModelCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelCF.h; sourceTree = "<group>"; };
 		AA1A35FD1AD02065001C41AE /* ModelCF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelCF.m; sourceTree = "<group>"; };
 		AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
+		AA7A40C91B972EDE005AFDB2 /* InputImproveViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputImproveViewCtrl.h; sourceTree = "<group>"; };
+		AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputImproveViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63561AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataBaseIPhoneViewCtrl.h; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.h; sourceTree = "<group>"; };
 		AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataBaseIPhoneViewCtrl.m; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63581AF26BFD0078A5DE /* ItemIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemIPhoneViewCtrl.h; path = ViewCtrl/iPhone/ItemIPhoneViewCtrl.h; sourceTree = "<group>"; };
@@ -206,8 +212,8 @@
 		AA9D639F1AF26D4F0078A5DE /* InputPriceViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputPriceViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63A01AF26D4F0078A5DE /* InputRoomsViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputRoomsViewCtrl.h; sourceTree = "<group>"; };
 		AA9D63A11AF26D4F0078A5DE /* InputRoomsViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputRoomsViewCtrl.m; sourceTree = "<group>"; };
-		AA9D63A21AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputSelfFinaceViewCtrl.h; sourceTree = "<group>"; };
-		AA9D63A31AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputSelfFinaceViewCtrl.m; sourceTree = "<group>"; };
+		AA9D63A21AF26D4F0078A5DE /* InputEquityViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputEquityViewCtrl.h; sourceTree = "<group>"; };
+		AA9D63A31AF26D4F0078A5DE /* InputEquityViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputEquityViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63A41AF26D4F0078A5DE /* InputTaxRateViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputTaxRateViewCtrl.h; sourceTree = "<group>"; };
 		AA9D63A51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputTaxRateViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63A61AF26D4F0078A5DE /* InputTransferExpViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputTransferExpViewCtrl.h; sourceTree = "<group>"; };
@@ -316,7 +322,6 @@
 		AAAC7D20199F94D900778EF5 /* DrawTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawTool.h; sourceTree = "<group>"; };
 		AAAC7D21199F94D900778EF5 /* DrawTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawTool.m; sourceTree = "<group>"; };
 		AAAC7D22199F94D900778EF5 /* Graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graph.h; sourceTree = "<group>"; };
-		AAAC7D23199F94D900778EF5 /* Graph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
 		AAAC7D25199F94D900778EF5 /* Finance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Finance.h; sourceTree = "<group>"; };
 		AAAC7D26199F94D900778EF5 /* Finance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Finance.m; sourceTree = "<group>"; };
 		AAAC7D28199F94D900778EF5 /* Estate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Estate.h; sourceTree = "<group>"; };
@@ -358,8 +363,6 @@
 		AAAC7D7119A0B27E00778EF5 /* ModelRE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelRE.m; sourceTree = "<group>"; };
 		AAAC7D7319A0B3B800778EF5 /* Investment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Investment.h; sourceTree = "<group>"; };
 		AAAC7D7419A0B3B800778EF5 /* Investment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Investment.m; sourceTree = "<group>"; };
-		AAB0002F19DFEBA1006A8272 /* Sales.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sales.h; sourceTree = "<group>"; };
-		AAB0003019DFEBA1006A8272 /* Sales.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sales.m; sourceTree = "<group>"; };
 		AAB0005119E22F74006A8272 /* GridTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GridTable.h; sourceTree = "<group>"; };
 		AAB0005219E22F74006A8272 /* GridTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GridTable.m; sourceTree = "<group>"; };
 		AAB25A3B19C6DA1D006A31D1 /* CalcKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalcKey.h; sourceTree = "<group>"; };
@@ -378,6 +381,15 @@
 		AACAB9EA1A075004001067C7 /* PDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFView.h; sourceTree = "<group>"; };
 		AACAB9EB1A075004001067C7 /* PDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFView.m; sourceTree = "<group>"; };
 		AACAB9ED1A0753D2001067C7 /* sample2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = sample2.pdf; sourceTree = "<group>"; };
+		AAE466971AFDC93E00D8DC93 /* Graph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
+		AAE466991B0624D200D8DC93 /* SaleViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaleViewCtrl.h; sourceTree = "<group>"; };
+		AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaleViewCtrl.m; sourceTree = "<group>"; };
+		AAE4669C1B074B0C00D8DC93 /* OpeAll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpeAll.h; sourceTree = "<group>"; };
+		AAE4669D1B074B0C00D8DC93 /* OpeAll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpeAll.m; sourceTree = "<group>"; };
+		AAE4669F1B0818D100D8DC93 /* Sale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sale.h; sourceTree = "<group>"; };
+		AAE466A01B0818D100D8DC93 /* Sale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sale.m; sourceTree = "<group>"; };
+		AAE466A21B089BCF00D8DC93 /* ModelSale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelSale.h; sourceTree = "<group>"; };
+		AAE466A31B089BCF00D8DC93 /* ModelSale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelSale.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -508,12 +520,14 @@
 				AA9D639F1AF26D4F0078A5DE /* InputPriceViewCtrl.m */,
 				AA9D63A01AF26D4F0078A5DE /* InputRoomsViewCtrl.h */,
 				AA9D63A11AF26D4F0078A5DE /* InputRoomsViewCtrl.m */,
-				AA9D63A21AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.h */,
-				AA9D63A31AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.m */,
+				AA9D63A21AF26D4F0078A5DE /* InputEquityViewCtrl.h */,
+				AA9D63A31AF26D4F0078A5DE /* InputEquityViewCtrl.m */,
 				AA9D63A41AF26D4F0078A5DE /* InputTaxRateViewCtrl.h */,
 				AA9D63A51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m */,
 				AA9D63A61AF26D4F0078A5DE /* InputTransferExpViewCtrl.h */,
 				AA9D63A71AF26D4F0078A5DE /* InputTransferExpViewCtrl.m */,
+				AA7A40C91B972EDE005AFDB2 /* InputImproveViewCtrl.h */,
+				AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -521,10 +535,12 @@
 		AA9D63E01AF4459C0078A5DE /* IPhoneIPad */ = {
 			isa = PBXGroup;
 			children = (
-				AA9D63E11AF4459C0078A5DE /* GraphViewCtrl.h */,
-				AA9D63E21AF4459C0078A5DE /* GraphViewCtrl.m */,
 				AA9D63E31AF4459C0078A5DE /* SummaryViewCtrl.h */,
 				AA9D63E41AF4459C0078A5DE /* SummaryViewCtrl.m */,
+				AA9D63E11AF4459C0078A5DE /* GraphViewCtrl.h */,
+				AA9D63E21AF4459C0078A5DE /* GraphViewCtrl.m */,
+				AAE466991B0624D200D8DC93 /* SaleViewCtrl.h */,
+				AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */,
 				AA9D63E51AF4459C0078A5DE /* TotalAnalysisViewCtrl.h */,
 				AA9D63E61AF4459C0078A5DE /* TotalAnalysisViewCtrl.m */,
 			);
@@ -709,7 +725,7 @@
 				AAAC7D20199F94D900778EF5 /* DrawTool.h */,
 				AAAC7D21199F94D900778EF5 /* DrawTool.m */,
 				AAAC7D22199F94D900778EF5 /* Graph.h */,
-				AAAC7D23199F94D900778EF5 /* Graph.m */,
+				AAE466971AFDC93E00D8DC93 /* Graph.m */,
 				AA9D63DD1AF26E5D0078A5DE /* GraphData.h */,
 				AA9D63DE1AF26E5D0078A5DE /* GraphData.m */,
 				AAB0005119E22F74006A8272 /* GridTable.h */,
@@ -746,10 +762,12 @@
 				AAAC7D33199F94D900778EF5 /* Prices.m */,
 				AAC2BC2819D15F10002E9E7F /* Expense.h */,
 				AAC2BC2919D15F10002E9E7F /* Expense.m */,
-				AAB0002F19DFEBA1006A8272 /* Sales.h */,
-				AAB0003019DFEBA1006A8272 /* Sales.m */,
+				AAE4669F1B0818D100D8DC93 /* Sale.h */,
+				AAE466A01B0818D100D8DC93 /* Sale.m */,
 				AAA556BF19E2D96E00ADFFF4 /* Operation.h */,
 				AAA556C019E2D96E00ADFFF4 /* Operation.m */,
+				AAE4669C1B074B0C00D8DC93 /* OpeAll.h */,
+				AAE4669D1B074B0C00D8DC93 /* OpeAll.m */,
 			);
 			path = Obj;
 			sourceTree = "<group>";
@@ -795,6 +813,8 @@
 				AAC2BC2619D11C51002E9E7F /* ModelExpense.m */,
 				AA1A35FC1AD02065001C41AE /* ModelCF.h */,
 				AA1A35FD1AD02065001C41AE /* ModelCF.m */,
+				AAE466A21B089BCF00D8DC93 /* ModelSale.h */,
+				AAE466A31B089BCF00D8DC93 /* ModelSale.m */,
 				AA9D642F1AF4CC0A0078A5DE /* AddonMgr.h */,
 				AA9D64301AF4CC0A0078A5DE /* AddonMgr.m */,
 				AA9D64681AF7A9060078A5DE /* ViewMgr.h */,
@@ -971,6 +991,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAE466A41B089BCF00D8DC93 /* ModelSale.m in Sources */,
 				AAB25A3F19C6DA1D006A31D1 /* CalcKey.m in Sources */,
 				AAAC7D4C199F94D900778EF5 /* SVSegmentedThumb.m in Sources */,
 				AA9D63721AF26C700078A5DE /* DataBaseIPadViewCtrl.m in Sources */,
@@ -980,19 +1001,19 @@
 				AA9D63C91AF26D4F0078A5DE /* InputViewCtrl.m in Sources */,
 				AAAC7D67199F96A700778EF5 /* DataBaseTableViewCtrl.m in Sources */,
 				AA9D63B91AF26D4F0078A5DE /* InputHousePriceViewCtrl.m in Sources */,
-				AA9D63C41AF26D4F0078A5DE /* InputSelfFinaceViewCtrl.m in Sources */,
+				AA9D63C41AF26D4F0078A5DE /* InputEquityViewCtrl.m in Sources */,
 				AACAB9EC1A075004001067C7 /* PDFView.m in Sources */,
 				AA9D63BD1AF26D4F0078A5DE /* InputLandPriceViewCtrl.m in Sources */,
 				AAAC7D47199F94D900778EF5 /* Item.m in Sources */,
 				AAAC7D4D199F94D900778EF5 /* Pos.m in Sources */,
 				AA9D63C21AF26D4F0078A5DE /* InputPriceViewCtrl.m in Sources */,
+				AAE4669B1B0624D300D8DC93 /* SaleViewCtrl.m in Sources */,
 				AA9D63E71AF4459C0078A5DE /* GraphViewCtrl.m in Sources */,
 				AA9D64191AF4481A0078A5DE /* DropboxEditorViewCtrl.m in Sources */,
 				AA9D63CA1AF26D4F0078A5DE /* ItemSettingViewCtrl.m in Sources */,
 				AA9D63D01AF26D9D0078A5DE /* ImportViewCtrl.m in Sources */,
 				AAA556C119E2D96E00ADFFF4 /* Operation.m in Sources */,
 				AA9D63C51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m in Sources */,
-				AAAC7D43199F94D900778EF5 /* Graph.m in Sources */,
 				AA9D63C61AF26D4F0078A5DE /* InputTransferExpViewCtrl.m in Sources */,
 				AAAC7D55199F94F500778EF5 /* AppDelegate.m in Sources */,
 				AA9D63B41AF26D4F0078A5DE /* InputEstateNameViewCtrl.m in Sources */,
@@ -1002,6 +1023,7 @@
 				AA9D641B1AF4481A0078A5DE /* EstateViewCtrl.m in Sources */,
 				AA9D646A1AF7A9060078A5DE /* ViewMgr.m in Sources */,
 				AA9D641D1AF4481A0078A5DE /* NpvIrrViewCtrl.m in Sources */,
+				AA7A40CB1B972EDE005AFDB2 /* InputImproveViewCtrl.m in Sources */,
 				AA9D63B61AF26D4F0078A5DE /* InputExpenseViewCtrl.m in Sources */,
 				AAAC7D45199F94D900778EF5 /* Estate.m in Sources */,
 				AAB27ED119CC6C3B000C471A /* UICalc.m in Sources */,
@@ -1036,9 +1058,11 @@
 				AAA5577119EBE99D00ADFFF4 /* MBProgressHUD.m in Sources */,
 				AA9D63DF1AF26E5D0078A5DE /* GraphData.m in Sources */,
 				AA9D63B31AF26D4F0078A5DE /* InputConstructViewCtrl.m in Sources */,
+				AAE466A11B0818D100D8DC93 /* Sale.m in Sources */,
 				AAAC7D44199F94D900778EF5 /* Finance.m in Sources */,
 				AA9D63C81AF26D4F0078A5DE /* InputSettingViewCtrl.m in Sources */,
 				AA9D63BF1AF26D4F0078A5DE /* InputLoanSettingViewCtrl.m in Sources */,
+				AAE4669E1B074B0C00D8DC93 /* OpeAll.m in Sources */,
 				AA9D63B01AF26D4F0078A5DE /* InputAddressViewCtrl.m in Sources */,
 				AA9D64311AF4CC0A0078A5DE /* AddonMgr.m in Sources */,
 				AAAC7CD0199F83CB00778EF5 /* main.m in Sources */,
@@ -1056,9 +1080,9 @@
 				AA9D63C01AF26D4F0078A5DE /* InputOperationViewCtrl.m in Sources */,
 				AA9D63C31AF26D4F0078A5DE /* InputRoomsViewCtrl.m in Sources */,
 				AA9D64221AF4AAC70078A5DE /* AddonViewCtrl.m in Sources */,
+				AAE466981AFDC93E00D8DC93 /* Graph.m in Sources */,
 				AAC2BC2719D11C51002E9E7F /* ModelExpense.m in Sources */,
 				AA9D642B1AF4C8050078A5DE /* PrimeIPhoneViewCtrl.m in Sources */,
-				AAB0003119DFEBA1006A8272 /* Sales.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1197,14 +1221,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBase/RealEstateDataBase-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b934273c-3dbb-41e3-9513-26cd468774bb";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

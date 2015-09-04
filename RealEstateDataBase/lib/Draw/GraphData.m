@@ -56,7 +56,7 @@
         if ( xmax < tmpPoint.x ){
             xmax = tmpPoint.x;
         }
-        if ( ymax > tmpPoint.y ){
+        if ( ymax < tmpPoint.y ){
             ymax = tmpPoint.y;
         }
     }

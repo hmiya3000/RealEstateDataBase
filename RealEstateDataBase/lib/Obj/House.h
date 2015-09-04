@@ -22,22 +22,30 @@
         CONST_MAX       = 6,
     };
 
-    NSString        *_name;
-    int             _construct;
-    NSInteger       _rooms;
-    NSInteger       _buildYear;
-    NSInteger       _valutation;
+    NSString                *_name;             //建物名
+    int                     _construct;         //建物構造
+    NSInteger               _rooms;             //部屋数
+    NSInteger               _buildYear;         //建築年
+    NSInteger               _yearAquisition;    //取得年
+    NSInteger               _improvementCosts;  //改良費
+    NSInteger               _valutation;        //評価額
+    
+    
 }
 /****************************************************************/
 + (NSString*) constructStr:(NSInteger)constructNo;
-+ (NSInteger) amortizationPeriod:(NSInteger)constructNo;
-- (NSInteger) getAmortizationCosts_aquYear:(NSInteger)aquYear term:(NSInteger)term;
++ (NSInteger) usefulLife:(NSInteger)constructNo;
+- (NSInteger) getAmortizationCosts_term:(NSInteger)term;
+- (NSInteger) getAmortizationCostsSum_period:(NSInteger)period;
 /****************************************************************/
-@property   (nonatomic) NSString        *name;
-@property   (nonatomic) int             construct;
-@property   (nonatomic) NSInteger       rooms;
-@property   (nonatomic) NSInteger       buildYear;
-@property   (nonatomic,readonly)    NSInteger   valuation;
+@property   (nonatomic)             NSString        *name;
+@property   (nonatomic)             int             construct;
+@property   (nonatomic)             NSInteger       rooms;
+@property   (nonatomic)             NSInteger       buildYear;
+@property   (nonatomic,readwrite)   NSInteger       yearAquisition;
+@property   (nonatomic,readwrite)   NSInteger       improvementCosts;
+@property   (nonatomic,readonly)    NSInteger       valuation;
+
 /****************************************************************
  国税庁HP
  https://www.keisan.nta.go.jp/survey/publish/34255/faq/34311/faq_34354.php

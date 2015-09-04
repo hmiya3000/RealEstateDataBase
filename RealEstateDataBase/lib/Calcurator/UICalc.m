@@ -23,7 +23,7 @@
     CalcKey         *_k_8;
     CalcKey         *_k_9;
     CalcKey         *_k_0;
-    CalcKey         *_k_0000;
+    CalcKey         *_k_000;
     CalcKey         *_k_com;
     
     CalcKey         *_k_add;
@@ -58,7 +58,7 @@
 #define TAG_9       9
 #define TAG_0       10
 #define TAG_COM     11
-#define TAG_0000    12
+#define TAG_000     12
 
 #define TAG_ADD     21
 #define TAG_SUB     22
@@ -106,7 +106,7 @@
     _k_7    = [self makeKey:@"7" tag:TAG_7];
     _k_8    = [self makeKey:@"8" tag:TAG_8];
     _k_9    = [self makeKey:@"9" tag:TAG_9];
-    _k_0000 = [self makeKey:@"0000" tag:TAG_0000];
+    _k_000 = [self makeKey:@"000" tag:TAG_000];
     
     _k_add  = [self makeKey:@"+" tag:TAG_ADD];
     _k_sub  = [self makeKey:@"-" tag:TAG_SUB];
@@ -128,7 +128,7 @@
     [view addSubview:_k_7];
     [view addSubview:_k_8];
     [view addSubview:_k_9];
-    [view addSubview:_k_0000];
+    [view addSubview:_k_000];
     
     [view addSubview:_k_add];
     [view addSubview:_k_sub];
@@ -178,7 +178,7 @@
     [self setKey:_k_add rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*3,    y_ini+h_mag+(h_1+h_mag)*3, w_1, h_1)];
     
     [self setKey:_k_0   rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*0,    y_ini+h_mag+(h_1+h_mag)*4, w_1, h_1)];
-    [self setKey:_k_0000 rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*1,   y_ini+h_mag+(h_1+h_mag)*4, w_1, h_1)];
+    [self setKey:_k_000 rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*1,    y_ini+h_mag+(h_1+h_mag)*4, w_1, h_1)];
     [self setKey:_k_com rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*2,    y_ini+h_mag+(h_1+h_mag)*4, w_1, h_1)];
     [self setKey:_k_ent rect:CGRectMake(x_ini+w_mag+(w_1+w_mag)*3,    y_ini+h_mag+(h_1+h_mag)*4, w_1, h_1)];
 }
@@ -243,8 +243,8 @@
         [_k_8 keyDown];
     }else if ( sender.tag == TAG_9){
         [_k_9 keyDown];
-    }else if ( sender.tag == TAG_0000){
-        [_k_0000 keyDown];
+    }else if ( sender.tag == TAG_000){
+        [_k_000 keyDown];
     }else if ( sender.tag == TAG_COM){
         [_k_com keyDown];
     }else if ( sender.tag == TAG_ADD){
@@ -305,9 +305,9 @@
     } else if ( sender.tag == TAG_9){
         [self keyInValue:_k_9];
         [_calc inputValue:@"9"];
-    } else if ( sender.tag == TAG_0000){
-        [self keyInValue:_k_0000];
-        [_calc inputValue:@"0000"];
+    } else if ( sender.tag == TAG_000){
+        [self keyInValue:_k_000];
+        [_calc inputValue:@"000"];
     }else if ( sender.tag == TAG_1X){
         [self keyInValue:_k_1x];
         [_calc inputInv];

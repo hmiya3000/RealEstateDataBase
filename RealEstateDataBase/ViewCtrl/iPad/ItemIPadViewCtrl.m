@@ -10,6 +10,7 @@
 #import "InputSettingViewCtrl.h"
 #import "SummaryViewCtrl.h"
 #import "GraphViewCtrl.h"
+#import "SaleViewCtrl.h"
 #import "TotalAnalysisViewCtrl.h"
 #import "InfoViewCtrl.h"
 
@@ -28,6 +29,8 @@
     UINavigationController      *_summaryNAC;
     GraphViewCtrl               *_graphVC;
     UINavigationController      *_graphNAC;
+    SaleViewCtrl                *_saleVC;
+    UINavigationController      *_saleNAC;
     TotalAnalysisViewCtrl       *_totalVC;
     UINavigationController      *_totalNAC;
     InfoViewCtrl                *_infoVC;
@@ -57,6 +60,8 @@
         _summaryNAC         = [[UINavigationController alloc]initWithRootViewController:_summaryVC];
         _graphVC            = [[GraphViewCtrl alloc]init];
         _graphNAC           = [[UINavigationController alloc]initWithRootViewController:_graphVC];
+        _saleVC             = [[SaleViewCtrl alloc] init];
+        _saleNAC            = [[UINavigationController alloc]initWithRootViewController:_saleVC];
         _totalVC            = [[TotalAnalysisViewCtrl alloc] init];
         _totalNAC           = [[UINavigationController alloc]initWithRootViewController:_totalVC];
         _infoVC             = [[InfoViewCtrl alloc]init];
@@ -67,17 +72,17 @@
         _addonMgr = [AddonMgr sharedManager];
         NSArray *views;
         if ( _addonMgr.database == true ){
-            views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_totalNAC,nil];
+            views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_saleNAC,_totalNAC,nil];
         } else {
             if ( _addonMgr.multiYear == true ){
                 if ( _addonMgr.saleAnalysys == true ){
-                    views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_totalNAC,_infoNAC,nil];
+                    views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_saleNAC,_totalNAC,_infoNAC,nil];
                 } else {
                     views = [NSArray arrayWithObjects:_summaryNAC,_graphNAC,_infoNAC,nil];
                 }
             } else {
                 if ( _addonMgr.saleAnalysys == true ){
-                    views = [NSArray arrayWithObjects:_summaryNAC,_totalNAC,_infoNAC,nil];
+                    views = [NSArray arrayWithObjects:_summaryNAC,_saleNAC,_totalNAC,_infoNAC,nil];
                 } else {
                     views = [NSArray arrayWithObjects:_summaryNAC,_infoNAC,nil];
                 }
@@ -92,6 +97,7 @@
         _inputSettingVC.detailVC    = _summaryVC;
         _summaryVC.masterVC         = _inputSettingVC;
         _graphVC.masterVC           = _inputSettingVC;
+        _saleVC.masterVC            = _inputSettingVC;
         _totalVC.masterVC           = _inputSettingVC;
         _infoVC.masterVC            = _inputSettingVC;
         
@@ -100,6 +106,7 @@
         [_inputSettingVC.view   setFrame:_pos.masterFrame];
         [_summaryVC.view        setFrame:_pos.detailFrame];
         [_graphVC.view          setFrame:_pos.detailFrame];
+        [_saleVC.view           setFrame:_pos.detailFrame];
         [_totalVC.view          setFrame:_pos.detailFrame];
 
         ViewMgr  *viewMgr   = [ViewMgr sharedManager];

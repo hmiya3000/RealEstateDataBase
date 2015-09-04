@@ -87,6 +87,7 @@
 //        _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 //        _tbc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         _tbc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+//        [self.view.window.rootViewController presentViewController:_tbc animated:YES completion:nil];
         [self presentViewController:_tbc animated:YES completion:nil];
         _viewMgr.stage   = STAGE_ANALYSIS;
 
@@ -159,7 +160,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
     if ( _db.list.count == 0 ){
         [self inputItem];
@@ -168,14 +169,14 @@
         [self.tableView selectRowAtIndexPath:_selIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
     _viewMgr.stage       = STAGE_DATALIST;
-
+    
     
     // そのまま表示するか、STAGE_ANALYSISに遷移するか
     AddonMgr *addonMgr = [AddonMgr sharedManager];
     if ( addonMgr.database == false ){
         // 物件の選択
         [self selectCell:0];
-
+        
         // その後の追加処理
         NSString *model = [UIDevice currentDevice].model;
         if ( [model hasPrefix:@"iPhone"] ){
@@ -189,6 +190,13 @@
             _viewMgr.stage       = STAGE_ANALYSIS;
         }
     }
+}
+/****************************************************************
+ * ビューの表示直後に呼ばれる
+ ****************************************************************/
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     return;
 }
 #pragma mark - Table view data source
@@ -340,6 +348,7 @@
     [_tbc setViewControllers:views animated:YES];
     
     _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//    [self.view.window.rootViewController presentViewController:_tbc animated:YES completion:nil];
     [self presentViewController:_tbc animated:YES completion:nil];
 
 }

@@ -128,7 +128,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
     [self viewMake];
     
@@ -423,6 +423,7 @@
     
     return;
 }
+
 /****************************************************************
  *
  ****************************************************************/

@@ -10,6 +10,6 @@
 #import "InputViewCtrl.h"
 #import "UICalc.h"
 
-@interface InputSelfFinaceViewCtrl : InputViewCtrl<UICalcDelegate>
+@interface InputEquityViewCtrl : InputViewCtrl<UICalcDelegate>
 
 @end

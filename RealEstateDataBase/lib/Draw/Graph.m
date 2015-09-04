@@ -133,6 +133,62 @@
 }
 
 /****************************************************************
+ * XY座標系に点を描画する
+ ****************************************************************/
+-(void)pointPlot_p:(CGPoint)p
+{
+    CGPoint p_tmp   = [self xy2GArea:p];
+    
+    CGFloat x;
+    CGFloat y;
+    CGFloat w;
+    CGFloat h;
+    
+    w = h = 5;
+    x = p_tmp.x - w/2;
+    y = p_tmp.y - h/2;
+    
+    [self fillCircle_x:x y:y w:w h:h];
+    return;
+}
+
+/****************************************************************
+ * XY座標系の中心pと半径rを指定して円を描画する
+ ****************************************************************/
+-(void)fillCircle_p:(CGPoint)p r:(CGFloat)r
+{
+    //XY座標系でのp00=(x0,y0)とp11=(x1,y1)を算出
+    CGPoint p00_org = CGPointMake(p.x - r, p.y - r );
+    CGPoint p11_org = CGPointMake(p.x + r, p.y + r );
+    
+    //座標変換
+    CGPoint p00_tmp = [self xy2GArea:p00_org];
+    CGPoint p11_tmp = [self xy2GArea:p11_org];
+    
+    CGFloat x;
+    CGFloat y;
+    CGFloat w;
+    CGFloat h;
+
+    w = p11_tmp.x - p00_tmp.x;
+    h = p00_tmp.y - p11_tmp.y;
+    //小さくなりすぎたら円にならないので大きい方に補正
+    if ( w > h ){
+        //横長を縦に補正
+        h = w;
+        x = p00_tmp.x;
+        y = (p11_tmp.y + p00_tmp.y)/2 - h/2;
+    
+    } else {
+        //縦長を横に補正
+        w = h;
+        x = (p11_tmp.x + p00_tmp.x)/2 - w/2;
+        y = p00_tmp.y;
+    }
+    [self fillCircle_x:x y:y w:w h:h];
+    return;
+}
+/****************************************************************
  * XY座標系の位置をグラフ座標系の位置に変換
  ****************************************************************/
 -(CGPoint)xy2GArea:(CGPoint)point
@@ -252,6 +308,7 @@
     }
     return;
 }
+#if 0
 /****************************************************************
  *
  ****************************************************************/
@@ -285,7 +342,7 @@
     }
     return;
 }
-
+#endif
 /****************************************************************
  *
  ****************************************************************/
@@ -338,7 +395,6 @@
     /* グラフデータの描画 */
     [self paintGraph];
     
-    
     /*--------------------------------------*/
     /* X軸目盛り */
     NSString *str;
@@ -383,7 +439,6 @@
     /* 凡例 */
     [self drawPrecedent:_ValidArea];
 //    [self drawPrecedent2:_GraphArea];
-    
     return;
 }
 /****************************************************************
@@ -402,13 +457,16 @@
             NSArray *graphData = tmpGD.data;
             if ( prop == (NSNumber*)LINE_GRAPH ){
                 [self lineGraph:graphData no:i];
-            } else {
+            } else if ( prop == (NSNumber*)BAR_GPAPH ){
                 [self barGraph:graphData no:i];
+            } else {
+                [self pointGraph:graphData no:i];
             }
         }
     }
     return;
 }
+
 /****************************************************************
  * 折れ線グラフ
  ****************************************************************/
@@ -480,6 +538,23 @@
     return p11;
 }
 
+/****************************************************************
+ * 散布グラフ
+ ****************************************************************/
+-(void)pointGraph:(NSArray*)graphData no:(NSInteger)i
+{
+    NSValue *tmp = [[NSValue alloc]init];
+    if ( [graphData count] > 0 ){
+        [self setColor_index:i];
+        CGPoint tgtPoint;
+        for(int j=0; j< [graphData count];j++){
+            tmp = [graphData objectAtIndex:j];
+            tgtPoint = [tmp CGPointValue];
+            [self pointPlot_p:tgtPoint];
+        }
+    }
+    return;
+}
 
 
 @end

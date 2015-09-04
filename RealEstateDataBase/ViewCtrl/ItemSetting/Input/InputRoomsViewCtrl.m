@@ -100,7 +100,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
@@ -192,19 +192,24 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.house.rooms = _value;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    if (sender.tag == 1){
-        
-    } else {
-        _modelRE.estate.house.rooms = _value;
-        [_modelRE valToFile];
-
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
     return;
 }
 /****************************************************************

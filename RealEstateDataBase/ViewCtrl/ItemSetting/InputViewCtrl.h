@@ -18,7 +18,7 @@
     
     UIScrollView        *_scrollView;
     UIViewController    *_masterVC;
-    
+    bool                _b_cancel;
 }
 /****************************************************************/
 - (void)clickButton:(UIButton*)sender;

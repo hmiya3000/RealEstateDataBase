@@ -33,7 +33,7 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_aquYear        = [UIUtil makeLabel:[self getYearStr:_modelRE.yearAquisition]];
+    _l_aquYear        = [UIUtil makeLabel:[self getYearStr:_modelRE.estate.house.yearAquisition]];
     [_scrollView addSubview:_l_aquYear];
     /****************************************/
     _tv_tips                = [[UITextView alloc]init];
@@ -48,7 +48,7 @@
     [_pv setDelegate:self];
     [_pv setDataSource:self];
     [_pv setShowsSelectionIndicator:YES];
-    _selectIdx = _thisYear - _modelRE.yearAquisition +10;
+    _selectIdx = _thisYear - _modelRE.estate.house.yearAquisition +10;
     [_pv selectRow:_selectIdx inComponent:0 animated:NO];
     [_scrollView addSubview:_pv];
     
@@ -64,7 +64,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -118,15 +118,25 @@
     [self viewMake];
     return;
 }
+
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.house.yearAquisition = _thisYear - _selectIdx +10;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
 /****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.yearAquisition = _thisYear - _selectIdx +10;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     
     return;

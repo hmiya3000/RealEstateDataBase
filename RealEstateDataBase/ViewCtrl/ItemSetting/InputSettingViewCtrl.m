@@ -15,7 +15,7 @@
 #import "InputInterestViewCtrl.h"
 
 #import "InputExpenseViewCtrl.h"
-#import "InputSelfFinaceViewCtrl.h"
+#import "InputEquityViewCtrl.h"
 
 #import "InputLoanBorrowViewCtrl.h"
 #import "InputLoanSettingViewCtrl.h"
@@ -38,14 +38,14 @@
 #import "InputHoldingPeriodViewCtrl.h"
 #import "InputPriceSalesViewCtrl.h"
 #import "InputTransferExpViewCtrl.h"
-
+#import "InputImproveViewCtrl.h"
 
 
 @interface InputSettingViewCtrl ()
 {
     InputViewCtrl               *_inputVC;          /* 物件名入力VC */
-    BOOL                        _openInputVC;
     NSIndexPath                 *_openIndexPath;
+    ViewMgr                     *_viewMgr;
     AddonMgr                    *_addonMgr;
 }
 @end
@@ -66,7 +66,7 @@
         self.tabBarItem.image = [UIImage imageNamed:@"input-s.png"];
         _detailVC       = nil;
         _detailTab      = nil;
-        _openInputVC    = false;
+        _viewMgr        = [ViewMgr sharedManager];
         _addonMgr       = [AddonMgr sharedManager];
     }
     return self;
@@ -89,7 +89,7 @@
     } else if ( [key isEqualToString:@"諸費用"]){
         _inputVC = [[InputExpenseViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"自己資金"]){
-        _inputVC = [[InputSelfFinaceViewCtrl alloc]init];
+        _inputVC = [[InputEquityViewCtrl alloc]init];
         /****************************************/
     } else if ( [key isEqualToString:@"借入金"]){
         _inputVC = [[InputLoanBorrowViewCtrl alloc]init];
@@ -134,7 +134,7 @@
     } else if ( [key isEqualToString:@"売却価格"]){
         _inputVC = [[InputPriceSalesViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"改良費"]){
-        _inputVC = nil;
+        _inputVC = [[InputImproveViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"譲渡費用"]){
         _inputVC = [[InputTransferExpViewCtrl alloc]init];
         /****************************************/
@@ -150,7 +150,7 @@
         } else if ([model hasPrefix:@"iPad"] ){
             UINavigationController  *tmpNAC;
             tmpNAC   = (UINavigationController*)self.detailTab.selectedViewController;
-            if ( _openInputVC == false ){
+            if ( [_viewMgr isOpenInputView] == false ){
                 // 項目入力ビューを開いてないので普通に開く
                 [tmpNAC pushViewController:_inputVC animated:YES];
             } else {
@@ -158,9 +158,9 @@
                 [tmpNAC popToRootViewControllerAnimated:NO];
                 [tmpNAC pushViewController:_inputVC animated:NO];
             }
-            _openInputVC = true;
+            [_viewMgr SetOpenInputView:true];
             _inputVC.masterVC = self;
-            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+            _openIndexPath  = indexPath;
         }
     }
     return;
@@ -192,14 +192,6 @@
  ****************************************************************/
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-#if 0
-    if ( _openInputVC == false ){
-        _openIndexPath  = indexPath;
-    } else {
-        [tableView selectRowAtIndexPath:_openIndexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
-#endif
     [self selectCell:indexPath];
 }
 
@@ -208,14 +200,17 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
+    //データの値を更新させる
     [super viewWillAppear:animated];
-    _openInputVC = false;
     
+    if ( [_viewMgr isOpenInputView] == true ){
+        //選択がクリアされるのでここで再設定
+        [self.tableView selectRowAtIndexPath:_openIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
     //DataListへ戻る要求があったら表示前に戻る
-    ViewMgr  *viewMgr   = [ViewMgr sharedManager];
-    if ( [viewMgr isReturnDataList ] == true ){
+    if ( [_viewMgr isReturnDataList ] == true ){
         [self dismissViewControllerAnimated:YES completion:nil];
-        viewMgr.stage   = STAGE_DATALIST;
+        _viewMgr.stage   = STAGE_DATALIST;
     }
     
 }

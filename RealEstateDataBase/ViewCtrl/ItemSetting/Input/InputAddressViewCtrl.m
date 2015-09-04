@@ -66,7 +66,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -120,6 +120,17 @@
     [self viewMake];
     return;
 }
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.land.address = _tv_address.text;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
 
 /****************************************************************
  *
@@ -127,9 +138,6 @@
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.estate.land.address = _tv_address.text;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

@@ -9,27 +9,29 @@
 #import "AppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
 #import "UIUtil.h"
+#import "AddonMgr.h"
 #import "ViewMgr.h"
 
 #import "DataBaseIPhoneViewCtrl.h"
 #import "DataBaseIPadViewCtrl.h"
 
+/****************************************************************/
 @implementation AppDelegate
 {
     UIWindow                    *_window;
 
     UISplitViewController       *_iPadVC;
     DataBaseIPhoneViewCtrl      *_iPhoneVC;
-    UIViewController            *_infoVC;
-
     
 }
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
+/****************************************************************/
+@synthesize managedObjectContext        = _managedObjectContext;
+@synthesize managedObjectModel          = _managedObjectModel;
+@synthesize persistentStoreCoordinator  = _persistentStoreCoordinator;
+/****************************************************************/
 #define APP_KEY     @"330rpbyqebi60n2"
 #define APP_SECRET  @"rhh5cev809t6ak2"
+/****************************************************************/
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -42,9 +44,9 @@
     CGRect appFrame         = ms.applicationFrame;
 
 
-    NSString *model = [UIDevice currentDevice].model;
+    NSString *model     = [UIDevice currentDevice].model;
     ViewMgr  *viewMgr   = [ViewMgr sharedManager];
-    viewMgr.stage   = STAGE_TOP;
+    viewMgr.stage       = STAGE_TOP;
     
     if ( [model hasPrefix:@"iPhone"] ){
         NSLog(@"iPhone");
@@ -56,7 +58,7 @@
     } else if ( [model hasPrefix:@"iPad"]){
         NSLog(@"iPad");
         _iPadVC             = [[DataBaseIPadViewCtrl alloc]init];
-        _iPadVC.delegate  = self;
+        _iPadVC.delegate    = self;
         [self.window addSubview:_iPadVC.view];
 
     }
@@ -81,9 +83,13 @@
         [DBFilesystem setSharedFilesystem:filesystem];
     }
 #endif
+
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+
     return YES;
 }
 
+/****************************************************************/
 - (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
 {
     return NO;
@@ -135,11 +141,13 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -250,6 +258,111 @@
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************
+ *
+ ****************************************************************/
+- (void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
+{
+    AddonMgr *addonMgr = [AddonMgr sharedManager];
+    
+    NSLog(@"paymentQueue:updatedTransactions");
+    for (SKPaymentTransaction *transaction in transactions ){
+        switch (transaction.transactionState) {
+                /****************************************/
+            case SKPaymentTransactionStatePurchasing:
+            {
+                NSLog(@"SKPaymentTransactionStatePurchasing");
+                break;
+            }
+                /****************************************/
+            case SKPaymentTransactionStatePurchased:
+            {
+                NSLog(@"SKPaymentTransactionStatePurchased");
+                //設定にProductIDを保存する
+                [addonMgr saveProductId:transaction.payment.productIdentifier];
+                //購入処理成功したことを通知する
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Purchased" object:transaction];
+                [queue finishTransaction:transaction];
+                break;
+            }
+                /****************************************/
+            case SKPaymentTransactionStateRestored:
+            {
+                NSLog(@"SKPaymentTransactionStateRestored");
+                //設定にProductIDを保存する
+                [addonMgr saveProductId:transaction.payment.productIdentifier];
+                //リストアが成功したことを通知する
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"Purchased" object:transaction];
+                [queue finishTransaction:transaction];
+                break;
+            }
+                /****************************************/
+            case SKPaymentTransactionStateDeferred:
+            {
+                NSLog(@"SKPaymentTransactionStateDeferred");
+                break;
+            }
+                /****************************************/
+            case SKPaymentTransactionStateFailed:
+            {
+                NSLog(@"SKPaymentTransactionStateFailed");
+                [queue finishTransaction:transaction];
+                NSError *error = transaction.error;
+                NSString *errormsg = [NSString stringWithFormat:@"%@ [%ld]",error.localizedDescription, (long)error.code];
+                [[[UIAlertView alloc]initWithTitle:@"エラー" message:errormsg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                if ( transaction.error.code != SKErrorPaymentCancelled ){
+                    //支払いキャンセル
+                    NSLog(@"支払いキャンセル");
+                } else if ( transaction.error.code == SKErrorUnknown ){
+                    //請求先情報の入力画面に移り、購入処理を強制終了した
+                    NSLog(@"請求先情報の入力画面に移り、購入処理を強制終了した");
+                } else {
+                    //その他のエラー
+                    NSLog(@"その他のエラー");
+                }
+                break;
+            }
+        }
+    }
+    return;
+}
+/****************************************************************
+ * すべての購入が正常終了した時に実行
+ ****************************************************************/
+- (void) paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PurchasedAll" object:transactions];
+    return;
+}
+
+/****************************************************************
+ * すべてのリストアが正常終了した時に実行
+ ****************************************************************/
+- (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RestoreOK" object:queue];
+    return;
+    
+}
+/****************************************************************
+ * リストアが失敗した時に実行
+ ****************************************************************/
+- (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RestoreNG" object:error];
+    return;
+}
+
+
 /****************************************************************/
 @end
 /****************************************************************/

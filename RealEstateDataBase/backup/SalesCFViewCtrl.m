@@ -298,14 +298,14 @@
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
-    [UIUtil labelYen:_l_priceVal            yen:_modelRE.priceSales];
-    [UIUtil labelYen:_l_transferExpVal      yen:-_modelRE.transferExpense];
-    [UIUtil labelYen:_l_lbVal               yen:-_modelRE.lbSales];
-    [UIUtil labelYen:_l_btcfVal             yen:_modelRE.btcfSales];
-    [UIUtil labelYen:_l_amCostsVal          yen:-_modelRE.amCosts];
-    [UIUtil labelYen:_l_transferIncomeVal   yen:_modelRE.transferIncome];
-    [UIUtil labelYen:_l_transferTaxVal      yen:-_modelRE.transferTax];
-    [UIUtil labelYen:_l_atcfVal             yen:_modelRE.atcfSales];
+    [UIUtil labelYen:_l_priceVal            yen:_modelRE.sale.price];
+    [UIUtil labelYen:_l_transferExpVal      yen:-_modelRE.sale.expense];
+    [UIUtil labelYen:_l_lbVal               yen:-_modelRE.sale.loanBorrow];
+    [UIUtil labelYen:_l_btcfVal             yen:_modelRE.sale.btcf];
+    [UIUtil labelYen:_l_amCostsVal          yen:-_modelRE.sale.amCosts];
+    [UIUtil labelYen:_l_transferIncomeVal   yen:_modelRE.sale.transferIncome];
+    [UIUtil labelYen:_l_transferTaxVal      yen:-_modelRE.sale.transferTax];
+    [UIUtil labelYen:_l_atcfVal             yen:_modelRE.sale.atcf];
 }
 /****************************************************************
  *

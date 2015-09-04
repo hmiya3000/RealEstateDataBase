@@ -76,7 +76,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -146,14 +146,23 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        [_modelRE setPrice:_value*10000];
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    [_modelRE setPrice:_value*10000];    
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

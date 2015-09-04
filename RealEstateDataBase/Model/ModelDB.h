@@ -22,6 +22,7 @@
 - (void) insertRec:(NSDictionary*)record atIndex:(NSInteger)index;
 - (void) createRec:(NSString*)name atIndex:(NSInteger)index;
 - (void) updateSerial:(NSString*)serial name:(NSString*)name;
+- (BOOL) isInitialized;
 - (void) showAllFiles;
 - (void) deleteAllFiles;
 - (void) createExportFilename;

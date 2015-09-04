@@ -122,7 +122,7 @@
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = [NSString stringWithFormat:@"物件価格=土地価格+建物価格となるよう計算します"];
+    _tv_tips.text           = [NSString stringWithFormat:@"耐用年数を元に銀行は借入期間を設定します"];
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     _scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
@@ -138,7 +138,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
@@ -282,6 +282,21 @@
     /*--------------------------------------*/
     [self rewriteProperty];
 }
+
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.investment.loan.rateYear       = _loan.rateYear;
+        _modelRE.investment.loan.periodYear     = _loan.periodYear;
+        _modelRE.investment.loan.levelPayment   = _loan.levelPayment;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
 /****************************************************************
  *
  ****************************************************************/
@@ -301,11 +316,6 @@
 #endif
         [self rewriteProperty];
     } else {
-        _modelRE.investment.loan.rateYear       = _loan.rateYear;
-        _modelRE.investment.loan.periodYear     = _loan.periodYear;
-        _modelRE.investment.loan.levelPayment   = _loan.levelPayment;
-        [_modelRE valToFile];
-
         [self.navigationController popViewControllerAnimated:YES];
     }
     return;

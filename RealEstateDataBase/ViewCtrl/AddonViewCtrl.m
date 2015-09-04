@@ -10,7 +10,9 @@
 #import "UIUtil.h"
 #import "GridTable.h"
 #import "Pos.h"
+#import "UIUtil.h"
 #import "AddonMgr.h"
+#import "MBProgressHUD.h"
 
 @interface AddonViewCtrl ()
 {
@@ -22,19 +24,33 @@
     UIScrollView        *_scrollView;
     UIView              *_uv_grid;
     UITextView          *_tv_comment;
-    
-    SKProductsRequest   *_productRequest;
-    SKProduct           *_product;
 
+    UILabel             *_l_restore;
+    UIButton            *_b_restore;
+    UITextView          *_tv_restore;
+    
+    NSMutableArray      *_arr_pname;
+    NSMutableArray      *_arr_pprice;
+    NSMutableArray      *_arr_description;
+    
+//    SKProductsRequest   *_productRequest;
+
+    NSMutableArray      *_arrProductRequest;
+//    NSMutableArray      *_arrProduct;
+    NSArray             *_arrProduct;
+    
+    NSTimer             *_timeOut;
 }
 
 
 @end
 
 @implementation AddonViewCtrl
+/****************************************************************/
 
 #define ADDON_COMMENT @"■複数年分析\n家賃下落を踏まえて数年に渡っての運営シミュレーションを行います\n\n■運営設定\n家賃下落率や空室率、税率等を詳細に設定できます\n\n■売却分析\n設定した保有期間後に売却した場合のシミュレーションを行います\n\n■データベース\n複数の物件データを保存できます\n\n■外部データ\n物件データをDropboxを使ってインポート・エクスポートできます\n"
-#define PRODUCT_ID @"upgrade_FreeToLite"
+/****************************************************************/
+#define BTAG_RESTORE    255
 /****************************************************************
  *
  ****************************************************************/
@@ -66,7 +82,9 @@
     
     /****************************************/
     _addonMgr   = [AddonMgr sharedManager];
-    /****************************************/
+    NSArray *arrProductIds;
+    arrProductIds   = [_addonMgr getProductIds:_addonMgr.appMode];
+   /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
@@ -80,36 +98,94 @@
     _tv_comment.text           = ADDON_COMMENT;
     [_scrollView addSubview:_tv_comment];
     /****************************************/
-//    _pv   = [[UIPickerView alloc]init];
-    [_pv setBackgroundColor:[UIColor whiteColor]];
-    [_pv setDelegate:self];
-    [_pv setDataSource:self];
-    [_pv setShowsSelectionIndicator:YES];
-    _selectIdx = _addonMgr.appMode;
-    [_pv selectRow:_selectIdx inComponent:0 animated:NO];
-    [_scrollView addSubview:_pv];
-    
-    
-
-    _product    = nil;
-    
-    NSSet *productIds   = [NSSet setWithObject:PRODUCT_ID];
-    _productRequest     = [[SKProductsRequest alloc]initWithProductIdentifiers:productIds];
-    _productRequest.delegate    = self;
-    [_productRequest start];
-    
+    if ( _addonMgr.friendMode == true ){
+        _pv   = [[UIPickerView alloc]init];
+        [_pv setBackgroundColor:[UIColor whiteColor]];
+        [_pv setDelegate:self];
+        [_pv setDataSource:self];
+        [_pv setShowsSelectionIndicator:YES];
+        _selectIdx = _addonMgr.appMode;
+        [_pv selectRow:_selectIdx inComponent:0 animated:NO];
+        [_scrollView addSubview:_pv];
+    } else {
+        _pv = nil;
+        if ( [arrProductIds count] != 0 ){
+            _l_restore  = [UIUtil makeLabel:@"購入情報リストア"];
+            [_l_restore  setTextAlignment:NSTextAlignmentLeft];
+            [_scrollView addSubview:_l_restore];
+            /*--------------------------------------*/
+            _b_restore  = [UIUtil makeButton:@"" tag:BTAG_RESTORE];
+            [_b_restore addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+            [_scrollView addSubview:_b_restore];
+            /*--------------------------------------*/
+            _tv_restore = [[UITextView alloc]init];
+            _tv_restore.editable       = false;
+            _tv_restore.scrollEnabled  = true;
+            _tv_restore.backgroundColor = [UIColor whiteColor];
+            _tv_restore.text           = @"一度購入した購入情報が消えてしまった場合や他機種で購入した情報を反映させる場合に実行してください.復元する情報がない場合には何も起きません";
+            [_scrollView addSubview:_tv_restore];
+        }
+        /****************************************/
+        _arr_pname          = [NSMutableArray array];
+        _arr_pprice         = [NSMutableArray array];
+        _arr_description    = [NSMutableArray array];
+        for ( int i=0; i<[arrProductIds count]; i++ ){
+            /*--------------------------------------*/
+            UILabel *l_pname = [UIUtil makeLabel:@""];
+            [l_pname  setTextAlignment:NSTextAlignmentLeft];
+            [_scrollView addSubview:l_pname];
+            [_arr_pname addObject:l_pname];
+            /*--------------------------------------*/
+            UIButton *b_pprice = [UIUtil makeButton:@"" tag:i];
+            [b_pprice addTarget:self action:@selector(clickButtonPurchase:) forControlEvents:UIControlEventTouchUpInside];
+            [_scrollView addSubview:b_pprice];
+            [_arr_pprice addObject:b_pprice];
+            /*--------------------------------------*/
+            UITextView *tv_description = [[UITextView alloc]init];
+            tv_description.editable       = false;
+            tv_description.scrollEnabled  = true;
+            tv_description.backgroundColor = [UIColor whiteColor];
+            tv_description.text           = @"";
+            [_scrollView addSubview:tv_description];
+            [_arr_description addObject:tv_description];
+        }
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [self startProductRequest];
+        
+    }
+    return;
 }
 
 /****************************************************************
- *
+ * Viewの表示前に呼ばれる
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
+
+    //AppDelegateからの購入通知を登録する
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(purchased:)       name:@"Purchased"     object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transactionEnd:)  name:@"PurchasedAll"  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transactionEnd:)  name:@"RestoreOK"     object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(transactionEnd:)  name:@"RestoreNG"     object:nil];
+    
     [self rewriteProperty];
     [self viewMake];
 }
+/****************************************************************
+ * Viewの非表示前に呼ばれる
+ ****************************************************************/
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
 
+    //AppDelegateからの購入通知を解除する
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"Purchased"     object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PurchasedAll"  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RestoreOK"     object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RestoreNG"     object:nil];
+    return;
+}
 /****************************************************************
  *
  ****************************************************************/
@@ -127,16 +203,47 @@
     /****************************************/
     [_scrollView setFrame:_pos.frame];
     /****************************************/
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model hasPrefix:@"iPhone"] ){
+        if ( _pos.isPortrait == true ){
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
+        } else {
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
+        }
+        _scrollView.bounces = YES;
+    } else {
+    }
+    /****************************************/
     pos_y = 0.2*dy;
     [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*3)];
     pos_y = pos_y + 3.5*dy;
     _tv_comment.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*4);
-    if ( _pos.isPortrait == true ){
-        [_pv setFrame:CGRectMake(_pos.x_left,   _pos.y_btm - 300, _pos.len30, 216)];
-    } else {
-        [_pv setFrame:CGRectMake(_pos.x_center, _pos.y_btm - 250, _pos.len15, 216)];
-    }
     /****************************************/
+    pos_y = pos_y + 4*dy;
+    /****************************************/
+    if ( _addonMgr.friendMode == true ){
+        pos_y = pos_y + dy;
+        [_pv setFrame:CGRectMake(_pos.x_left,   pos_y, _pos.len30, 216)];
+    } else {
+        /****************************************/
+        [UIUtil setRectLabel:_l_restore x:pos_x         y:pos_y viewWidth:length*2 viewHeight:dy color:[UIUtil color_Yellow]];
+        [UIUtil setButton:_b_restore    x:pos_x+2*dx    y:pos_y length:length ];
+        pos_y = pos_y + dy;
+        _tv_restore.frame = CGRectMake(pos_x, pos_y, length30, dy*2);
+        /****************************************/
+        pos_y = pos_y + dy;
+        for( int i=0; i<[_arr_pname count]; i++ ){
+            UILabel     *l_pname        = [_arr_pname       objectAtIndex:i];
+            UIButton    *b_pprice       = [_arr_pprice      objectAtIndex:i];
+            UITextView  *tv_description = [_arr_description objectAtIndex:i];
+            pos_y = pos_y + dy;
+            [UIUtil setRectLabel:l_pname x:pos_x y:pos_y viewWidth:length*2 viewHeight:dy color:[UIUtil color_Yellow]];
+            [UIUtil setButton:b_pprice x:pos_x+2*dx y:pos_y length:length ];
+            pos_y = pos_y + dy;
+            tv_description.frame = CGRectMake(pos_x, pos_y, length30, dy*2);
+            pos_y = pos_y + 1*dy;
+        }
+    }
     return;
 }
 
@@ -146,19 +253,70 @@
 -(void)rewriteProperty
 {
     [GridTable setScroll:_uv_grid table:[_addonMgr getAddonArray]];
+
+
+    int i=0;
+    for (SKProduct *tmp_product in _arrProduct ) {
+        if ( tmp_product != nil ){
+            UILabel *l_pname            = [_arr_pname       objectAtIndex:i];
+            UIButton *b_pprice          = [_arr_pprice      objectAtIndex:i];
+            UITextView *tv_description  = [_arr_description objectAtIndex:i];
+            l_pname.text    = [NSString stringWithFormat:@"%@",tmp_product.localizedTitle];
+            [b_pprice setTitle:[self localedPrice:tmp_product] forState:UIControlStateNormal];
+            tv_description.text = tmp_product.localizedDescription;
+            i++;
+            [_b_restore setTitle:[UIUtil localedPrice:[NSNumber numberWithInteger:0] locale:tmp_product.priceLocale] forState:UIControlStateNormal];
+        }
+    }
+    if ( [_arrProductRequest count] == [_arrProduct count] ){
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [_timeOut invalidate];
+    }
+    
+    
+    return;
+    
+}
+/****************************************************************/
+- (NSString*)localedPrice:(SKProduct*)product
+{
+    return [UIUtil localedPrice:product.price locale:product.priceLocale];
 }
 /****************************************************************/
 /****************************************************************/
 /****************************************************************/
 /****************************************************************/
 /****************************************************************/
-/****************************************************************/
-/****************************************************************/
 /****************************************************************
- *
+ * 購入情報取得の開始
+ ****************************************************************/
+- (void) startProductRequest
+{
+    NSArray *arrProductId;
+    arrProductId        = [_addonMgr getProductIds:_addonMgr.appMode];
+    _arrProduct         = nil;
+    _addonMgr.products  = nil;
+    
+    _arrProductRequest  = [NSMutableArray array];
+    for (NSString *pid in arrProductId ) {
+        NSSet *productIds   = [NSSet setWithObject:pid];
+        SKProductsRequest *productReq;
+        productReq      = [[SKProductsRequest alloc]initWithProductIdentifiers:productIds];
+        productReq.delegate    = self;
+        [productReq start];
+        [_arrProductRequest addObject:productReq];
+    }
+    _timeOut = [NSTimer scheduledTimerWithTimeInterval:60.0f target:self selector:@selector(timeoutOfGetProductRequest:) userInfo:nil repeats:NO];
+    return;
+}
+
+/****************************************************************
+ * 購入情報取得の応答
  ****************************************************************/
 - (void) productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
+    SKProduct           *product;
+    product    = nil;
     if (response == nil ){
         //アプリ内課金プロダクトを取得できなかった
         return;
@@ -169,28 +327,84 @@
     }
     /****************************************/
     for ( SKProduct *tmp_product in response.products ){
-        NSLog( @"Product : %@ %@ %@ %d",
-              tmp_product.productIdentifier,
-              tmp_product.localizedTitle,
-              tmp_product.localizedDescription,
-              [tmp_product.price intValue]  );
-        _product = tmp_product;
+        product = tmp_product;
     }
-    if ( _product == nil ){
-        //商品情報が取れなかった
-        return;
-    }
+
     /****************************************/
-    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc]init];
-    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    [numberFormatter setLocale:_product.priceLocale];
-    NSString *localedPrice = [numberFormatter stringFromNumber:_product.price];
-    
-    
-    
+    if ( product != nil ){
+        //ちゃんと商品情報が取れた
+        [_addonMgr addProduct:product];
+        _arrProduct = _addonMgr.products;
+        [self rewriteProperty];
+    }
     
 }
+
+/****************************************************************
+ * プロダクト取得でタイムアウトした
+ ****************************************************************/
+- (void) timeoutOfGetProductRequest:(NSTimer*)timer
+{
+    [_timeOut invalidate];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [[[UIAlertView alloc]initWithTitle:@"通信タイムアウト" message:@"Apple Storeとの通信ができませんでした.再度実行してください" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    
+   [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+/****************************************************************
+ * 購入手続き完了時に呼ばれる
+ ****************************************************************/
+- (void) purchased:(NSNotification*)notification
+{
+//    NSLog(@"Purchased call");
+    return;
+    
+}
+/****************************************************************
+ * すべての購入・リストア手続き完了時に呼ばれる
+ ****************************************************************/
+- (void) transactionEnd:(NSNotification*)notification
+{
+    [_addonMgr loadAddons];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    return;
+}
+
+/****************************************************************
+ * 購入ボタン押下時に呼ばれる
+ ****************************************************************/
+-(void)clickButtonPurchase:(UIButton*)sender
+{
+    if ( [SKPaymentQueue canMakePayments] == NO ){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"購入できません"
+                                                        message:@"App内の購入が機能制限されています"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    SKProduct *tgtProduct = [_addonMgr.products objectAtIndex:sender.tag];
+    if ( tgtProduct != nil ){
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        SKPayment *payment = [SKPayment paymentWithProduct:tgtProduct];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+    }
+    
+}
+
+/****************************************************************
+ * ボタン押下時に呼ばれる
+ ****************************************************************/
+-(void)clickButton:(UIButton*)sender
+{
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    return;
+}
+
 /****************************************************************/
 /****************************************************************/
 /****************************************************************/
@@ -267,8 +481,6 @@
     }
     return;
 }
-
-
 
 /****************************************************************/
 @end

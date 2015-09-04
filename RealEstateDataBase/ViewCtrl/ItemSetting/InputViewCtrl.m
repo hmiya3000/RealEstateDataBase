@@ -7,6 +7,7 @@
 //
 
 #import "InputViewCtrl.h"
+#import "ViewMgr.h"
 
 @interface InputViewCtrl ()
 
@@ -16,7 +17,7 @@
 /****************************************************************/
 @synthesize masterVC    = _masterVC;
 /****************************************************************/
-
+#define BTAB_CANCEL     100
 /****************************************************************
  *
  ****************************************************************/
@@ -26,11 +27,12 @@
     if (self){
         _modelRE = [ModelRE sharedManager];
         self.title = @"物件名";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"決定"
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"キャンセル"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(clickButton:)];
-        
+        self.navigationItem.rightBarButtonItem.tag  = BTAB_CANCEL;
+        _b_cancel = false;
         
         
         self.view.backgroundColor = [UIUtil color_LightYellow];
@@ -111,13 +113,39 @@
 /****************************************************************
  *
  ****************************************************************/
--(void) viewWillDisappear:(BOOL)animated {
+-(void) viewWillAppear:(BOOL)animated
+{
+    ViewMgr *viewMgr        = [ViewMgr sharedManager];
+    [viewMgr setOpenInputView:true];
     if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
         // back button was pressed.  We know this is true because self is no longer
         // in the navigation stack.
         [self.masterVC viewWillAppear:YES];
     } else {
+        [self.masterVC viewWillAppear:YES];
     }
+    
+    [super viewWillAppear:animated];
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    //「戻る」の時のイベントを捕まえられないので、
+    //消える時にクリアする。続けて入力ビューを開く場合には再設定されるのでこれでよい
+    ViewMgr *viewMgr        = [ViewMgr sharedManager];
+    [viewMgr setOpenInputView:false];
+    
+    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
+        // back button was pressed.  We know this is true because self is no longer
+        // in the navigation stack.
+        [self.masterVC viewWillAppear:YES];
+    } else {
+        [self.masterVC viewWillAppear:YES];
+    }
+    
     [super viewWillDisappear:animated];
 }
 
@@ -126,6 +154,9 @@
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
+    if ( sender.tag == BTAB_CANCEL ){
+        _b_cancel = true;
+    }
     return;
 }
 

@@ -92,7 +92,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
     [self enterIn:_value];
 }
@@ -172,15 +172,24 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.house.price  = _value * 10000;
+        _modelRE.estate.land.price = _modelRE.estate.prices.price - _modelRE.estate.house.price;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.estate.house.price  = _value * 10000;
-    _modelRE.estate.land.price = _modelRE.estate.prices.price - _modelRE.estate.house.price;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

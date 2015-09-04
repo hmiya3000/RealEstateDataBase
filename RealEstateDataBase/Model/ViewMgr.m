@@ -16,6 +16,7 @@ static ViewMgr* sharedViewMgr = nil;
 /****************************************************************/
 @synthesize stage           = _stage;
 @synthesize reqViewInit     = _reqViewInit;
+@synthesize openInputView   = _openInputView;
 /****************************************************************/
 /****************************************************************
  *
@@ -69,9 +70,24 @@ static ViewMgr* sharedViewMgr = nil;
     if ( stage == STAGE_DATALIST ){
         _reqViewInit = false;
     }
+    if ( stage == STAGE_ANALYSIS ){
+        _openInputView = false;
+    }
     _stage = stage;
     return;
 }
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (void) SetOpenInputView:(BOOL)open
+{
+    if ( _stage == STAGE_ANALYSIS ){
+        _openInputView = open;
+    }
+    return;
+}
+
 /****************************************************************
  *
  ****************************************************************/
@@ -83,6 +99,18 @@ static ViewMgr* sharedViewMgr = nil;
         return false;
     }
 }
+/****************************************************************
+ *
+ ****************************************************************/
+- (BOOL) isOpenInputView
+{
+    if ( _openInputView == true ){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /****************************************************************/
 @end
 /****************************************************************/

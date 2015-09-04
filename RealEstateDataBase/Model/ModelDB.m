@@ -8,6 +8,7 @@
 
 #import "ModelDB.h"
 #import "ModelRE.h"
+#import "AddonMgr.h"
 #import "MBProgressHUD.h"
 
 /****************************************************************/
@@ -180,6 +181,19 @@ static ModelDB* sharedModelDB = nil;
     [_list replaceObjectAtIndex:index withObject:record];
     [self saveData];
 }
+
+/****************************************************************
+ * 初期化直後
+ ****************************************************************/
+- (BOOL) isInitialized
+{
+    if ( [_list count] == 0 ){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /****************************************************************
  * 全データファイルの表示
  ****************************************************************/
@@ -208,6 +222,9 @@ static ModelDB* sharedModelDB = nil;
  ****************************************************************/
 - (void) deleteAllFiles
 {
+    AddonMgr *addonMgr = [AddonMgr sharedManager];
+    [addonMgr initializeAddons];
+    
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
     

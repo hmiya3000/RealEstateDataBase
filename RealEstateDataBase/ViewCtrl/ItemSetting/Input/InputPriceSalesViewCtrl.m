@@ -34,7 +34,7 @@
     [super viewDidLoad];
     self.title = @"売却価格";
     
-    _value  = _modelRE.priceSales /10000;
+    _value  = _modelRE.sale.price /10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     [_modelRE calcAll];
@@ -89,7 +89,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -167,14 +167,23 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.sale.price     = _value*10000;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.priceSales = _value*10000;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

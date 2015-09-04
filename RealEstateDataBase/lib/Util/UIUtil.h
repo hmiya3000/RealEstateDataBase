@@ -38,6 +38,7 @@
 /****************************************************************/
 + (NSString*)yenValue:(NSInteger)yen;
 + (UILabel*)labelYen:(UILabel*)label yen:(NSInteger)yen;
++ (NSString*)localedPrice:(NSNumber*)price locale:(NSLocale *)locale;
 /*--------------------------------------------------------------*/
 + (NSInteger)getThisYear;
 + (NSInteger)getThisMonth;

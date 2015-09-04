@@ -57,7 +57,7 @@
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = [NSString stringWithFormat:@"一戸あたりの価格・面積・賃料を計算します"];
+    _tv_tips.text           = [NSString stringWithFormat:@"路線価は積算評価の計算に使われます"];
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     _l_address                = [UIUtil makeLabel:_modelRE.estate.land.address];
@@ -87,7 +87,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
@@ -179,19 +179,25 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.land.assessment = _value;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    if (sender.tag == 1){
-        
-    } else {
-        _modelRE.estate.land.assessment = _value;
-        [_modelRE valToFile];
-
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
     return;
 }
 /****************************************************************

@@ -443,6 +443,19 @@
 /****************************************************************
  *
  ****************************************************************/
++ (NSString*)localedPrice:(NSNumber*)price locale:(NSLocale *)locale
+{
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc]init];
+    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    [numberFormatter setLocale:locale];
+    NSString *localedPrice = [numberFormatter stringFromNumber:price];
+    return localedPrice;
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
 +(SVSegmentedControl*)makeSegmentedControl_x:(CGFloat)x y:(CGFloat)y length:(CGFloat)len array:(NSArray*)arr
 {
 

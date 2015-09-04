@@ -63,7 +63,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -119,16 +119,26 @@
     [self viewMake];
     return;
 }
+
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.house.construct = (int)_selectIdx;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
 /****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.estate.house.construct = (int)_selectIdx;
-    [_modelRE valToFile];
-
-    [self.navigationController popViewControllerAnimated:YES];    
+    [self.navigationController popViewControllerAnimated:YES];
     return;
 }
 /****************************************************************
@@ -136,7 +146,7 @@
  ****************************************************************/
 - (NSString*) getConstStr:(NSInteger)constNum
 {
-    return [NSString stringWithFormat:@"%@(%ld年)",[House constructStr:constNum],(long)[House amortizationPeriod:constNum]];
+    return [NSString stringWithFormat:@"%@(%ld年)",[House constructStr:constNum],(long)[House usefulLife:constNum]];
 }
 
 /****************************************************************/

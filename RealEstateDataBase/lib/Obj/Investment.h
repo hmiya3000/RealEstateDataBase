@@ -14,16 +14,15 @@
 /****************************************************************/
 @interface Investment : NSObject
 {
-    Prices      *_prices;
-    Loan        *_loan;
+    Prices          *_prices;           //価格
+    Loan            *_loan;             //ローン
 
-    CGFloat     _emptyRate;
-    CGFloat     _mngRate;
-    CGFloat     _propTaxRate;
-    CGFloat     _incomeTaxRate;
-    NSInteger   _equity;
-    NSInteger   _expense;
-    
+    CGFloat         _emptyRate;         //空室率
+    CGFloat         _mngRate;           //運営費率
+    CGFloat         _propTaxRate;       //固定資産税率
+    CGFloat         _incomeTaxRate;     //所得税率
+    NSInteger       _equity;            //自己資金
+    NSInteger       _expense;           //諸経費
 
 }
 /****************************************************************/

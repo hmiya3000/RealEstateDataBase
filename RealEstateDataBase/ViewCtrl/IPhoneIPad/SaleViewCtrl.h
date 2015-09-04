@@ -1,21 +1,17 @@
 //
-//  ItemSettingViewCtrl.h
+//  SaleViewCtrl.h
 //  RealEstateDataBase
 //
-//  Created by hmiya on 2014/12/30.
-//  Copyright (c) 2014年 Beetre. All rights reserved.
+//  Created by hmiya on 2015/05/15.
+//  Copyright (c) 2015年 Beetre. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface ItemSettingViewCtrl : UITableViewController<UISplitViewControllerDelegate>
+@interface SaleViewCtrl : UIViewController
 {
     UIViewController    *_masterVC;
 }
-/****************************************************************/
-
-- (NSString*) getKeyIndexPath:(NSIndexPath*)indexPath;
-- (void)reloadData;
 /****************************************************************/
 @property   (nonatomic,readwrite)    UIViewController    *masterVC;
 /****************************************************************/

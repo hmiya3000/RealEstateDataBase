@@ -14,6 +14,9 @@
     
 }
 
+/****************************************************************
+ *
+ ****************************************************************/
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -36,7 +39,7 @@
     CGContextRetain(_context);
 }
 /****************************************************************
- *
+ * 色の設定
  ****************************************************************/
 -(void)setColor_r:(NSInteger)r g:(NSInteger)g b:(NSInteger)b
 {
@@ -52,7 +55,7 @@
                                1.0f);
 }
 /****************************************************************
- *
+ * 線の幅の設定
  ****************************************************************/
 -(void)setLineWidth:(CGFloat)width
 {
@@ -60,7 +63,7 @@
 }
 
 /****************************************************************
- *
+ * 線の描画
  ****************************************************************/
 -(void)drawLine_x0:(CGFloat)x0 y0:(CGFloat)y0 x1:(CGFloat)x1 y1:(CGFloat)y1
 {
@@ -70,14 +73,7 @@
     CGContextStrokePath(_context);
 }
 /****************************************************************
- *
- ****************************************************************/
--(void)fillRect_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h
-{
-    CGContextFillRect( _context, CGRectMake(x, y, w, h));
-}
-/****************************************************************
- *
+ * 四角形の描画
  ****************************************************************/
 -(void)drawRect_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h
 {
@@ -90,15 +86,29 @@
     CGContextStrokePath(_context);
     
 }
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+/****************************************************************
+ * 四角形の塗りつぶし
+ ****************************************************************/
+-(void)fillRect_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h
 {
-    // Drawing code
+    CGContextFillRect( _context, CGRectMake(x, y, w, h));
 }
-*/
+/****************************************************************
+ * 円の描画
+ ****************************************************************/
+- (void) drawCircle_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h
+{
+    CGContextAddEllipseInRect(_context, CGRectMake(x, y, w, h));
+    CGContextStrokePath(_context);
+    return;
+}
+/****************************************************************
+ * 円の塗りつぶし
+ ****************************************************************/
+-(void) fillCircle_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h
+{
+    CGContextFillEllipseInRect(_context, CGRectMake(x, y, w, h));
+    return;
+}
 
 @end

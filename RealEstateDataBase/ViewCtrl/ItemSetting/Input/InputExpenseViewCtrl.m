@@ -16,6 +16,7 @@
     UIView              *_uv;
     NSInteger           _value;
 
+    bool                _b_sample;
     UIViewController    *_exampleVC;
     UIButton            *_b_example;
     UILabel             *_l_price;
@@ -37,7 +38,7 @@
     [super viewDidLoad];
     self.title = @"諸費用";
     
-    _value  = _modelRE.investment.expense;
+    _value  = _modelRE.investment.expense/10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -45,7 +46,7 @@
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_expense     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]]];
+    _l_expense     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_expense];
     /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格"];
@@ -65,6 +66,7 @@
     /****************************************/
     _b_example      = [UIUtil makeButton:@"内訳例" tag:BTAG_SAMPLE];
     [_b_example addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    _b_sample   = false;
     [_scrollView addSubview:_b_example];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];
@@ -89,7 +91,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
     [self enterIn:_value];
 }
@@ -168,21 +170,30 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false || _b_sample == false ){
+        _modelRE.investment.expense     = _value*10000;
+        [_modelRE adjustEquity];
+        [_modelRE valToFile];
+    }
+    _b_sample   = false;
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
     if ( sender.tag == BTAG_SAMPLE ){
+        _b_sample   = true;
         _exampleVC = [[InputExpenseExampleViewCtrl alloc]init];
-//        [self presentViewController:_exampleVC animated:YES completion:nil];
         [self.navigationController pushViewController:_exampleVC animated:YES];
-
     } else {
-        _modelRE.investment.expense     = _value;
-        [_modelRE adjustEquity];
-        [_modelRE valToFile];
-
         [self.navigationController popViewControllerAnimated:YES];
     }
     return;
@@ -217,7 +228,7 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_expense.text    = [NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]];
+    _l_expense.text    = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
 }
 
 

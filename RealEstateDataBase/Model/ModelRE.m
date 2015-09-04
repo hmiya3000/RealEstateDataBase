@@ -12,6 +12,7 @@
 #import "SettingLoan.h"
 #import "Finance.h"
 #import "Operation.h"
+#import "OpeAll.h"
 #import "AddonMgr.h"
 
 @implementation ModelRE
@@ -22,6 +23,8 @@
     NSInteger           _priceAquisition;
     NSInteger           _tmpCfAccumMin;
     NSInteger           _tmpCfAccumMax;
+
+    OpeAll              *_opeAll;
     
     AddonMgr            *_addonMgr;
     
@@ -32,25 +35,16 @@ static ModelRE* sharedModelRE = nil;
 @synthesize investment          = _investment;
 @synthesize estate              = _estate;
 @synthesize loanName            = _loanName;
+@synthesize sale                = _sale;
 @synthesize ope1                = _ope1;
 @synthesize opeLast             = _opeLast;
 
-@synthesize yearAquisition      = _yearAquisition;
 @synthesize declineRate         = _declineRate;
 @synthesize holdingPeriod       = _holdingPeriod;
 @synthesize discountRate        = _discountRate;
 @synthesize npv                 = _npv;
-@synthesize irr                 = _irr;
-
-@synthesize improvementCosts    = _improvementCosts;
-@synthesize priceSales          = _priceSales;
-@synthesize transferExpense     = _transferExpense;
-@synthesize transferIncome      = _transferIncome;
-@synthesize lbSales             = _lbSales;
-@synthesize btcfSales           = _btcfSales;
-@synthesize amCosts             = _amCosts;
-@synthesize transferTax         = _transferTax;
-@synthesize atcfSales           = _atcfSales;
+@synthesize btIrr                 = _btIrr;
+@synthesize atIrr                 = _atIrr;
 
 @synthesize btcfOpeAll          = _btcfOpeAll;
 @synthesize atcfOpeAll          = _atcfOpeAll;
@@ -61,6 +55,9 @@ static ModelRE* sharedModelRE = nil;
 @synthesize btcfAccumMax        = _btcfAccumMax;
 @synthesize atcfAccumMin        = _atcfAccumMin;
 @synthesize atcfAccumMax        = _atcfAccumMax;
+/****************************************************************/
+#define BTCF    1
+#define ATCF    2
 /****************************************************************
  *
  ****************************************************************/
@@ -101,6 +98,8 @@ static ModelRE* sharedModelRE = nil;
     self = [super init];
     if (self) {
         [self setDefaultItem:@"未選択"];
+        _opeAll     = [[OpeAll alloc]init];
+        _sale       = [[Sale alloc]init];
         _addonMgr = [AddonMgr sharedManager];
     }
     return self;
@@ -110,68 +109,38 @@ static ModelRE* sharedModelRE = nil;
  ****************************************************************/
 - (void) calcAll
 {
-    NSArray *opeN = [self calcOperationAll:_holdingPeriod];
+    [_opeAll calcOpeAll:_holdingPeriod investment:_investment house:_estate.house declineRate:_declineRate];
+    NSArray *opeN = _opeAll.opeArr;
     
+    _btcfOpeAll = _opeAll.btcf;
+    _atcfOpeAll = _opeAll.atcf;
     _ope1       = [opeN objectAtIndex:0];
     _opeLast    = [opeN objectAtIndex:_holdingPeriod-1];
-    
+
+    /*--------------------------------------*/
+    [_sale calcSale:_investment holdingPeriod:_holdingPeriod house:_estate.house];
+
+    /*--------------------------------------*/
+    //キャッシュフローの集計
+    _btcfTotal  = _sale.btcf + _btcfOpeAll;
+    _atcfTotal  = _sale.atcf + _atcfOpeAll;
+
     /*--------------------------------------*/
     if ( _ope1.btcf == 0 || _investment.equity == 0 ){
         /* 未設定の場合には計算しない */
         _npv    = 0;
-        _irr    = 0;
+        _btIrr  = 0;
+        _atIrr  = 0;
     } else {
-        NSMutableArray *arr = [NSMutableArray array];
-        NSNumber *num_btcf;
-        NSInteger tmpGpi = _investment.prices.gpi;
-        for( int i=0; i< _holdingPeriod; i ++){
-            Operation *tmpOpe = [_investment getOperation:i+1 gpi:tmpGpi loan:_investment.loan amortizationCosts:[_estate.house getAmortizationCosts_aquYear:_yearAquisition term:i+1]];
-            num_btcf = [NSNumber numberWithFloat:tmpOpe.btcf];
-            [arr addObject:num_btcf];
-            tmpGpi = tmpGpi * (1 - _declineRate);
-        }
-        _npv = [Finance npv_rate:_discountRate array:arr ] - _investment.equity;
+        NSArray *arrBtcf = [self makeArrAllCF:BTCF opeArr:_opeAll.opeArr cfSale:_sale.btcf];
+        NSArray *arrAtcf = [self makeArrAllCF:ATCF opeArr:_opeAll.opeArr cfSale:_sale.atcf];
         /*--------------------------------------*/
-        num_btcf = [NSNumber numberWithFloat:- _investment.equity];
-        [arr insertObject:num_btcf atIndex:0];
-        _irr = [Finance irr_array:arr];
+        _npv = [Finance npv_rate:_discountRate array:arrBtcf ] - _investment.equity;
+        /*--------------------------------------*/
+        _btIrr  = [self calcIrr:arrBtcf initialInvest:_investment.equity];
+        _atIrr  = [self calcIrr:arrAtcf initialInvest:_investment.equity];
     }
-    /*--------------------------------------*/
-    _lbSales                = [_investment.loan getLbYear:_holdingPeriod];
-    _btcfSales              = _priceSales - _transferExpense - _lbSales;
-    NSInteger amCosts = 0;
-    for(int i=0; i< _holdingPeriod; i++){
-        amCosts = amCosts + [_estate.house getAmortizationCosts_aquYear:_yearAquisition term:i+1];
-    }
-    _amCosts = amCosts;
-    _priceAquisition        = _investment.prices.price + _investment.expense + _improvementCosts - amCosts;
-    _transferIncome         = _priceSales - _priceAquisition -_transferExpense;
-    
-    
-    NSInteger incomeTax;
-    NSInteger regidentTax;
-    NSInteger incomeTaxSp;
-    if ( _transferIncome > 0 ){
-        if ( _holdingPeriod > 5 ){
-            incomeTax       = _transferIncome * 0.15;
-            regidentTax     = _transferIncome * 0.05;
-            incomeTaxSp     = incomeTax * 0.021;
-        } else {
-            incomeTax       = _transferIncome * 0.30;
-            regidentTax     = _transferIncome * 0.09;
-            incomeTaxSp     = incomeTax * 0.021;
-        }
-    } else {
-        incomeTax           = 0;
-        regidentTax         = 0;
-        incomeTaxSp         = 0;
-    }
-    _transferTax = incomeTax + regidentTax + incomeTaxSp;
-    _atcfSales = _btcfSales  - _transferTax;
-    
-    
-    _btcfTotal  = _btcfSales + _btcfOpeAll;
-    _atcfTotal  = _atcfSales + _atcfOpeAll;
+
 }
 
 /****************************************************************
@@ -194,11 +163,9 @@ static ModelRE* sharedModelRE = nil;
     NSInteger btcfSum = 0;
     NSInteger atcfSum = 0;
     
-    NSArray *opeN = [self calcOperationAll:_holdingPeriod];
     Operation *ope;
-    
     for(int i=0; i<tmpHoldingPeriod; i++){
-        ope = [opeN objectAtIndex:i];
+        ope = [_opeAll.opeArr objectAtIndex:i];
         
         NSMutableArray *opeArr = [NSMutableArray array];
         [opeArr addObject:[NSString stringWithFormat:@"%d年目",i+1]];
@@ -222,9 +189,6 @@ static ModelRE* sharedModelRE = nil;
 /****************************************************************
  * 累積キャッシュフローを座標配列で取得
  ****************************************************************/
-#define BTCF    1
-#define ATCF    2
-
 - (NSArray*) getBTCashFlowAccum
 {
     NSArray *retArr;
@@ -234,7 +198,6 @@ static ModelRE* sharedModelRE = nil;
     _btcfAccumMax = _tmpCfAccumMax;
     
     return retArr;
-    
 }
 
 /****************************************************************
@@ -272,11 +235,9 @@ static ModelRE* sharedModelRE = nil;
     [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
 
     /* 運営データを取得 */
-    NSArray *opeN = [self calcOperationAll:_holdingPeriod];
     Operation *tmpOpe;
-    
     for ( int year = 1; year <= _holdingPeriod; year++){
-        tmpOpe = [opeN objectAtIndex:year-1];
+        tmpOpe = [_opeAll.opeArr objectAtIndex:year-1];
 
         if ( mode == BTCF ){
             cfSum = cfSum + tmpOpe.btcf;
@@ -298,9 +259,9 @@ static ModelRE* sharedModelRE = nil;
     if ( _addonMgr.saleAnalysys == true ){
         //売却益を追加
         if ( mode == BTCF ){
-            cfSum = cfSum + _btcfSales;
+            cfSum = cfSum + _sale.btcf;
         } else {
-            cfSum = cfSum + _atcfSales;
+            cfSum = cfSum + _sale.atcf;
         }
         tmpPoint = CGPointMake(_holdingPeriod+1, cfSum);
         [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
@@ -320,43 +281,32 @@ static ModelRE* sharedModelRE = nil;
 }
 
 /****************************************************************
- *
+ * [割引率,NPV(正味現在価値)] 配列の取得
  ****************************************************************/
 - (NSArray*) getNpvArray
 {
-    NSMutableArray *arr = [NSMutableArray array];
+    //CFを配列に用意する
+    NSArray *arr = [self makeArrAllCF:BTCF opeArr:_opeAll.opeArr cfSale:_sale.btcf];;
+    
 
     NSMutableArray *npvArr = [NSMutableArray array];
-    CGFloat discountRate = 0.05;
+    CGFloat discountRate;
     CGFloat npv;
     CGPoint tmpPoint;
-
-    tmpPoint = CGPointMake(0, -_investment.equity);
-    [npvArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
     
-    CGFloat capRateSales = _ope1.capRate + 0.005;
-    NSInteger tmpBtcfOpe;
-    NSInteger tmpBtcfSales;
-    
-    NSInteger tmpGpi = _investment.prices.gpi;
-    for(int holdingPeriod=1; holdingPeriod<=20; holdingPeriod++){
-        /*--------------------------------------*/
-        Operation *tmpOpe = [_investment getOperation:holdingPeriod gpi:tmpGpi loan:_investment.loan amortizationCosts:[_estate.house getAmortizationCosts_aquYear:_yearAquisition term:holdingPeriod]];
-        tmpBtcfOpe = tmpOpe.btcf;
-        tmpBtcfSales = tmpOpe.noi / capRateSales - _transferExpense - [_investment.loan getLbYear:holdingPeriod];
-        [arr addObject:[NSNumber numberWithInteger:(tmpBtcfOpe+tmpBtcfSales)]];
+    int i = 0;
+    do {
+        discountRate = i * 0.5 / 100;   // 0.5%刻みでデータ作成
         /*--------------------------------------*/
         npv = [Finance npv_rate:discountRate array:arr ] - _investment.equity;
         /*--------------------------------------*/
-        tmpPoint = CGPointMake(holdingPeriod, npv);
+        tmpPoint = CGPointMake(discountRate*100, npv);
         [npvArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
-        /*--------------------------------------*/
-        [arr removeObjectAtIndex:holdingPeriod-1];
-        [arr addObject:[NSNumber numberWithInteger:tmpBtcfOpe]];
-        /*--------------------------------------*/
-//        NSLog(@"%d %f",holdingPeriod, npv);
-    }
-    
+        if ( discountRate > 0.10 && npv < 0 ){
+            break;
+        }
+        i++;
+    } while (discountRate < 1 );
     return npvArr;
 }
 
@@ -383,9 +333,9 @@ static ModelRE* sharedModelRE = nil;
 
     for(int holdingPeriod=1; holdingPeriod<=20; holdingPeriod++){
         /*--------------------------------------*/
-        Operation *tmpOpe = [_investment getOperation:holdingPeriod gpi:tmpGpi loan:_investment.loan amortizationCosts:[_estate.house getAmortizationCosts_aquYear:_yearAquisition term:holdingPeriod]];
+        Operation *tmpOpe = [_investment getOperation:holdingPeriod gpi:tmpGpi loan:_investment.loan amortizationCosts:[_estate.house getAmortizationCosts_term:holdingPeriod]];
         tmpBtcfOpe = tmpOpe.btcf;
-        tmpBtcfSales = tmpOpe.noi / capRateSales - _transferExpense - [_investment.loan getLbYear:holdingPeriod];
+        tmpBtcfSales = tmpOpe.noi / capRateSales - _sale.expense - [_investment.loan getLbYear:holdingPeriod];
         [arr addObject:[NSNumber numberWithInteger:(tmpBtcfOpe+tmpBtcfSales)]];
         /*--------------------------------------*/
         irr = [Finance irr_array:arr ]*100;
@@ -401,7 +351,59 @@ static ModelRE* sharedModelRE = nil;
     
     return irrArr;
 }
-
+/****************************************************************
+ * [年数,債務償還年数] 配列の取得
+ ****************************************************************/
+- (NSArray*) getDebtRepaymentPeriodArray
+{
+    NSArray *arrBtcf = [self makeArrAllCF:BTCF opeArr:_opeAll.opeArr cfSale:_sale.btcf];
+    NSArray *lbArr = [_investment.loan getLbArrayYear];
+    
+    NSMutableArray *drpArr = [NSMutableArray array];
+    CGPoint tmpLbPoint;
+    CGFloat tmpBtcf;
+    CGFloat tmpDrp;
+    CGPoint tmpDrpPoint;
+    
+    
+    for( int i=0; i < _investment.loan.periodYear; i++ ){
+        if ( [lbArr count] > i ){
+            tmpLbPoint  = [[lbArr       objectAtIndex:i] CGPointValue];
+        } else {
+            tmpLbPoint  = CGPointMake(i+1, 0 );
+        }
+        if ( [arrBtcf count] > i ){
+            tmpBtcf     = [[arrBtcf    objectAtIndex:i] floatValue];
+        } else {
+            tmpBtcf     = 0;
+        }
+        if ( tmpBtcf > 0 ){
+            tmpDrp      = (CGFloat)tmpLbPoint.y / tmpBtcf;
+        } else {
+            tmpDrp      = 0;
+        }
+        tmpDrpPoint = CGPointMake(i+1, tmpDrp);
+        [drpArr addObject:[NSValue valueWithCGPoint:tmpDrpPoint]];
+        
+        if ( i >= _holdingPeriod -1 ){
+            break;
+        }
+    }
+    
+    return drpArr;
+}
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
+/****************************************************************/
 /****************************************************************
  *
  ****************************************************************/
@@ -480,22 +482,22 @@ static ModelRE* sharedModelRE = nil;
     _estate                 = [[Estate alloc]init];
     _estate.prices          = _investment.prices;
 
-    _estate.land.area       = 100.0;
-    _estate.land.address    = [NSString stringWithFormat:@"千代田区銀座1-1-1"];
-    _estate.land.assessment = 125;
-    _estate.house.rooms     = 8;
-    _estate.house.area      = 100.00;
-    _estate.house.buildYear = [UIUtil getThisYear];
-    _estate.house.construct = CONST_WOOD;
+    _estate.land.area               = 100.0;
+    _estate.land.address            = [NSString stringWithFormat:@"千代田区銀座1-1-1"];
+    _estate.land.assessment         = 125;
+    _estate.house.rooms             = 8;
+    _estate.house.area              = 100.00;
+    _estate.house.buildYear         = [UIUtil getThisYear];
+    _estate.house.construct         = CONST_WOOD;
+    _estate.house.yearAquisition    = [UIUtil getThisYear];
     [_estate setLandPrice:2500 *10000];
-    _estate.name            = name;
+    _estate.name                    = name;
  
-    _yearAquisition         = [UIUtil getThisYear];
     _declineRate            = 0.01;
     
     _holdingPeriod          = 10;
-    _priceSales             = 4500*10000;
-    _transferExpense        = 180*10000;
+    _sale.price             = 4500*10000;
+    _sale.expense           = 180*10000;
     
     return;
 }
@@ -581,7 +583,7 @@ static ModelRE* sharedModelRE = nil;
         str = [NSString stringWithFormat:@"%d戸",(int)_estate.house.rooms];
         /****************************************/
     } else if ( [key isEqualToString:@"取得年"]){
-        str = [NSString stringWithFormat:@"%ld年",(long)_yearAquisition];
+        str = [NSString stringWithFormat:@"%ld年",(long)_estate.house.yearAquisition];
     } else if ( [key isEqualToString:@"家賃下落率"]){
         str = [NSString stringWithFormat:@"%2.2f%%",_declineRate*100];
     } else if ( [key isEqualToString:@"空室率"]){
@@ -594,11 +596,11 @@ static ModelRE* sharedModelRE = nil;
     } else if ( [key isEqualToString:@"保有期間"]){
         str = [NSString stringWithFormat:@"%ld年",(long)_holdingPeriod];
     } else if ( [key isEqualToString:@"売却価格"]){
-        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_priceSales/10000]];
+        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_sale.price/10000]];
     } else if ( [key isEqualToString:@"改良費"]){
-        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_improvementCosts/10000]];
+        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_estate.house.improvementCosts/10000]];
     } else if ( [key isEqualToString:@"譲渡費用"]){
-        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_transferExpense/10000]];
+        str = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_sale.expense/10000]];
         /****************************************/
     } else {
         str = @"";
@@ -640,23 +642,23 @@ static ModelRE* sharedModelRE = nil;
     _estate.house.construct = [[settings objectForKey:@"構造"] intValue];
     /*--------------------------------------*/
     if ( _addonMgr.opeSetting == true ){
-        _yearAquisition             = [[settings objectForKey:@"取得年"] integerValue];
-        _declineRate                = [[settings objectForKey:@"家賃下落率"] floatValue];
-        _investment.emptyRate       = [[settings objectForKey:@"空室率"] floatValue];
-        _investment.mngRate         = [[settings objectForKey:@"管理費割合"] floatValue];
-        _investment.incomeTaxRate   = [[settings objectForKey:@"所得税・住民税"] floatValue];
+        _estate.house.yearAquisition    = [[settings objectForKey:@"取得年"] integerValue];
+        _declineRate                    = [[settings objectForKey:@"家賃下落率"] floatValue];
+        _investment.emptyRate           = [[settings objectForKey:@"空室率"] floatValue];
+        _investment.mngRate             = [[settings objectForKey:@"管理費割合"] floatValue];
+        _investment.incomeTaxRate       = [[settings objectForKey:@"所得税・住民税"] floatValue];
     } else {
-        _yearAquisition             = [UIUtil getThisYear];
+        _estate.house.yearAquisition    = [UIUtil getThisYear];
     }
     /*--------------------------------------*/
     if ( _addonMgr.saleAnalysys == true ){
-        _holdingPeriod          = [[settings objectForKey:@"保有期間"] intValue];
-        _priceSales             = [[settings objectForKey:@"売却価格"] intValue];
-        _improvementCosts       = [[settings objectForKey:@"改良費"] intValue];
-        _transferExpense        = [[settings objectForKey:@"譲渡費用"] intValue];
-        _discountRate           = 0.05;
+        _holdingPeriod                  = [[settings objectForKey:@"保有期間"] intValue];
+        _sale.price                     = [[settings objectForKey:@"売却価格"] intValue];
+        _estate.house.improvementCosts  = [[settings objectForKey:@"改良費"] intValue];
+        _sale.expense                   = [[settings objectForKey:@"譲渡費用"] intValue];
+        _discountRate                   = 4.0 / 100;
     } else {
-        _priceSales             = _investment.prices.price;
+        _sale.price                     = _investment.prices.price;
     }
     return;
 }
@@ -671,39 +673,39 @@ static ModelRE* sharedModelRE = nil;
     
     //要素を追加する
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_investment.equity]         forKey:@"自己資金"];
-    [settings setObject:[NSNumber numberWithInteger:_investment.expense]        forKey:@"諸費用"];
+    [settings setObject:[NSNumber numberWithInteger:_investment.equity]             forKey:@"自己資金"];
+    [settings setObject:[NSNumber numberWithInteger:_investment.expense]            forKey:@"諸費用"];
     /*--------------------------------------*/
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_investment.loan.loanBorrow]forKey:@"借入金"];
-    [settings setObject:[NSNumber numberWithFloat:_investment.loan.rateYear]    forKey:@"金利"];
-    [settings setObject:[NSNumber numberWithInteger:_investment.loan.periodYear]forKey:@"借入期間"];
+    [settings setObject:[NSNumber numberWithInteger:_investment.loan.loanBorrow]    forKey:@"借入金"];
+    [settings setObject:[NSNumber numberWithFloat:_investment.loan.rateYear]        forKey:@"金利"];
+    [settings setObject:[NSNumber numberWithInteger:_investment.loan.periodYear]    forKey:@"借入期間"];
     /*--------------------------------------*/
-    [settings setObject:_estate.name                                            forKey:@"物件名"];
-    [settings setObject:[NSNumber numberWithInteger:_estate.prices.price]       forKey:@"物件価格"];
-    [settings setObject:[NSNumber numberWithFloat:_estate.prices.gpi]           forKey:@"GPI"];
+    [settings setObject:_estate.name                                                forKey:@"物件名"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.prices.price]           forKey:@"物件価格"];
+    [settings setObject:[NSNumber numberWithFloat:_estate.prices.gpi]               forKey:@"GPI"];
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_estate.land.price]         forKey:@"土地価格"];
-    [settings setObject:[NSNumber numberWithFloat:_estate.land.area   ]         forKey:@"土地面積"];
-    [settings setObject:[NSNumber numberWithInteger:_estate.land.assessment]    forKey:@"路線価"];
-    [settings setObject:_estate.land.address                                    forKey:@"住所"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.land.price]             forKey:@"土地価格"];
+    [settings setObject:[NSNumber numberWithFloat:_estate.land.area   ]             forKey:@"土地面積"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.land.assessment]        forKey:@"路線価"];
+    [settings setObject:_estate.land.address                                        forKey:@"住所"];
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_estate.house.price]        forKey:@"建物価格"];
-    [settings setObject:[NSNumber numberWithFloat:_estate.house.area  ]         forKey:@"床面積"];
-    [settings setObject:[NSNumber numberWithInteger:_estate.house.rooms ]       forKey:@"戸数"];
-    [settings setObject:[NSNumber numberWithInteger:_estate.house.buildYear]    forKey:@"建築年"];
-    [settings setObject:[NSNumber numberWithInteger:_estate.house.construct]    forKey:@"構造"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.price]            forKey:@"建物価格"];
+    [settings setObject:[NSNumber numberWithFloat:_estate.house.area  ]             forKey:@"床面積"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.rooms ]           forKey:@"戸数"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.buildYear]        forKey:@"建築年"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.construct]        forKey:@"構造"];
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_yearAquisition]            forKey:@"取得年"];
-    [settings setObject:[NSNumber numberWithFloat:_declineRate]                 forKey:@"家賃下落率"];
-    [settings setObject:[NSNumber numberWithFloat:_investment.emptyRate]        forKey:@"空室率"];
-    [settings setObject:[NSNumber numberWithFloat:_investment.mngRate]          forKey:@"管理費割合"];
-    [settings setObject:[NSNumber numberWithFloat:_investment.incomeTaxRate]    forKey:@"所得税・住民税"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.yearAquisition]   forKey:@"取得年"];
+    [settings setObject:[NSNumber numberWithFloat:_declineRate]                     forKey:@"家賃下落率"];
+    [settings setObject:[NSNumber numberWithFloat:_investment.emptyRate]            forKey:@"空室率"];
+    [settings setObject:[NSNumber numberWithFloat:_investment.mngRate]              forKey:@"管理費割合"];
+    [settings setObject:[NSNumber numberWithFloat:_investment.incomeTaxRate]        forKey:@"所得税・住民税"];
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_holdingPeriod]             forKey:@"保有期間"];
-    [settings setObject:[NSNumber numberWithInteger:_priceSales]                forKey:@"売却価格"];
-    [settings setObject:[NSNumber numberWithInteger:_improvementCosts]          forKey:@"改良費"];
-    [settings setObject:[NSNumber numberWithInteger:_transferExpense]           forKey:@"譲渡費用"];
+    [settings setObject:[NSNumber numberWithInteger:_holdingPeriod]                 forKey:@"保有期間"];
+    [settings setObject:[NSNumber numberWithInteger:_sale.price]                    forKey:@"売却価格"];
+    [settings setObject:[NSNumber numberWithInteger:_estate.house.improvementCosts] forKey:@"改良費"];
+    [settings setObject:[NSNumber numberWithInteger:_sale.expense]                  forKey:@"譲渡費用"];
     
     return settings;
 }
@@ -741,15 +743,15 @@ static ModelRE* sharedModelRE = nil;
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.construct]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.rooms]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.buildYear]];
-    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_yearAquisition]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.yearAquisition]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_declineRate]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_investment.emptyRate]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_investment.mngRate]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_investment.incomeTaxRate]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_holdingPeriod]];
-    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_priceSales]];
-    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_improvementCosts]];
-    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_transferExpense]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_sale.price]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.improvementCosts]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_sale.expense]];
     str = [str stringByAppendingString:@"\n"];
     
     return str;
@@ -817,7 +819,7 @@ static ModelRE* sharedModelRE = nil;
     _estate.prices.price        = price;
     _investment.prices.price    = price;
     if ( _addonMgr.saleAnalysys == false ){
-        _priceSales             = price;
+        _sale.price             = price;
     }
     [self adjustEquity];
 }
@@ -856,35 +858,42 @@ static ModelRE* sharedModelRE = nil;
 /****************************************************************/
 /****************************************************************/
 /****************************************************************
- *
+ * 運営配列と売却CFからNPV計算用のCF配列を作る
  ****************************************************************/
-- (NSArray*)calcOperationAll:(NSInteger)holdingPeriod
+- (NSArray*) makeArrAllCF:(NSInteger)mode opeArr:(NSArray*)opeArr cfSale:(NSInteger)cfSale
 {
-    NSInteger tmpGpi = _investment.prices.gpi;
-    NSMutableArray  *opeAll = [NSMutableArray array];
-    NSInteger btcfSum = 0;
-    NSInteger atcfSum = 0;
-    
-    for(int i=0; i< holdingPeriod; i++){
-        Operation *ope = [_investment getOperation:i+1
-                                               gpi:tmpGpi
-                                              loan:_investment.loan
-                                 amortizationCosts:[_estate.house getAmortizationCosts_aquYear:_yearAquisition term:i+1]];
-        tmpGpi = tmpGpi * (1 - _declineRate);
-        
-        [opeAll addObject:ope];
-        btcfSum = btcfSum+ ope.btcf;
-        atcfSum = atcfSum+ ope.atcf;
+    NSInteger holdingPeriod = [opeArr count];
+    NSMutableArray *arrCf   = [NSMutableArray array];
+    /*--------------------------------------*/
+    Operation *tmpOpe;
+    for( int year=1; year < holdingPeriod; year++ ){
+        tmpOpe = [opeArr objectAtIndex:year-1];
+        if ( mode == BTCF ){
+            [arrCf addObject:[NSNumber numberWithInteger:tmpOpe.btcf]];
+        } else {
+            [arrCf addObject:[NSNumber numberWithInteger:tmpOpe.atcf]];
+        }
     }
-    
-    _btcfOpeAll = btcfSum;
-    _atcfOpeAll = atcfSum;
-    
-    return opeAll;
-    
-    
+    //最終年のCFに売却時CFを加算して追加
+    tmpOpe = [opeArr objectAtIndex:holdingPeriod-1];
+    [arrCf addObject:[NSNumber numberWithInteger:tmpOpe.btcf+cfSale]];
+
+    return arrCf;
 }
 
+/****************************************************************
+ * NPV計算用のCF配列と初期投資額から配列を作り直してIRRを計算
+ ****************************************************************/
+- (CGFloat) calcIrr:(NSArray*)arrOrg initialInvest:(NSInteger)iniInvest
+{
+    NSMutableArray *arr = [arrOrg mutableCopy];
+
+    /*--------------------------------------*/
+    NSNumber *num_cf = [NSNumber numberWithFloat:- iniInvest];
+    [arr insertObject:num_cf atIndex:0];
+    return [Finance irr_array:arr];
+
+}
 /****************************************************************/
 @end
 /****************************************************************/

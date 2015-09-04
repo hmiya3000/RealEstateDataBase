@@ -269,15 +269,15 @@
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
-    _l_priceVal.text        = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.priceSales]];
-    _l_lbVal.text           = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.lbSales]];
+    _l_priceVal.text        = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.price]];
+    _l_lbVal.text           = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.loanBorrow]];
     _l_lbVal.textColor      = [UIColor redColor];
-    _l_btcfVal.text         = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.btcfSales]];
-    _l_amCostsVal.text      = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.amCosts]];
-    _l_transferIncomeVal.text   = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.transferIncome]];
-    _l_transferTaxVal.text  = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.transferTax]];
+    _l_btcfVal.text         = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.btcf]];
+    _l_amCostsVal.text      = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.amCosts]];
+    _l_transferIncomeVal.text   = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.transferIncome]];
+    _l_transferTaxVal.text  = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.transferTax]];
     _l_transferTaxVal.textColor     = [UIColor redColor];
-    _l_atcfVal.text         = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.atcfSales]];
+    _l_atcfVal.text         = [NSString stringWithFormat:@"%@",[UIUtil yenValue:_modelRE.sale.atcf]];
     
 //    NSArray *arr_gnpv   = [_modelRE getNpvArray];
     NSArray *arr_gnpv   = [_modelRE getIrrArray];

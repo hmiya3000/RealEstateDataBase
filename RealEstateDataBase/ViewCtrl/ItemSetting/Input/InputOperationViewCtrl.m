@@ -134,7 +134,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
@@ -283,6 +283,19 @@
     [self rewriteProperty];
 }
 
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.declineRate            = _declineRate;
+        _modelRE.investment.emptyRate   = _emptyRate;
+        _modelRE.investment.mngRate     = _mngRate;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
 
 /****************************************************************
  *
@@ -290,11 +303,6 @@
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.declineRate            = _declineRate;
-    _modelRE.investment.emptyRate   = _emptyRate;
-    _modelRE.investment.mngRate     = _mngRate;
-    [_modelRE valToFile];
-
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

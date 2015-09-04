@@ -15,6 +15,7 @@
     UITextView          *_tv_tips;
     UIView              *_uv;
     NSInteger           _value;
+    bool                _b_sample;
     
     UIViewController    *_exampleVC;
     UIButton            *_b_example;
@@ -38,7 +39,7 @@
     [super viewDidLoad];
     self.title = @"譲渡費用";
     
-    _value  = _modelRE.transferExpense/10000;
+    _value  = _modelRE.sale.expense/10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -52,7 +53,7 @@
     _l_price        = [UIUtil makeLabel:@"売却価格"];
     [_scrollView addSubview:_l_price];
     /****************************************/
-    _l_priceVal     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.priceSales/10000]]];
+    _l_priceVal     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.sale.price/10000]]];
     [_scrollView addSubview:_l_priceVal];
     /****************************************/
     _tv_tips                = [[UITextView alloc]init];
@@ -64,6 +65,7 @@
     /****************************************/
     _b_example      = [UIUtil makeButton:@"内訳例" tag:BTAG_SAMPLE];
     [_b_example addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    _b_sample   = false;
     [_scrollView addSubview:_b_example];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];
@@ -88,7 +90,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
     [self enterIn:_value];
 }
@@ -167,6 +169,20 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false || _b_sample == false ){
+        _modelRE.sale.expense     = _value * 10000;
+        [_modelRE valToFile];
+    }
+    _b_sample   = false;
+    [super viewWillDisappear:animated];
+}
+
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
@@ -174,13 +190,10 @@
     [super clickButton:sender];
     if ( sender.tag == BTAG_SAMPLE ){
         _exampleVC = [[InputExpenseExampleViewCtrl alloc]init];
-//        [self presentViewController:_exampleVC animated:YES completion:nil];
+        _b_sample   = true;
         [self.navigationController pushViewController:_exampleVC animated:YES];
         
     } else {
-        _modelRE.transferExpense     = _value * 10000;
-        [_modelRE valToFile];
-
         [self.navigationController popViewControllerAnimated:YES];
     }
     return;

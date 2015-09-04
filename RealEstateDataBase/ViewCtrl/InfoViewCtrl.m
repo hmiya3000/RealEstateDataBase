@@ -214,7 +214,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 
@@ -432,15 +432,16 @@
  ****************************************************************/
 - (void) switchChange:(UISwitch *)sw
 {
+    if ( _addOnMgr.friendMode == true ){
+        [self startAddonViewCtrl];
+        return;
+    }
+
     switch (sw.tag) {
         case STAG_MULTIYEAR:
             sw.on = _addOnMgr.multiYear;
             if ( _addOnMgr.multiYear == false ){
                 [self startAddonViewCtrl];
-            } else {
-                if ( _addOnMgr.appMode == APP_NETWORK ){
-                    [self startAddonViewCtrl];
-                }
             }
             break;
         case STAG_OPESETTING:
@@ -477,6 +478,7 @@
             break;
     }
     
+
 }
 
 /****************************************************************

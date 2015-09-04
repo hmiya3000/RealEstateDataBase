@@ -66,7 +66,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 /****************************************************************
@@ -122,16 +122,25 @@
     [self viewMake];
     return;
 }
+
+/****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.investment.incomeTaxRate = [self getTaxRate_idx:_selectIdx];
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
 /****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.investment.incomeTaxRate = [self getTaxRate_idx:_selectIdx];
-    //    _modelRE.estate.house.construct = (int)_selectIdx;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }

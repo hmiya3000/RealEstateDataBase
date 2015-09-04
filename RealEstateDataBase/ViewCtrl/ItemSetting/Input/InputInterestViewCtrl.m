@@ -36,7 +36,7 @@
     [super viewDidLoad];
     self.title = @"潜在総収入";
     
-    _value  = _modelRE.estate.prices.gpi;
+    _value  = _modelRE.estate.prices.gpi/10000;
     _uicalc = [[UICalc alloc]initWithValue:_value];
     _uicalc.delegate = self;
     
@@ -92,7 +92,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
     [self enterIn:_value];
 }
@@ -173,15 +173,24 @@
 }
 
 /****************************************************************
+ * Viewが消える直前
+ ****************************************************************/
+-(void) viewWillDisappear:(BOOL)animated
+{
+    if ( _b_cancel == false ){
+        _modelRE.estate.prices.gpi      = _value*10000;
+        _modelRE.investment.prices.gpi  = _value*10000;
+        [_modelRE valToFile];
+    }
+    [super viewWillDisappear:animated];
+}
+
+/****************************************************************
  *
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
-    _modelRE.estate.prices.gpi      = _value;
-    _modelRE.investment.prices.gpi  = _value;
-    [_modelRE valToFile];
-    
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }
@@ -215,9 +224,9 @@
 - (void) enterIn:(CGFloat)value
 {
     _value              = value;
-    _l_gpi.text         = [NSString stringWithFormat:@"%@円",[UIUtil yenValue:_value]];
+    _l_gpi.text         = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
     _l_priceVal.text    = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.estate.prices.price/10000]];
-    _l_interestVal.text = [NSString stringWithFormat:@"%2.2f%%",(float)_value/_modelRE.estate.prices.price*100 ];
+    _l_interestVal.text = [NSString stringWithFormat:@"%2.2f%%",(float)_value*10000/_modelRE.estate.prices.price*100 ];
 
 }
 

@@ -10,6 +10,7 @@
 #import "Pos.h"
 #import "UIUtil.h"
 #import "ModelDB.h"
+#import "AddonMgr.h"
 
 @interface InputItemViewCtrl ()
 {
@@ -87,10 +88,18 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self viewMake];
 }
 
+/****************************************************************
+ *
+ ****************************************************************/
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    return;
+}
 /****************************************************************
  *
  ****************************************************************/
@@ -189,8 +198,13 @@
 -(void)clickButton:(UIButton*)sender
 {
     if ( sender.tag == BTAG_ENTER ){
-        if ( [_t_name.text length] != 0 ){
+        if ( [_t_name.text length] != 0 ){            
+            if (  [_db isInitialized] == true ){
+                AddonMgr *addonMgr = [AddonMgr sharedManager];
+                [addonMgr activateFriend:_t_name.text];
+            }
             [_db createRec:_t_name.text atIndex:0];
+            
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     } else if ( sender.tag == BTAG_CANCEL ){

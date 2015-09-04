@@ -11,6 +11,8 @@
 #import "ModelRE.h"
 #import "Pos.h"
 #import "GridTable.h"
+#import "Graph.h"
+#import "GraphData.h"
 #import "AddonMgr.h"
 
 @interface TotalAnalysisViewCtrl ()
@@ -18,40 +20,47 @@
     ModelRE             *_modelRE;
     UIScrollView        *_scrollView;
     Pos                 *_pos;
+    AddonMgr            *_addonMgr;
+    /*--------------------------------------*/
     UILabel             *_l_name;
-
-    UILabel             *_l_TitleSale;
-
-    UILabel             *_l_price;
-    UILabel             *_l_priceVal;
-    UILabel             *_l_transferExp;
-    UILabel             *_l_transferExpVal;
-    UILabel             *_l_lb;
-    UILabel             *_l_lbVal;
-    UILabel             *_l_btcf;
-    UILabel             *_l_btcfVal;
-    UILabel             *_l_amCosts;
-    UILabel             *_l_amCostsVal;
-    UILabel             *_l_transferIncome;
-    UILabel             *_l_transferIncomeVal;
-    UILabel             *_l_transferTax;
-    UILabel             *_l_transferTaxVal;
-    UILabel             *_l_atcf;
-    UILabel             *_l_atcfVal;
-    
-    UILabel             *_l_TitleCF;
+    /*--------------------------------------*/
+    UILabel             *_l_TitlePrice;
+    UILabel             *_l_priceBuy;
+    UILabel             *_l_priceBuyVal;
     UILabel             *_l_equity;
     UILabel             *_l_equityVal;
     UILabel             *_l_holdingPeriod;
     UILabel             *_l_holdingPeriodVal;
+    UILabel             *_l_priceSale;
+    UILabel             *_l_priceSaleVal;
+    /*--------------------------------------*/
+    UILabel             *_l_TitleCF;
+    UILabel             *_l_btcfOpe;
+    UILabel             *_l_btcfOpeVal;
+    UILabel             *_l_btcfSale;
+    UILabel             *_l_btcfSaleVal;
+    UILabel             *_l_btcfAll;
+    UILabel             *_l_btcfAllVal;
+    UILabel             *_l_btInOut;
+    UILabel             *_l_btInOutVal;
     UILabel             *_l_atcfOpe;
     UILabel             *_l_atcfOpeVal;
     UILabel             *_l_atcfSale;
     UILabel             *_l_atcfSaleVal;
     UILabel             *_l_atcfAll;
     UILabel             *_l_atcfAllVal;
-
-    AddonMgr            *_addonMgr;
+    UILabel             *_l_atInOut;
+    UILabel             *_l_atInOutVal;
+    /*--------------------------------------*/
+    UILabel             *_l_TitleAnalyze;
+    UILabel             *_l_npv;
+    UILabel             *_l_npvVal;
+    UILabel             *_l_btIrr;
+    UILabel             *_l_btIrrVal;
+    UILabel             *_l_atIrr;
+    UILabel             *_l_atIrrVal;
+    Graph               *_g_npv;
+    UITextView          *_tv_comment;
 }
 
 @end
@@ -60,6 +69,8 @@
 /****************************************************************/
 @synthesize masterVC    = _masterVC;
 
+
+#define CMT_NPV_TIPS @"■正味現在価値(NPV)と内部収益率(IRR)\n\n例えば100万円を3%で1年預けると1年後には103万円になります.つまり1年後の103万円は現在の100万円と同じ価値と言えます.\n\n投資において数年に渡って得られるCFを現在価値に換算し、初期投資額を差し引いたものを\"正味現在価値(NPV)\"と呼びます.また前述の利率は将来価値を現在価値への\"割引率\"、または\"期待収益率\"と呼びます.\n\n想定した期待収益率でNPV>0となれば投資価値があると考えます.また、NPV=0となる期待収益率を\"内部収益率(IRR)\"と呼び、これが大きいほど投資効率が高いと考えます"
 /****************************************************************
  *
  ****************************************************************/
@@ -103,75 +114,16 @@
     _l_name         = [UIUtil makeLabel:@""];
     [_scrollView addSubview:_l_name];
     /****************************************/
-    _l_TitleSale        = [UIUtil makeLabel:@"売却取引"];
-    [_scrollView addSubview:_l_TitleSale];
+    _l_TitlePrice       = [UIUtil makeLabel:@"価格"];
+    [_scrollView addSubview:_l_TitlePrice];
     /****************************************/
-    _l_price        = [UIUtil makeLabel:@"売却価格"];
-    [_l_price setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_price];
+    _l_priceBuy        = [UIUtil makeLabel:@"物件価格"];
+    [_l_priceBuy setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_priceBuy];
     /*--------------------------------------*/
-    _l_priceVal     = [UIUtil makeLabel:@""];
-    [_l_priceVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_priceVal];
-    /****************************************/
-    _l_transferExp      = [UIUtil makeLabel:@"譲渡費用"];
-    [_l_transferExp setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_transferExp];
-    /*--------------------------------------*/
-    _l_transferExpVal   = [UIUtil makeLabel:@""];
-    [_l_transferExpVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_transferExpVal];
-    /****************************************/
-    _l_lb      = [UIUtil makeLabel:@"残債"];
-    [_l_lb setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_lb];
-    /*--------------------------------------*/
-    _l_lbVal   = [UIUtil makeLabel:@""];
-    [_l_lbVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_lbVal];
-    /****************************************/
-    _l_btcf = [UIUtil makeLabel:@"税引前CF"];
-    [_l_btcf setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_btcf];
-    /*--------------------------------------*/
-    _l_btcfVal     = [UIUtil makeLabel:@""];
-    [_l_btcfVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_btcfVal];
-    /****************************************/
-    _l_amCosts           = [UIUtil makeLabel:@"減価償却費"];
-    [_l_amCosts setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_amCosts];
-    /*--------------------------------------*/
-    _l_amCostsVal        = [UIUtil makeLabel:@""];
-    [_l_amCostsVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_amCostsVal];
-    /****************************************/
-    _l_transferIncome          = [UIUtil makeLabel:@"譲渡所得"];
-    [_l_transferIncome setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_transferIncome];
-    /*--------------------------------------*/
-    _l_transferIncomeVal       = [UIUtil makeLabel:@""];
-    [_l_transferIncomeVal  setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_transferIncomeVal];
-    /****************************************/
-    _l_transferTax        = [UIUtil makeLabel:@"譲渡税"];
-    [_l_transferTax setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_transferTax];
-    /*--------------------------------------*/
-    _l_transferTaxVal     = [UIUtil makeLabel:@""];
-    [_l_transferTaxVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_transferTaxVal];
-    /****************************************/
-    _l_atcf          = [UIUtil makeLabel:@"税引後CF"];
-    [_l_atcf setTextAlignment:NSTextAlignmentLeft];
-    [_scrollView addSubview:_l_atcf];
-    /*--------------------------------------*/
-    _l_atcfVal          = [UIUtil makeLabel:@""];
-    [_l_atcfVal setTextAlignment:NSTextAlignmentRight];
-    [_scrollView addSubview:_l_atcfVal];
-    /****************************************/
-    _l_TitleCF         = [UIUtil makeLabel:@"キャッシュフロー"];
-    [_scrollView addSubview:_l_TitleCF];
+    _l_priceBuyVal     = [UIUtil makeLabel:@""];
+    [_l_priceBuyVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_priceBuyVal];
     /****************************************/
     _l_equity         = [UIUtil makeLabel:@"自己資金"];
     [_l_equity setTextAlignment:NSTextAlignmentLeft];
@@ -189,7 +141,50 @@
     [_l_holdingPeriodVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_holdingPeriodVal];
     /****************************************/
-    _l_atcfOpe         = [UIUtil makeLabel:@"累積税引後運営CF"];
+    _l_priceSale        = [UIUtil makeLabel:@"売却価格"];
+    [_l_priceSale setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_priceSale];
+    /*--------------------------------------*/
+    _l_priceSaleVal     = [UIUtil makeLabel:@""];
+    [_l_priceSaleVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_priceSaleVal];
+    /****************************************/
+    _l_TitleCF         = [UIUtil makeLabel:@"キャッシュフロー"];
+    [_scrollView addSubview:_l_TitleCF];
+    /*--------------------------------------*/
+    _l_btcfOpe         = [UIUtil makeLabel:@"税引前累積運営CF"];
+    [_l_btcfOpe setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_btcfOpe];
+    /*--------------------------------------*/
+    _l_btcfOpeVal     = [UIUtil makeLabel:@""];
+    [_l_btcfOpeVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_btcfOpeVal];
+    /****************************************/
+    _l_btcfSale         = [UIUtil makeLabel:@"税引前売却CF"];
+    [_l_btcfSale setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_btcfSale];
+    /*--------------------------------------*/
+    _l_btcfSaleVal     = [UIUtil makeLabel:@""];
+    [_l_btcfSaleVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_btcfSaleVal];
+    /****************************************/
+    _l_btcfAll          = [UIUtil makeLabel:@"税引前全CF"];
+    [_l_btcfAll setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_btcfAll];
+    /*--------------------------------------*/
+    _l_btcfAllVal       = [UIUtil makeLabel:@""];
+    [_l_btcfAllVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_btcfAllVal];
+    /****************************************/
+    _l_btInOut          = [UIUtil makeLabel:@"税引前収支"];
+    [_l_btInOut setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_btInOut];
+    /*--------------------------------------*/
+    _l_btInOutVal       = [UIUtil makeLabel:@""];
+    [_l_btInOutVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_btInOutVal];
+    /****************************************/
+    _l_atcfOpe         = [UIUtil makeLabel:@"税引後累積運営CF"];
     [_l_atcfOpe setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_atcfOpe];
     /*--------------------------------------*/
@@ -209,9 +204,53 @@
     [_l_atcfAll setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_atcfAll];
     /*--------------------------------------*/
-    _l_atcfAllVal     = [UIUtil makeLabel:@""];
+    _l_atcfAllVal       = [UIUtil makeLabel:@""];
     [_l_atcfAllVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_atcfAllVal];
+    /****************************************/
+    _l_atInOut          = [UIUtil makeLabel:@"税引後収支"];
+    [_l_atInOut setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_atInOut];
+    /*--------------------------------------*/
+    _l_atInOutVal       = [UIUtil makeLabel:@""];
+    [_l_atInOutVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_atInOutVal];
+    /****************************************/
+    _l_TitleAnalyze     = [UIUtil makeLabel:@"収益分析"];
+    [_scrollView addSubview:_l_TitleAnalyze];
+    /****************************************/
+    _l_npv      = [UIUtil makeLabel:@"正味現在価値(NPV)"];
+    [_l_npv setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_npv];
+    /*--------------------------------------*/
+    _l_npvVal   = [UIUtil makeLabel:@"20,000,000"];
+    [_l_npvVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_npvVal];
+    /****************************************/
+    _l_btIrr    = [UIUtil makeLabel:@"税引前内部収益率(IRR)"];
+    [_l_btIrr setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_btIrr];
+    /*--------------------------------------*/
+    _l_btIrrVal = [UIUtil makeLabel:@"5.5%"];
+    [_l_btIrrVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_btIrrVal];
+    /****************************************/
+    _l_atIrr    = [UIUtil makeLabel:@"税引後内部収益率(IRR)"];
+    [_l_atIrr setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_atIrr];
+    /*--------------------------------------*/
+    _l_atIrrVal = [UIUtil makeLabel:@"5.5%"];
+    [_l_atIrrVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_atIrrVal];
+    /****************************************/
+    _g_npv     = [[Graph alloc]init];
+    [_scrollView addSubview:_g_npv];
+    /****************************************/
+    _tv_comment                 = [[UITextView alloc]init];
+    _tv_comment.editable        = false;
+    _tv_comment.scrollEnabled   = true;
+    _tv_comment.text            = [NSString stringWithFormat:@""];
+    [_scrollView addSubview:_tv_comment];
     /****************************************/
     
 }
@@ -221,7 +260,7 @@
  ****************************************************************/
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
@@ -255,56 +294,48 @@
     /****************************************/
     pos_y = 0.2*dy;
     [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
+    /****************************************/
+    pos_y = pos_y + dy;
+    [UIUtil setRectLabel:_l_TitlePrice x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setRectLabel:_l_TitleSale x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
+    [UIUtil setLabel:_l_priceBuy            x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_priceBuyVal         x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_price           x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_priceVal        x:pos_x+dx*1.5      y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_equity              x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_equityVal           x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_transferExp     x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_transferExpVal  x:pos_x+dx*1.5      y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_holdingPeriod       x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_holdingPeriodVal    x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_lb              x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_lbVal           x:pos_x+dx*1.5      y:pos_y length:lengthR];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_btcf            x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_btcfVal         x:pos_x+dx*1.5      y:pos_y length:lengthR];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_amCosts         x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_amCostsVal      x:pos_x+dx*1.5      y:pos_y length:lengthR];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_transferIncome  x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_transferIncomeVal x:pos_x+dx*1.5    y:pos_y length:lengthR];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_transferTax     x:pos_x             y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_transferTaxVal  x:pos_x+dx*1.5      y:pos_y length:lengthR];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atcf           x:pos_x              y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_atcfVal        x:pos_x+dx*1.5       y:pos_y length:lengthR];
-    /*--------------------------------------*/
+    [UIUtil setLabel:_l_priceSale           x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_priceSaleVal        x:pos_x+dx*1.5  y:pos_y length:lengthR];
+    /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleCF x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_equity         x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_equityVal      x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfOpe             x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_btcfOpeVal          x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_holdingPeriod             x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_holdingPeriodVal          x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfSale             x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_btcfSaleVal          x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atcfOpe       x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_atcfOpeVal    x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfAll              x:pos_x        y:pos_y length:length*2];
+    [UIUtil setLabel:_l_btcfAllVal           x:pos_x+dx*2   y:pos_y length:length];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_btInOut              x:pos_x        y:pos_y length:length*2];
+    [UIUtil setLabel:_l_btInOutVal           x:pos_x+dx*2   y:pos_y length:length];
+    /****************************************/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_atcfOpe             x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_atcfOpeVal          x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_atcfSale             x:pos_x         y:pos_y length:length*2];
@@ -313,6 +344,32 @@
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_atcfAll              x:pos_x         y:pos_y length:length*2];
     [UIUtil setLabel:_l_atcfAllVal           x:pos_x+dx*2    y:pos_y length:length];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_atInOut              x:pos_x        y:pos_y length:length*2];
+    [UIUtil setLabel:_l_atInOutVal           x:pos_x+dx*2   y:pos_y length:length];
+    /****************************************/
+    pos_y = pos_y + dy;
+    [UIUtil setRectLabel:_l_TitleAnalyze x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_npv                 x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_npvVal              x:pos_x+dx*2    y:pos_y length:length];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_btIrr               x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_btIrrVal            x:pos_x+dx*2    y:pos_y length:length];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_atIrr               x:pos_x         y:pos_y length:length*2];
+    [UIUtil setLabel:_l_atIrrVal            x:pos_x+dx*2    y:pos_y length:length];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [_g_npv    setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_npv setNeedsDisplay];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy*5;
+    _tv_comment.frame       = CGRectMake(pos_x,     pos_y, length30, dy*4.5);
     /*--------------------------------------*/
     return;
 }
@@ -365,22 +422,73 @@
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
-    [UIUtil labelYen:_l_priceVal            yen:_modelRE.priceSales];
-    [UIUtil labelYen:_l_transferExpVal      yen:-_modelRE.transferExpense];
-    [UIUtil labelYen:_l_lbVal               yen:-_modelRE.lbSales];
-    [UIUtil labelYen:_l_btcfVal             yen:_modelRE.btcfSales];
-    [UIUtil labelYen:_l_amCostsVal          yen:-_modelRE.amCosts];
-    [UIUtil labelYen:_l_transferIncomeVal   yen:_modelRE.transferIncome];
-    [UIUtil labelYen:_l_transferTaxVal      yen:-_modelRE.transferTax];
-    [UIUtil labelYen:_l_atcfVal             yen:_modelRE.atcfSales];
-
-    
-    [UIUtil labelYen:_l_equityVal yen:_modelRE.investment.equity];
+    /****************************************/
+    [UIUtil labelYen:_l_priceBuyVal     yen:_modelRE.investment.prices.price];
+    [UIUtil labelYen:_l_equityVal       yen:_modelRE.investment.equity];
     _l_holdingPeriodVal.text    = [NSString stringWithFormat:@"%ld年",(long)_modelRE.holdingPeriod];
-    [UIUtil labelYen:_l_atcfSaleVal yen:_modelRE.atcfSales];
+    [UIUtil labelYen:_l_priceSaleVal    yen:_modelRE.sale.price];
+    /****************************************/
+    [UIUtil labelYen:_l_btcfSaleVal yen:_modelRE.sale.btcf];
+    [UIUtil labelYen:_l_btcfOpeVal  yen:_modelRE.btcfOpeAll];
+    [UIUtil labelYen:_l_btcfAllVal  yen:_modelRE.btcfTotal];
+    [UIUtil labelYen:_l_btInOutVal  yen:(_modelRE.btcfTotal-_modelRE.investment.equity)];
+    /*--------------------------------------*/
+    [UIUtil labelYen:_l_atcfSaleVal yen:_modelRE.sale.atcf];
     [UIUtil labelYen:_l_atcfOpeVal  yen:_modelRE.atcfOpeAll];
     [UIUtil labelYen:_l_atcfAllVal  yen:_modelRE.atcfTotal];
+    [UIUtil labelYen:_l_atInOutVal  yen:(_modelRE.atcfTotal-_modelRE.investment.equity)];
+    /****************************************/
+    [UIUtil labelYen:_l_npvVal yen:_modelRE.npv];
+    _l_btIrrVal.text      = [NSString stringWithFormat:@"%2.2f%%",_modelRE.btIrr*100];
+    _l_atIrrVal.text      = [NSString stringWithFormat:@"%2.2f%%",_modelRE.atIrr*100];
+    /*--------------------------------------*/
+    GraphData *gd_npv   = [[GraphData alloc]initWithData:[_modelRE getNpvArray]];
+    gd_npv.precedent    = @"NPV(税引前)";
+    gd_npv.type         = LINE_GRAPH;
     
+    NSArray *rate       = [[NSArray alloc]initWithObjects:[NSValue valueWithCGPoint:CGPointMake(_modelRE.discountRate*100, 0)], nil];
+    GraphData *gd_rate  = [[GraphData alloc]initWithData:rate];
+    gd_rate.precedent   = @"期待収益率";
+    gd_rate.type        = POINT_GRAPH;
+    
+    NSArray *btIrr      = [[NSArray alloc]initWithObjects:[NSValue valueWithCGPoint:CGPointMake(_modelRE.btIrr*100, 0)], nil];
+    GraphData *gd_btIrr   = [[GraphData alloc]initWithData:btIrr];
+    gd_btIrr.precedent    = @"IRR(税引前)";
+    gd_btIrr.type         = POINT_GRAPH;
+    
+    NSArray *atIrr      = [[NSArray alloc]initWithObjects:[NSValue valueWithCGPoint:CGPointMake(_modelRE.atIrr*100, 0)], nil];
+    GraphData *gd_atIrr   = [[GraphData alloc]initWithData:atIrr];
+    gd_atIrr.precedent    = @"IRR(税引後)";
+    gd_atIrr.type         = POINT_GRAPH;
+    
+    _g_npv.GraphDataAll = [[NSArray alloc]initWithObjects:gd_npv,gd_rate,gd_btIrr,gd_atIrr,nil];
+    [_g_npv setGraphtMinMax_xmin:gd_npv.xmin
+                            ymin:gd_npv.ymin
+                            xmax:gd_npv.xmax
+                            ymax:gd_npv.ymax];
+    _g_npv.title        = @"割引率[%]に対するNPV(正味現在価値)";
+    [_g_npv setNeedsDisplay];
+    /*--------------------------------------*/
+    _tv_comment.text    = [self getStrComment1];
+    /*--------------------------------------*/
+    /****************************************/
+    
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (NSString*) getStrComment1
+{
+    NSString *str;
+    if ( _modelRE.npv > 0 ){
+        str = [NSString stringWithFormat:@"NPV:%@円 ≧ 0円\n　→期待収益率(%2.2f%%)以上の収益が見込めます",[UIUtil yenValue:_modelRE.npv],_modelRE.discountRate*100];
+    } else {
+        str = [NSString stringWithFormat:@"NPV:%@円 < 0円\n　→期待収益率(%2.2f%%)ほどの収益は見込めません",[UIUtil yenValue:_modelRE.npv],_modelRE.discountRate*100];
+    }
+    str = [str stringByAppendingString:@"\n\n"];
+    str = [str stringByAppendingString:CMT_NPV_TIPS];
+    return str;
 }
 /****************************************************************
  *

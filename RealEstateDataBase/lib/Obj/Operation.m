@@ -17,6 +17,8 @@
 @synthesize noi                 = _noi;
 @synthesize ads                 = _ads;
 @synthesize btcf                = _btcf;
+@synthesize taxIncome           = _taxIncome;
+@synthesize amCost              = _amCost;
 @synthesize tax                 = _tax;
 @synthesize atcf                = _atcf;
 

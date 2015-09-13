@@ -56,8 +56,9 @@ static ModelRE* sharedModelRE = nil;
 @synthesize atcfAccumMin        = _atcfAccumMin;
 @synthesize atcfAccumMax        = _atcfAccumMax;
 /****************************************************************/
-#define BTCF    1
-#define ATCF    2
+#define BTCF        1
+#define ATCF        2
+#define BTCFBANK    3
 /****************************************************************
  *
  ****************************************************************/
@@ -105,17 +106,47 @@ static ModelRE* sharedModelRE = nil;
     return self;
 }
 /****************************************************************
+ *
+ ****************************************************************/
+- (void) autoInput
+{
+    _investment.expense             = _investment.prices.price * 0.07;
+    [_investment adjustEquity];
+    _investment.mngRate             = 0.05;
+    _investment.propTaxRate         = 0.014;
+    _investment.incomeTaxRate       = 0.3;
+    _investment.loan.levelPayment   = true;
+
+    _estate.land.assessment         = _estate.land.price / 1000 / _estate.land.area;
+    _estate.house.area              = _estate.land.area;
+    _estate.house.yearAquisition    = [UIUtil getThisYear];
+    [_estate setLandPrice:_estate.land.price];
+    _declineRate                    = 0.01;
+    _holdingPeriod                  = 10;
+    _sale.price                     = _investment.prices.price;
+    _sale.expense                   = _sale.price * 0.04;
+}
+
+/****************************************************************
  * データの再計算
  ****************************************************************/
 - (void) calcAll
 {
-    [_opeAll calcOpeAll:_holdingPeriod investment:_investment house:_estate.house declineRate:_declineRate];
+    NSInteger period;
+    if ( _addonMgr.saleAnalysys == false ){
+        period    = _investment.loan.periodYear;
+    } else {
+        period    = _holdingPeriod;
+    }
+    
+    
+    [_opeAll calcOpeAll:period investment:_investment house:_estate.house declineRate:_declineRate];
     NSArray *opeN = _opeAll.opeArr;
     
     _btcfOpeAll = _opeAll.btcf;
     _atcfOpeAll = _opeAll.atcf;
     _ope1       = [opeN objectAtIndex:0];
-    _opeLast    = [opeN objectAtIndex:_holdingPeriod-1];
+    _opeLast    = [opeN objectAtIndex:period-1];
 
     /*--------------------------------------*/
     [_sale calcSale:_investment holdingPeriod:_holdingPeriod house:_estate.house];
@@ -150,8 +181,10 @@ static ModelRE* sharedModelRE = nil;
 {
     NSInteger   tmpHoldingPeriod;
     
-    if ( _addonMgr.multiYear == true ){
+    if ( _addonMgr.saleAnalysys == true ){
         tmpHoldingPeriod = _holdingPeriod;
+    } else if ( _addonMgr.multiYear == true ){
+        tmpHoldingPeriod = _investment.loan.periodYear;
     } else {
         tmpHoldingPeriod = 1;
     }
@@ -189,11 +222,11 @@ static ModelRE* sharedModelRE = nil;
 /****************************************************************
  * 累積キャッシュフローを座標配列で取得
  ****************************************************************/
-- (NSArray*) getBTCashFlowAccum
+- (NSArray*) getBTCashFlowAccum:(NSInteger)period
 {
     NSArray *retArr;
     
-    retArr = [self getCashFlowAccum:BTCF];
+    retArr = [self getCashFlowAccum:BTCF period:period];
     _btcfAccumMin = _tmpCfAccumMin;
     _btcfAccumMax = _tmpCfAccumMax;
     
@@ -203,11 +236,11 @@ static ModelRE* sharedModelRE = nil;
 /****************************************************************
  * 累積キャッシュフローを座標配列で取得
  ****************************************************************/
-- (NSArray*) getATCashFlowAccum
+- (NSArray*) getATCashFlowAccum:(NSInteger)period
 {
     NSArray *retArr;
 
-    retArr = [self getCashFlowAccum:ATCF];
+    retArr = [self getCashFlowAccum:ATCF period:period];
     _btcfAccumMin = _tmpCfAccumMin;
     _btcfAccumMax = _tmpCfAccumMax;
 
@@ -217,7 +250,7 @@ static ModelRE* sharedModelRE = nil;
 /****************************************************************
  * 累積キャッシュフローを座標配列で取得
  ****************************************************************/
-- (NSArray*) getCashFlowAccum:(NSInteger)mode
+- (NSArray*) getCashFlowAccum:(NSInteger)mode period:(NSInteger)period
 {
     NSMutableArray *cfArr = [NSMutableArray array];
     
@@ -236,7 +269,7 @@ static ModelRE* sharedModelRE = nil;
 
     /* 運営データを取得 */
     Operation *tmpOpe;
-    for ( int year = 1; year <= _holdingPeriod; year++){
+    for ( int year = 1; year <= period; year++){
         tmpOpe = [_opeAll.opeArr objectAtIndex:year-1];
 
         if ( mode == BTCF ){
@@ -263,7 +296,7 @@ static ModelRE* sharedModelRE = nil;
         } else {
             cfSum = cfSum + _sale.atcf;
         }
-        tmpPoint = CGPointMake(_holdingPeriod+1, cfSum);
+        tmpPoint = CGPointMake(period+1, cfSum);
         [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
     }
 
@@ -356,7 +389,14 @@ static ModelRE* sharedModelRE = nil;
  ****************************************************************/
 - (NSArray*) getDebtRepaymentPeriodArray
 {
-    NSArray *arrBtcf = [self makeArrAllCF:BTCF opeArr:_opeAll.opeArr cfSale:_sale.btcf];
+    NSInteger period;
+    if ( _addonMgr.saleAnalysys == true ){
+        period = _holdingPeriod;
+    } else {
+        period = _investment.loan.periodYear;
+    }
+
+    NSArray *arrBtcf = [self makeArrAllCF:BTCFBANK opeArr:_opeAll.opeArr cfSale:_sale.btcf];
     NSArray *lbArr = [_investment.loan getLbArrayYear];
     
     NSMutableArray *drpArr = [NSMutableArray array];
@@ -385,7 +425,7 @@ static ModelRE* sharedModelRE = nil;
         tmpDrpPoint = CGPointMake(i+1, tmpDrp);
         [drpArr addObject:[NSValue valueWithCGPoint:tmpDrpPoint]];
         
-        if ( i >= _holdingPeriod -1 ){
+        if ( i >= period -1 ){
             break;
         }
     }
@@ -870,8 +910,11 @@ static ModelRE* sharedModelRE = nil;
         tmpOpe = [opeArr objectAtIndex:year-1];
         if ( mode == BTCF ){
             [arrCf addObject:[NSNumber numberWithInteger:tmpOpe.btcf]];
-        } else {
+        } else if ( mode == ATCF ){
             [arrCf addObject:[NSNumber numberWithInteger:tmpOpe.atcf]];
+        } else {
+            NSInteger btcfBank = tmpOpe.taxIncome + tmpOpe.amCost;
+            [arrCf addObject:[NSNumber numberWithInteger:btcfBank]];
         }
     }
     //最終年のCFに売却時CFを加算して追加

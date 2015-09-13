@@ -45,6 +45,7 @@
 + (ModelRE*)sharedManager;
 + (id)allocWithZone:(NSZone *)zone;
 - (id)copyWithZone:(NSZone *)zone;
+- (void) autoInput;
 - (void) valToFile;
 - (void) fileToVal:(NSString*)serial name:(NSString*)name;
 - (void) deleteItem:(NSString*)serial;
@@ -54,8 +55,8 @@
 - (void) adjustLoanBorrow;
 
 - (NSArray*) getOperationArray;
-- (NSArray*) getBTCashFlowAccum;
-- (NSArray*) getATCashFlowAccum;
+- (NSArray*) getBTCashFlowAccum:(NSInteger)period;
+- (NSArray*) getATCashFlowAccum:(NSInteger)period;
 - (void) calcAll;
 - (NSArray*) getNpvArray;
 - (NSArray*) getIrrArray;

@@ -27,17 +27,25 @@
 
     Loan *loan = modelRE.investment.loan;
     
-    NSArray *arr_btcf       = [modelRE getBTCashFlowAccum];
-    NSArray *arr_atcf       = [modelRE getATCashFlowAccum];
+    NSInteger cfPeriod;
+    NSInteger graphPeriod;
+    
+    if ( addonMgr.saleAnalysys == true ){
+        cfPeriod    = modelRE.holdingPeriod;
+        graphPeriod = cfPeriod+1;
+    } else if ( addonMgr.multiYear == true ){
+        cfPeriod    = modelRE.investment.loan.periodYear;
+        graphPeriod = cfPeriod;
+    } else {
+        cfPeriod    = modelRE.holdingPeriod;
+        graphPeriod = cfPeriod;
+    }
+
+    NSArray *arr_btcf       = [modelRE getBTCashFlowAccum:cfPeriod];
+    NSArray *arr_atcf       = [modelRE getATCashFlowAccum:cfPeriod];
     NSArray *arr_loanTmp    = [loan getLbArrayYear];
     NSMutableArray *arr_loan = [[NSMutableArray alloc]init];
 
-    NSInteger graphPeriod;
-    if ( addonMgr.saleAnalysys == true ){
-        graphPeriod = modelRE.holdingPeriod+1;
-    } else {
-        graphPeriod = modelRE.holdingPeriod;
-    }
     
     for( int i=0; i<= graphPeriod; i++){
         if ( i == 0 ){

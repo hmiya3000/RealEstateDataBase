@@ -96,11 +96,11 @@
     ope.noi         = ope.egi - ope.opex;
     ope.ads         = [loan getPmtYear:year];
     ope.btcf        = ope.noi - ope.ads;
-    
+    ope.amCost      = amortizationCosts;
     /*--------------------------------------*/
-    NSInteger taxIncome = ope.noi - [_loan getIpmtYear:year] - amortizationCosts;
-    if ( taxIncome > 0){
-        ope.tax    = taxIncome * _incomeTaxRate;
+    ope.taxIncome = ope.noi - [_loan getIpmtYear:year] - ope.amCost;
+    if ( ope.taxIncome > 0){
+        ope.tax    = ope.taxIncome * _incomeTaxRate;
     } else {
         ope.tax    = 0;
     }

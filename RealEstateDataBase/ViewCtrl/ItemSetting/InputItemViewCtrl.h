@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InputItemViewCtrl : UIViewController
+@interface InputItemViewCtrl : UIViewController<UITextFieldDelegate,UIScrollViewDelegate>
 
 @end

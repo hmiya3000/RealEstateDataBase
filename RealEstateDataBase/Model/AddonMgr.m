@@ -68,7 +68,6 @@ static AddonMgr* sharedAddonMgr = nil;
     if (self) {
         _appMode = [self loadAppMode];
         [self setAddons:_appMode];
-        [self loadFriendMode];
         _products = nil;
     }
     return self;
@@ -111,10 +110,12 @@ static AddonMgr* sharedAddonMgr = nil;
 {
     if ( [keyword isEqualToString:FRIEND_KEYWORD] == true ){
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        [ud setBool:YES forKey:@"FriendMode"];
+        [ud setObject:@"Activated" forKey:@"FriendMode"];
+        [ud setInteger:_appMode forKey:@"FriendModeAppMode" ];
         [ud synchronize];
         _friendMode = true;
     } else {
+        [self deleteFriendMode];
         _friendMode = false;
     }
 }
@@ -279,11 +280,13 @@ static AddonMgr* sharedAddonMgr = nil;
  ****************************************************************/
 - (NSInteger) loadAppMode
 {
-    NSInteger tmpAppMode = APP_FREE;
-    for(int i=0; i<APP_NETWORK;i++ ){
-        tmpAppMode = [self readProductId:tmpAppMode];
-        if ( tmpAppMode == APP_NETWORK ){
-            break;
+    NSInteger tmpAppMode = [self loadFriendMode];
+    if ( _friendMode == false ){
+        for(int i=0; i<APP_NETWORK;i++ ){
+            tmpAppMode = [self readProductId:tmpAppMode];
+            if ( tmpAppMode == APP_NETWORK ){
+                break;
+            }
         }
     }
     return tmpAppMode;
@@ -325,12 +328,21 @@ static AddonMgr* sharedAddonMgr = nil;
 /****************************************************************
  *
  ****************************************************************/
-- (void)loadFriendMode
+- (NSInteger)loadFriendMode
 {
+    NSInteger loadAppMode;
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    _friendMode = [ud boolForKey:@"FriendMode"];
-    return;
+    if ( [ud objectForKey:@"FriendMode"] != nil ){
+        _friendMode = true;
+        loadAppMode = [ud integerForKey:@"FriendModeAppMode"];
+
+    } else {
+        _friendMode = false;
+        loadAppMode = APP_FREE;
+    }
+    return loadAppMode;
 }
+
 /****************************************************************
  *
  ****************************************************************/
@@ -338,6 +350,7 @@ static AddonMgr* sharedAddonMgr = nil;
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud removeObjectForKey:@"FriendMode"];
+    [ud removeObjectForKey:@"FriendModeAppMode"];
     return;
 }
 /****************************************************************
@@ -389,6 +402,12 @@ static AddonMgr* sharedAddonMgr = nil;
             
         default:
             break;
+    }
+    
+    if ( _friendMode == true ){
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        [ud setInteger:_appMode forKey:@"FriendModeAppMode" ];
+        [ud synchronize];
     }
     return;
 }

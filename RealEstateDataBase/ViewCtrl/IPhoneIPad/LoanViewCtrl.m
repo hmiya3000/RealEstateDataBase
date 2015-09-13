@@ -1,28 +1,28 @@
 //
-//  GraphViewCtrl.m
+//  LoanViewCtrl.m
 //  RealEstateDataBase
 //
-//  Created by hmiya on 2015/01/01.
+//  Created by hmiya on 2015/09/13.
 //  Copyright (c) 2015年 Beetre. All rights reserved.
 //
 
-#import "GraphViewCtrl.h"
+#import "LoanViewCtrl.h"
 #import "UIUtil.h"
 #import "ModelRE.h"
-#import "ModelCF.h"
 #import "Pos.h"
 #import "Graph.h"
 #import "GraphData.h"
 #import "AddonMgr.h"
 
-@interface GraphViewCtrl ()
+
+@interface LoanViewCtrl ()
 {
     ModelRE             *_modelRE;
     UIScrollView        *_scrollView;
     UIView              *_uv_grid;
     Pos                 *_pos;
     UILabel             *_l_name;
-
+    
     UILabel             *_l_TitleValuation;
     UILabel             *_l_valuLand;
     UILabel             *_l_valuLandVal;
@@ -31,7 +31,7 @@
     UILabel             *_l_valuAll;
     UILabel             *_l_valuAllVal;
     UITextView          *_tv_valuation;
-
+    
     UILabel             *_l_TitleBank;
     UILabel             *_l_BtIncome;
     UILabel             *_l_BtIncomeVal;
@@ -48,14 +48,14 @@
     
     UILabel             *_l_TitleTransition;
     Graph               *_g_pmt;
-    Graph               *_g_cf;
     Graph               *_g_drp;
-
+    
     AddonMgr            *_addonMgr;
 }
 @end
+/****************************************************************/
 
-@implementation GraphViewCtrl
+@implementation LoanViewCtrl
 /****************************************************************/
 @synthesize masterVC    = _masterVC;
 
@@ -66,7 +66,7 @@
 {
     self = [super init];
     if (self){
-        self.title  = @"グラフ";
+        self.title  = @"融資";
         self.tabBarItem.image = [UIImage imageNamed:@"graph.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
         _masterVC   = nil;
@@ -101,6 +101,12 @@
     /****************************************/
     _l_name         = [UIUtil makeLabel:@""];
     [_scrollView addSubview:_l_name];
+    /****************************************/
+    _l_TitleTransition  = [UIUtil makeLabel:@"運営推移"];
+    [_scrollView addSubview:_l_TitleTransition];
+    /****************************************/
+    _g_pmt  = [[Graph alloc]init];
+    [_scrollView addSubview:_g_pmt];
     /****************************************/
     _l_TitleValuation  = [UIUtil makeLabel:@"積算評価"];
     [_scrollView addSubview:_l_TitleValuation];
@@ -183,23 +189,10 @@
     _tv_bank.scrollEnabled  = false;
     _tv_bank.text           = [NSString stringWithFormat:@"まず申告所得と税引後CFが黒字かをみます.\n次に物件の稼ぐ力としてCF=申告所得＋減価償却費 とみなし\n債務償還年数=期末借入残高÷CFを算出し、20年以内は健全と判断します"];
     [_scrollView addSubview:_tv_bank];
-
+    
     /****************************************/
-    _l_TitleTransition  = [UIUtil makeLabel:@"運営推移"];
-    [_scrollView addSubview:_l_TitleTransition];
-    /****************************************/
-    _g_pmt  = [[Graph alloc]init];
-    [_scrollView addSubview:_g_pmt];
-    /****************************************/
-    _g_cf   = [[Graph alloc]init];
-    [_scrollView addSubview:_g_cf];
-    /****************************************/
-    if ( _addonMgr.saleAnalysys == true ){
-        /****************************************/
-        _g_drp      = [[Graph alloc]init];
-        [_scrollView addSubview:_g_drp];
-        /****************************************/
-    }
+    _g_drp      = [[Graph alloc]init];
+    [_scrollView addSubview:_g_drp];
     /****************************************/
 }
 /****************************************************************
@@ -251,6 +244,14 @@
     [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
     /****************************************/
     pos_y = pos_y + dy;
+    [UIUtil setRectLabel:_l_TitleTransition x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [_g_pmt     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_pmt setNeedsDisplay];
+    pos_y = pos_y + dy*4;
+    /****************************************/
+    pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleValuation x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
@@ -289,33 +290,19 @@
     [UIUtil setLabel:_l_Atcf                x:pos_x             y:pos_y length:length*2];
     [UIUtil setLabel:_l_AtcfVal             x:pos_x+dx*1.5      y:pos_y length:lengthR];
     /*--------------------------------------*/
-    if ( _addonMgr.saleAnalysys == true ){
-        /*--------------------------------------*/
-        pos_y = pos_y + dy;
-        [UIUtil setLabel:_l_DebtRp          x:pos_x             y:pos_y length:length*2];
-        [UIUtil setLabel:_l_DebtRpVal       x:pos_x+dx*1.5      y:pos_y length:lengthR];
-        /*--------------------------------------*/
-        pos_y = pos_y + dy;
-        [_g_drp      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-        [_g_drp setNeedsDisplay];
-        pos_y = pos_y + dy*3.5;
-    }
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_DebtRp          x:pos_x             y:pos_y length:length*2];
+    [UIUtil setLabel:_l_DebtRpVal       x:pos_x+dx*1.5      y:pos_y length:lengthR];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [_g_drp      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_drp setNeedsDisplay];
+    pos_y = pos_y + dy*3.5;
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     _tv_bank.frame      = CGRectMake(pos_x,         pos_y, length30, dy*3);
     pos_y = pos_y + dy*2;
     /*--------------------------------------*/
-    /****************************************/
-    pos_y = pos_y + dy;
-    [UIUtil setRectLabel:_l_TitleTransition x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy*1.5;
-    [_g_pmt     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-    [_g_pmt setNeedsDisplay];
-    /*--------------------------------------*/
-    pos_y = pos_y + dy*5;
-    [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
-    [_g_cf setNeedsDisplay];
     return;
 }
 
@@ -387,20 +374,16 @@
     GraphData *gd_pmt   = [[GraphData alloc]initWithData:[_loan getPmtArrayYear]];
     gd_pmt.precedent    = @"利息返済分";
     gd_pmt.type         = BAR_GPAPH;
-
+    
     GraphData *gd_ppmt = [[GraphData alloc]initWithData:[_loan getPpmtArrayYear]];
     gd_ppmt.precedent   = @"元金返済分";
     gd_ppmt.type        = BAR_GPAPH;
-      
+    
     _g_pmt.GraphDataAll = [[NSArray alloc]initWithObjects:gd_pmt,gd_ppmt,nil];
     [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear+0.5 ymax:[_loan getPmtYear:1]];
     _g_pmt.title        = @"借入返済内訳";
     
     [_g_pmt setNeedsDisplay];
-    /****************************************/
-    [ModelCF setGraphData:_g_cf ModelRE:_modelRE ];
-    _g_cf.title         = @"キャッシュフロー推移";
-    [_g_cf setNeedsDisplay];
     /****************************************/
     GraphData *gd_drp = [[GraphData alloc]initWithData:[_modelRE getDebtRepaymentPeriodArray]];
     gd_drp.precedent   = @"債務償還年数=借入残高/税引前CF";

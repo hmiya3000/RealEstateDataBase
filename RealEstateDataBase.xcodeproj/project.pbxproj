@@ -10,6 +10,8 @@
 		AA1A35FE1AD02065001C41AE /* ModelCF.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1A35FD1AD02065001C41AE /* ModelCF.m */; };
 		AA5F0F0E1AEF851D003280D8 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		AA7A40CB1B972EDE005AFDB2 /* InputImproveViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */; };
+		AA7A40CE1BA54CE1005AFDB2 /* BuildYearPV.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */; };
+		AA7A40D11BA54D04005AFDB2 /* ConstructPV.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40D01BA54D04005AFDB2 /* ConstructPV.m */; };
 		AA9D63611AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */; };
 		AA9D63621AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63591AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m */; };
 		AA9D63721AF26C700078A5DE /* DataBaseIPadViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63671AF26C700078A5DE /* DataBaseIPadViewCtrl.m */; };
@@ -146,6 +148,7 @@
 		AAE4669E1B074B0C00D8DC93 /* OpeAll.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE4669D1B074B0C00D8DC93 /* OpeAll.m */; };
 		AAE466A11B0818D100D8DC93 /* Sale.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466A01B0818D100D8DC93 /* Sale.m */; };
 		AAE466A41B089BCF00D8DC93 /* ModelSale.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466A31B089BCF00D8DC93 /* ModelSale.m */; };
+		AAFD411D1BA5C20B008B03D1 /* LoanViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFD411C1BA5C20B008B03D1 /* LoanViewCtrl.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -164,6 +167,10 @@
 		AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
 		AA7A40C91B972EDE005AFDB2 /* InputImproveViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputImproveViewCtrl.h; sourceTree = "<group>"; };
 		AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputImproveViewCtrl.m; sourceTree = "<group>"; };
+		AA7A40CC1BA54CE0005AFDB2 /* BuildYearPV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuildYearPV.h; sourceTree = "<group>"; };
+		AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuildYearPV.m; sourceTree = "<group>"; };
+		AA7A40CF1BA54D04005AFDB2 /* ConstructPV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstructPV.h; sourceTree = "<group>"; };
+		AA7A40D01BA54D04005AFDB2 /* ConstructPV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstructPV.m; sourceTree = "<group>"; };
 		AA9D63561AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataBaseIPhoneViewCtrl.h; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.h; sourceTree = "<group>"; };
 		AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataBaseIPhoneViewCtrl.m; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63581AF26BFD0078A5DE /* ItemIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemIPhoneViewCtrl.h; path = ViewCtrl/iPhone/ItemIPhoneViewCtrl.h; sourceTree = "<group>"; };
@@ -390,6 +397,8 @@
 		AAE466A01B0818D100D8DC93 /* Sale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sale.m; sourceTree = "<group>"; };
 		AAE466A21B089BCF00D8DC93 /* ModelSale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelSale.h; sourceTree = "<group>"; };
 		AAE466A31B089BCF00D8DC93 /* ModelSale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelSale.m; sourceTree = "<group>"; };
+		AAFD411B1BA5C20B008B03D1 /* LoanViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoanViewCtrl.h; sourceTree = "<group>"; };
+		AAFD411C1BA5C20B008B03D1 /* LoanViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoanViewCtrl.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -472,6 +481,10 @@
 				AA9D63AD1AF26D4F0078A5DE /* InputViewCtrl.m */,
 				AA9D63AE1AF26D4F0078A5DE /* ItemSettingViewCtrl.h */,
 				AA9D63AF1AF26D4F0078A5DE /* ItemSettingViewCtrl.m */,
+				AA7A40CC1BA54CE0005AFDB2 /* BuildYearPV.h */,
+				AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */,
+				AA7A40CF1BA54D04005AFDB2 /* ConstructPV.h */,
+				AA7A40D01BA54D04005AFDB2 /* ConstructPV.m */,
 			);
 			name = ItemSetting;
 			path = ViewCtrl/ItemSetting;
@@ -539,6 +552,8 @@
 				AA9D63E41AF4459C0078A5DE /* SummaryViewCtrl.m */,
 				AA9D63E11AF4459C0078A5DE /* GraphViewCtrl.h */,
 				AA9D63E21AF4459C0078A5DE /* GraphViewCtrl.m */,
+				AAFD411B1BA5C20B008B03D1 /* LoanViewCtrl.h */,
+				AAFD411C1BA5C20B008B03D1 /* LoanViewCtrl.m */,
 				AAE466991B0624D200D8DC93 /* SaleViewCtrl.h */,
 				AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */,
 				AA9D63E51AF4459C0078A5DE /* TotalAnalysisViewCtrl.h */,
@@ -1011,6 +1026,7 @@
 				AA9D63E71AF4459C0078A5DE /* GraphViewCtrl.m in Sources */,
 				AA9D64191AF4481A0078A5DE /* DropboxEditorViewCtrl.m in Sources */,
 				AA9D63CA1AF26D4F0078A5DE /* ItemSettingViewCtrl.m in Sources */,
+				AA7A40CE1BA54CE1005AFDB2 /* BuildYearPV.m in Sources */,
 				AA9D63D01AF26D9D0078A5DE /* ImportViewCtrl.m in Sources */,
 				AAA556C119E2D96E00ADFFF4 /* Operation.m in Sources */,
 				AA9D63C51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m in Sources */,
@@ -1029,6 +1045,7 @@
 				AAB27ED119CC6C3B000C471A /* UICalc.m in Sources */,
 				AAAC7D6C199F99B600778EF5 /* ModelDB.m in Sources */,
 				AA9D63611AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m in Sources */,
+				AAFD411D1BA5C20B008B03D1 /* LoanViewCtrl.m in Sources */,
 				AA9D63BA1AF26D4F0078A5DE /* InputInterestViewCtrl.m in Sources */,
 				AA9D64171AF4481A0078A5DE /* AnalysisViewCtrl.m in Sources */,
 				AAAC7D4F199F94D900778EF5 /* UIPopupPickerView.m in Sources */,
@@ -1039,6 +1056,7 @@
 				AA9D63B81AF26D4F0078A5DE /* InputHoldingPeriodViewCtrl.m in Sources */,
 				AAAC7D49199F94D900778EF5 /* Loan.m in Sources */,
 				AAB25A4019C6DA1D006A31D1 /* Calculator.m in Sources */,
+				AA7A40D11BA54D04005AFDB2 /* ConstructPV.m in Sources */,
 				AA9D63B21AF26D4F0078A5DE /* InputBuildYearViewCtrl.m in Sources */,
 				AA9D64181AF4481A0078A5DE /* CacheFlowViewCtrl.m in Sources */,
 				AAAC7D7219A0B27E00778EF5 /* ModelRE.m in Sources */,

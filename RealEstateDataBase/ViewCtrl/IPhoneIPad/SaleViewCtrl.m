@@ -46,6 +46,8 @@
     UILabel             *_l_lbVal;
     UILabel             *_l_btcf;
     UILabel             *_l_btcfVal;
+    UILabel             *_l_bookValue;
+    UILabel             *_l_bookValueVal;
     UILabel             *_l_amCosts;
     UILabel             *_l_amCostsVal;
     UILabel             *_l_transferIncome;
@@ -206,6 +208,14 @@
     [_l_amCostsVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_amCostsVal];
     /****************************************/
+    _l_bookValue           = [UIUtil makeLabel:@"簿価"];
+    [_l_bookValue setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_bookValue];
+    /*--------------------------------------*/
+    _l_bookValueVal        = [UIUtil makeLabel:@""];
+    [_l_bookValueVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_bookValueVal];
+    /****************************************/
     _l_transferIncome          = [UIUtil makeLabel:@"譲渡所得"];
     [_l_transferIncome setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_transferIncome];
@@ -344,6 +354,10 @@
     [UIUtil setLabel:_l_amCostsVal          x:pos_x+dx*1.5      y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_bookValue           x:pos_x             y:pos_y length:length*2];
+    [UIUtil setLabel:_l_bookValueVal        x:pos_x+dx*1.5      y:pos_y length:lengthR];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
     [UIUtil setLabel:_l_transferIncome      x:pos_x             y:pos_y length:length*2];
     [UIUtil setLabel:_l_transferIncomeVal   x:pos_x+dx*1.5      y:pos_y length:lengthR];
     /*--------------------------------------*/
@@ -434,6 +448,7 @@
     [UIUtil labelYen:_l_lbVal               yen:-_modelRE.sale.loanBorrow];
     [UIUtil labelYen:_l_btcfVal             yen: _modelRE.sale.btcf];
     [UIUtil labelYen:_l_amCostsVal          yen:-_modelRE.sale.amCosts];
+    [UIUtil labelYen:_l_bookValueVal        yen:_modelRE.investment.prices.price + _modelRE.investment.expense -_modelRE.sale.amCosts];
     [UIUtil labelYen:_l_transferIncomeVal   yen: _modelRE.sale.transferIncome];
     [UIUtil labelYen:_l_transferTaxVal      yen:-_modelRE.sale.transferTax];
     [UIUtil labelYen:_l_atcfVal             yen: _modelRE.sale.atcf];

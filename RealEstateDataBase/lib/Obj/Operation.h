@@ -19,6 +19,8 @@
     NSInteger   _noi;
     NSInteger   _ads;
     NSInteger   _btcf;
+    NSInteger   _taxIncome;
+    NSInteger   _amCost;
     NSInteger   _tax;
     NSInteger   _atcf;
 
@@ -40,6 +42,8 @@
 @property   (nonatomic,readwrite)   NSInteger   noi;
 @property   (nonatomic,readwrite)   NSInteger   ads;
 @property   (nonatomic,readwrite)   NSInteger   btcf;
+@property   (nonatomic,readwrite)   NSInteger   taxIncome;
+@property   (nonatomic,readwrite)   NSInteger   amCost;
 @property   (nonatomic,readwrite)   NSInteger   tax;
 @property   (nonatomic,readwrite)   NSInteger   atcf;
 

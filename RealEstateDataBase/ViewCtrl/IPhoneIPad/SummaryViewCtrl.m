@@ -9,8 +9,11 @@
 #import "SummaryViewCtrl.h"
 #import "UIUtil.h"
 #import "ModelRE.h"
+#import "ModelCF.h"
 #import "Pos.h"
 #import "GridTable.h"
+#import "Graph.h"
+#import "GraphData.h"
 #import "AddonMgr.h"
 
 @interface SummaryViewCtrl ()
@@ -43,6 +46,8 @@
     UITextView          *_tv_comment1;
     UITextView          *_tv_comment2;
     
+    Graph               *_g_cf;
+
     AddonMgr            *_addonMgr;
 }
 
@@ -180,6 +185,11 @@
     _tv_comment2.text           = [NSString stringWithFormat:@""];
     [_scrollView addSubview:_tv_comment2];
     /****************************************/
+    if ( _addonMgr.multiYear == true ){
+        _g_cf   = [[Graph alloc]init];
+        [_scrollView addSubview:_g_cf];
+    }
+    /****************************************/
 }
 
 /****************************************************************
@@ -217,6 +227,10 @@
         }
         _scrollView.bounces = YES;
     } else {
+        if ( _addonMgr.multiYear == true ){
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.5);
+            _scrollView.bounces = YES;
+        }
     }
     /****************************************/
     pos_y = 0.2*dy;
@@ -224,8 +238,16 @@
     [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
     pos_y = pos_y + dy;
     [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*8)];
+    pos_y = pos_y + 6.5*dy;
     /*--------------------------------------*/
-    pos_y = pos_y + 7.5*dy;
+    if ( _addonMgr.multiYear == true ){
+        pos_y = pos_y + dy;
+        [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+        [_g_cf setNeedsDisplay];
+        pos_y = pos_y + dy*3.5;
+    }
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleEfficiency x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
@@ -250,8 +272,9 @@
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     _tv_comment1.frame      = CGRectMake(pos_x,         pos_y, length30, dy*6);
+    pos_y = pos_y + 5*dy;
     /*--------------------------------------*/
-    pos_y = pos_y + 6*dy;
+    pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleSafety x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
@@ -268,6 +291,7 @@
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     _tv_comment2.frame      = CGRectMake(pos_x,         pos_y, length30, dy*5.5);
+    pos_y = pos_y + 5*dy;
     /*--------------------------------------*/
     return;
 }
@@ -319,22 +343,33 @@
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
+    /****************************************/
     _l_name.text            = _modelRE.estate.name;
     [GridTable setScroll:_uv_grid table:[_modelRE getOperationArray]];
+
+    /****************************************/
+    [ModelCF setGraphData:_g_cf ModelRE:_modelRE ];
+    _g_cf.title         = @"キャッシュフロー推移";
+    [_g_cf setNeedsDisplay];
     
+    /****************************************/
     _l_fcrVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.fcr*100];
     _l_loanConstVal.text    = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.loanConst*100];
     _l_ccrVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.ccr*100];
     _l_pbVal.text           = [NSString stringWithFormat:@"%2.1f年",_modelRE.ope1.pb];
-        
+    /****************************************/
+    
     _l_dcrVal.text          = [NSString stringWithFormat:@"%1.2f",_modelRE.ope1.dcr];
     _l_berVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.ber*100];
     _l_ltvVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.ltv*100];
     _l_capRateVal.text      = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.capRate*100];
 
+    /****************************************/
     _tv_comment1.text       = [self getStrComment1];
     _tv_comment2.text       = [self getStrComment2];
-    
+
+    /****************************************/
+
 }
 
 /****************************************************************

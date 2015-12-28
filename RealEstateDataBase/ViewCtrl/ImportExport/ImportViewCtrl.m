@@ -56,12 +56,18 @@
                                      style:UIBarButtonItemStylePlain
                                     target:self
                                     action:@selector(updateButtonTapped:)];
-    self.navigationItem.rightBarButtonItem = updateButton;
+
+    UIBarButtonItem *accountButton =
+    [[UIBarButtonItem alloc] initWithTitle:@"アカウント"
+                                     style:UIBarButtonItemStylePlain
+                                    target:self
+                                    action:@selector(accountButtonTapped:)];
+
+    self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects: accountButton,updateButton, nil];
     
     _restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
     _restClient.delegate = self;
     
-    [self updateData];
 }
 
 /****************************************************************
@@ -73,6 +79,7 @@
     if (![[DBSession sharedSession] isLinked]) {
         [[DBSession sharedSession] linkFromController:self];
     }
+    [self updateData];
     return;
 }
 
@@ -81,7 +88,6 @@
  ****************************************************************/
 - (void)viewDidAppear:(BOOL)animated
 {
-    [self updateData];
 }
 
 /****************************************************************
@@ -110,7 +116,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] ;
     }
-    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+//    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     cell.textLabel.text = [_filesArray objectAtIndex:indexPath.row];
     return cell;
 }
@@ -205,7 +211,7 @@
  ****************************************************************/
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    return NO;
 }
 
 /****************************************************************
@@ -332,6 +338,15 @@
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (IBAction)accountButtonTapped:(id)sender
+{
+    [[DBSession sharedSession] linkFromController:self];
+    return;
 }
 
 /****************************************************************

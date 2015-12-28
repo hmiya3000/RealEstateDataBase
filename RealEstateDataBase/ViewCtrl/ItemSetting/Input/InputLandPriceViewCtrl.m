@@ -137,19 +137,18 @@
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
     }
     
+    /****************************************/
     if ( _pos.isPortrait == true ){
-        pos_y = _pos.y_btm - dy -dy - _pos.y_page/2;
+        pos_y = _pos.y_page/2-2*dy;
         [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2)];
-        
+        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2+dy)];
     }else {
         pos_y = 0;
-        [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len30/2 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(_pos.x_center, pos_y, _pos.len15, _pos.y_page/1.5)];
+        [_uicalc setuv:CGRectMake(_pos.x_center, pos_y, _pos.len30/2, _pos.y_page-dy)];
     }
-    
     return;
 }
 

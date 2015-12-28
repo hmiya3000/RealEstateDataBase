@@ -48,7 +48,8 @@
 /****************************************************************
  *
  ****************************************************************/
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     _modelDB = [ModelDB sharedManager];
     [_modelDB createExportFilename];
@@ -60,6 +61,13 @@
                                     action:@selector(retButtonTapped:)];
     self.navigationItem.leftBarButtonItem = retButton;
 
+    UIBarButtonItem *accountButton =
+    [[UIBarButtonItem alloc] initWithTitle:@"アカウント"
+                                     style:UIBarButtonItemStylePlain
+                                    target:self
+                                    action:@selector(accountButtonTapped:)];
+    self.navigationItem.rightBarButtonItem = accountButton;
+    
     _restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
     _restClient.delegate = self;
     
@@ -159,7 +167,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
@@ -202,6 +210,15 @@
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+/****************************************************************
+ *
+ ****************************************************************/
+- (IBAction)accountButtonTapped:(id)sender
+{
+    [[DBSession sharedSession] linkFromController:self];
+    return;
 }
 
 /****************************************************************

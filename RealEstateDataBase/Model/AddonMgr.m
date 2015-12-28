@@ -233,7 +233,7 @@ static AddonMgr* sharedAddonMgr = nil;
             arr = [NSArray arrayWithObjects:@"upgrade_SAToNet",nil];
             break;
         case APP_NETWORK:
-            arr = [NSArray arrayWithObjects:nil];
+            arr = [NSArray arrayWithObjects:@"",nil];
             break;
     }
     return arr;

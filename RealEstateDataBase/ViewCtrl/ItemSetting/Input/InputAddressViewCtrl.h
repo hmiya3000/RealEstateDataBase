@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "InputViewCtrl.h"
+#import "MapKit/MapKit.h"
 
-@interface InputAddressViewCtrl : InputViewCtrl
+@interface InputAddressViewCtrl : InputViewCtrl<MKMapViewDelegate>
 
 @end

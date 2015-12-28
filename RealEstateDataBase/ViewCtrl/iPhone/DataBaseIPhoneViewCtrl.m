@@ -9,7 +9,6 @@
 #import "DataBaseIPhoneViewCtrl.h"
 #import "DataBaseTableViewCtrl.h"
 #import "InfoViewCtrl.h"
-#import "InputSettingViewCtrl.h"
 #import "ViewMgr.h"
 
 @interface DataBaseIPhoneViewCtrl ()

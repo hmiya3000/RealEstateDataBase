@@ -81,7 +81,7 @@
     self = [super init];
     if (self){
         self.title  = @"売却検討";
-        self.tabBarItem.image = [UIImage imageNamed:@"operation.png"];
+        self.tabBarItem.image = [UIImage imageNamed:@"sale.png"];
         self.view.backgroundColor = [UIUtil color_LightYellow];
         _masterVC   = nil;
     }
@@ -391,7 +391,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }

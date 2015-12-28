@@ -124,11 +124,6 @@
         [UIUtil setLabel:_l_loanBorrowVal   x:pos_x+dx*2    y:pos_y length:_pos.len10];
         pos_y = pos_y + dy*0.6;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len30, dy*1.7);
-        /****************************************/
-        pos_y = _pos.y_btm - dy -dy - _pos.y_page/2;
-        [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
-        pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2)];
         
     }else {
         [UIUtil setRectLabel:_l_equity    x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
@@ -140,11 +135,19 @@
         [UIUtil setLabel:_l_loanBorrowVal   x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*1.5);
-        /****************************************/
-        pos_y = 0;
-        [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+    }
+
+    /****************************************/
+    if ( _pos.isPortrait == true ){
+        pos_y = _pos.y_page/2-2*dy;
+        [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(_pos.x_center, pos_y, _pos.len15, _pos.y_page/1.5)];
+        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2+dy)];
+    }else {
+        pos_y = 0;
+        [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len30/2 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        pos_y = pos_y + dy;
+        [_uicalc setuv:CGRectMake(_pos.x_center, pos_y, _pos.len30/2, _pos.y_page-dy)];
     }
     return;
 }

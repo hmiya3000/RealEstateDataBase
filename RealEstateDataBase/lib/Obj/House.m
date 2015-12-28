@@ -106,7 +106,7 @@
 /****************************************************************
  *
  ****************************************************************/
-- (void)setConstruct:(int)construct
+- (void)setConstruct:(NSInteger)construct
 {
     _construct = construct;
     [self calcValuation];

@@ -14,13 +14,17 @@
     NSString    *_address;
     CGFloat     _assessment;
     NSInteger   _valuation;
+    double      _latitude;
+    double      _longitude;
 }
+
 /****************************************************************/
 /****************************************************************/
 @property   (nonatomic,readwrite) NSString    *address;
 @property   (nonatomic,readwrite) CGFloat     assessment;
-@property   (nonatomic,readwrite) NSInteger   price;
 @property   (nonatomic,readonly)  NSInteger   valuation;
+@property   (nonatomic,readwrite) double      latitude;
+@property   (nonatomic,readwrite) double      longitude;
 /****************************************************************/
 @end
 /****************************************************************/

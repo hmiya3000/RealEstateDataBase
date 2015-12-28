@@ -3,15 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		AA1A35FE1AD02065001C41AE /* ModelCF.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1A35FD1AD02065001C41AE /* ModelCF.m */; };
+		AA32CE381C2E7C5200CCB3B5 /* GeoCode.m in Sources */ = {isa = PBXBuildFile; fileRef = AA32CE371C2E7C5200CCB3B5 /* GeoCode.m */; };
+		AA38CEB91BEF6A4E0098733B /* SysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = AA38CEB81BEF6A4E0098733B /* SysInfo.m */; };
 		AA5F0F0E1AEF851D003280D8 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		AA7A40CB1B972EDE005AFDB2 /* InputImproveViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */; };
 		AA7A40CE1BA54CE1005AFDB2 /* BuildYearPV.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */; };
 		AA7A40D11BA54D04005AFDB2 /* ConstructPV.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40D01BA54D04005AFDB2 /* ConstructPV.m */; };
+		AA88E7021BE62A3A004D6127 /* sale.png in Resources */ = {isa = PBXBuildFile; fileRef = AA88E7011BE62A3A004D6127 /* sale.png */; };
 		AA9D63611AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */; };
 		AA9D63621AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63591AF26BFD0078A5DE /* ItemIPhoneViewCtrl.m */; };
 		AA9D63721AF26C700078A5DE /* DataBaseIPadViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9D63671AF26C700078A5DE /* DataBaseIPadViewCtrl.m */; };
@@ -104,7 +107,6 @@
 		AAAC7CC8199F83CB00778EF5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAAC7CC7199F83CB00778EF5 /* CoreData.framework */; };
 		AAAC7CCE199F83CB00778EF5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAAC7CCC199F83CB00778EF5 /* InfoPlist.strings */; };
 		AAAC7CD0199F83CB00778EF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7CCF199F83CB00778EF5 /* main.m */; };
-		AAAC7CD7199F83CB00778EF5 /* RealEstateDataBase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AAAC7CD5199F83CB00778EF5 /* RealEstateDataBase.xcdatamodeld */; };
 		AAAC7CD9199F83CB00778EF5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAAC7CD8199F83CB00778EF5 /* Images.xcassets */; };
 		AAAC7CE1199F83CC00778EF5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAAC7CC1199F83CB00778EF5 /* Foundation.framework */; };
 		AAAC7CE2199F83CC00778EF5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAAC7CC5199F83CB00778EF5 /* UIKit.framework */; };
@@ -139,10 +141,14 @@
 		AAB27ED119CC6C3B000C471A /* UICalc.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB27ED019CC6C3B000C471A /* UICalc.m */; };
 		AAC2BC2719D11C51002E9E7F /* ModelExpense.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC2BC2619D11C51002E9E7F /* ModelExpense.m */; };
 		AAC2BC2A19D15F10002E9E7F /* Expense.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC2BC2919D15F10002E9E7F /* Expense.m */; };
+		AAC6CBAE1C2CDEB600343D4C /* launch.png in Resources */ = {isa = PBXBuildFile; fileRef = AAC6CBAD1C2CDEB600343D4C /* launch.png */; };
+		AAC6CBB01C2D552800343D4C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAC6CBAF1C2D552800343D4C /* MapKit.framework */; };
 		AACAB9E61A04A706001067C7 /* haruka.png in Resources */ = {isa = PBXBuildFile; fileRef = AACAB9E51A04A705001067C7 /* haruka.png */; };
 		AACAB9E91A0603FC001067C7 /* PDFViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AACAB9E81A0603FC001067C7 /* PDFViewCtrl.m */; };
 		AACAB9EC1A075004001067C7 /* PDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = AACAB9EB1A075004001067C7 /* PDFView.m */; };
 		AACAB9EE1A0753D2001067C7 /* sample2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AACAB9ED1A0753D2001067C7 /* sample2.pdf */; };
+		AAD791521BDB85B800EEDFD7 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = AAD791511BDB85B800EEDFD7 /* LaunchScreen.xib */; };
+		AAD791561BDB96B900EEDFD7 /* Airees.png in Resources */ = {isa = PBXBuildFile; fileRef = AAD791551BDB96B900EEDFD7 /* Airees.png */; };
 		AAE466981AFDC93E00D8DC93 /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE466971AFDC93E00D8DC93 /* Graph.m */; };
 		AAE4669B1B0624D300D8DC93 /* SaleViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */; };
 		AAE4669E1B074B0C00D8DC93 /* OpeAll.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE4669D1B074B0C00D8DC93 /* OpeAll.m */; };
@@ -164,6 +170,10 @@
 /* Begin PBXFileReference section */
 		AA1A35FC1AD02065001C41AE /* ModelCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelCF.h; sourceTree = "<group>"; };
 		AA1A35FD1AD02065001C41AE /* ModelCF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelCF.m; sourceTree = "<group>"; };
+		AA32CE361C2E7C5200CCB3B5 /* GeoCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GeoCode.h; path = Util/GeoCode.h; sourceTree = "<group>"; };
+		AA32CE371C2E7C5200CCB3B5 /* GeoCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeoCode.m; path = Util/GeoCode.m; sourceTree = "<group>"; };
+		AA38CEB71BEF6A4E0098733B /* SysInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SysInfo.h; sourceTree = "<group>"; };
+		AA38CEB81BEF6A4E0098733B /* SysInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SysInfo.m; sourceTree = "<group>"; };
 		AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
 		AA7A40C91B972EDE005AFDB2 /* InputImproveViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputImproveViewCtrl.h; sourceTree = "<group>"; };
 		AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputImproveViewCtrl.m; sourceTree = "<group>"; };
@@ -171,6 +181,7 @@
 		AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuildYearPV.m; sourceTree = "<group>"; };
 		AA7A40CF1BA54D04005AFDB2 /* ConstructPV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstructPV.h; sourceTree = "<group>"; };
 		AA7A40D01BA54D04005AFDB2 /* ConstructPV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstructPV.m; sourceTree = "<group>"; };
+		AA88E7011BE62A3A004D6127 /* sale.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sale.png; path = icon/sale.png; sourceTree = "<group>"; };
 		AA9D63561AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataBaseIPhoneViewCtrl.h; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.h; sourceTree = "<group>"; };
 		AA9D63571AF26BFD0078A5DE /* DataBaseIPhoneViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataBaseIPhoneViewCtrl.m; path = ViewCtrl/iPhone/DataBaseIPhoneViewCtrl.m; sourceTree = "<group>"; };
 		AA9D63581AF26BFD0078A5DE /* ItemIPhoneViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemIPhoneViewCtrl.h; path = ViewCtrl/iPhone/ItemIPhoneViewCtrl.h; sourceTree = "<group>"; };
@@ -320,7 +331,6 @@
 		AAAC7CCD199F83CB00778EF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AAAC7CCF199F83CB00778EF5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AAAC7CD1199F83CB00778EF5 /* RealEstateDataBase-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RealEstateDataBase-Prefix.pch"; sourceTree = "<group>"; };
-		AAAC7CD6199F83CB00778EF5 /* RealEstateDataBase.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RealEstateDataBase.xcdatamodel; sourceTree = "<group>"; };
 		AAAC7CD8199F83CB00778EF5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		AAAC7CDE199F83CC00778EF5 /* RealEstateDataBaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealEstateDataBaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAAC7CE8199F83CC00778EF5 /* RealEstateDataBaseTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RealEstateDataBaseTests-Info.plist"; sourceTree = "<group>"; };
@@ -382,12 +392,18 @@
 		AAC2BC2619D11C51002E9E7F /* ModelExpense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelExpense.m; sourceTree = "<group>"; };
 		AAC2BC2819D15F10002E9E7F /* Expense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Expense.h; sourceTree = "<group>"; };
 		AAC2BC2919D15F10002E9E7F /* Expense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Expense.m; sourceTree = "<group>"; };
+		AAC6CBAD1C2CDEB600343D4C /* launch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch.png; sourceTree = "<group>"; };
+		AAC6CBAF1C2D552800343D4C /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		AACAB9E51A04A705001067C7 /* haruka.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = haruka.png; sourceTree = "<group>"; };
 		AACAB9E71A0603FC001067C7 /* PDFViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFViewCtrl.h; path = ViewCtrl/PDFViewCtrl.h; sourceTree = "<group>"; };
 		AACAB9E81A0603FC001067C7 /* PDFViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFViewCtrl.m; path = ViewCtrl/PDFViewCtrl.m; sourceTree = "<group>"; };
 		AACAB9EA1A075004001067C7 /* PDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFView.h; sourceTree = "<group>"; };
 		AACAB9EB1A075004001067C7 /* PDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFView.m; sourceTree = "<group>"; };
 		AACAB9ED1A0753D2001067C7 /* sample2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = sample2.pdf; sourceTree = "<group>"; };
+		AAD791511BDB85B800EEDFD7 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		AAD791531BDB875000EEDFD7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AAD791541BDB875000EEDFD7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AAD791551BDB96B900EEDFD7 /* Airees.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Airees.png; sourceTree = "<group>"; };
 		AAE466971AFDC93E00D8DC93 /* Graph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
 		AAE466991B0624D200D8DC93 /* SaleViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaleViewCtrl.h; sourceTree = "<group>"; };
 		AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaleViewCtrl.m; sourceTree = "<group>"; };
@@ -406,6 +422,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAC6CBB01C2D552800343D4C /* MapKit.framework in Frameworks */,
 				AA9D64241AF4AB110078A5DE /* StoreKit.framework in Frameworks */,
 				AAA556CF19E69A6C00ADFFF4 /* libz.dylib in Frameworks */,
 				AAA556CD19E69A5400ADFFF4 /* libc++.dylib in Frameworks */,
@@ -434,6 +451,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA32CE351C2E7C1B00CCB3B5 /* GpsUtil */ = {
+			isa = PBXGroup;
+			children = (
+				AA32CE361C2E7C5200CCB3B5 /* GeoCode.h */,
+				AA32CE371C2E7C5200CCB3B5 /* GeoCode.m */,
+			);
+			name = GpsUtil;
+			sourceTree = "<group>";
+		};
 		AA948C4E1A53C59F00750262 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
@@ -566,6 +592,8 @@
 		AA9D64451AF7164C0078A5DE /* appicon */ = {
 			isa = PBXGroup;
 			children = (
+				AAC6CBAD1C2CDEB600343D4C /* launch.png */,
+				AAD791551BDB96B900EEDFD7 /* Airees.png */,
 				AA9D64461AF7164C0078A5DE /* appicon-60@2x.png */,
 				AA9D64471AF7164C0078A5DE /* appicon-60@3x.png */,
 				AA9D64481AF7164C0078A5DE /* appicon-72.png */,
@@ -619,6 +647,7 @@
 		AAAC7CC0199F83CB00778EF5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AAC6CBAF1C2D552800343D4C /* MapKit.framework */,
 				AA9D64231AF4AB110078A5DE /* StoreKit.framework */,
 				AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */,
 				AAA556CE19E69A6C00ADFFF4 /* libz.dylib */,
@@ -642,10 +671,10 @@
 				AAAC7D10199F927200778EF5 /* icon */,
 				AAAC7CF6199F88D300778EF5 /* ViewCtrl */,
 				AAAC7CD8199F83CB00778EF5 /* Images.xcassets */,
-				AAAC7CD5199F83CB00778EF5 /* RealEstateDataBase.xcdatamodeld */,
 				AAAC7D1E199F94D900778EF5 /* lib */,
 				AAAC7D57199F952D00778EF5 /* Model */,
 				AAAC7CCA199F83CB00778EF5 /* Supporting Files */,
+				AAD791511BDB85B800EEDFD7 /* LaunchScreen.xib */,
 			);
 			path = RealEstateDataBase;
 			sourceTree = "<group>";
@@ -714,6 +743,7 @@
 				AA9D64351AF5C2F30078A5DE /* operation.png */,
 				AACAB9E51A04A705001067C7 /* haruka.png */,
 				AA9D64411AF605DF0078A5DE /* yen.png */,
+				AA88E7011BE62A3A004D6127 /* sale.png */,
 				AACAB9ED1A0753D2001067C7 /* sample2.pdf */,
 				AAAC7D68199F981D00778EF5 /* building.png */,
 			);
@@ -723,6 +753,7 @@
 		AAAC7D1E199F94D900778EF5 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				AA32CE351C2E7C1B00CCB3B5 /* GpsUtil */,
 				AAA5576F19EBE96700ADFFF4 /* MBProgressHUD */,
 				AAB25A3A19C6DA1D006A31D1 /* Calcurator */,
 				AAAC7D1F199F94D900778EF5 /* Draw */,
@@ -801,6 +832,8 @@
 		AAAC7D39199F94D900778EF5 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				AA38CEB71BEF6A4E0098733B /* SysInfo.h */,
+				AA38CEB81BEF6A4E0098733B /* SysInfo.m */,
 				AAAC7D3A199F94D900778EF5 /* Pos.h */,
 				AAAC7D3B199F94D900778EF5 /* Pos.m */,
 				AAAC7D3C199F94D900778EF5 /* UIButtonWithObj.h */,
@@ -924,7 +957,7 @@
 		AAAC7CB6199F83CB00778EF5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Beetre;
 				TargetAttributes = {
 					AAAC7CBD199F83CB00778EF5 = {
@@ -936,11 +969,12 @@
 				};
 			};
 			buildConfigurationList = AAAC7CB9199F83CB00778EF5 /* Build configuration list for PBXProject "RealEstateDataBase" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 			);
 			mainGroup = AAAC7CB5199F83CB00778EF5;
 			productRefGroup = AAAC7CBF199F83CB00778EF5 /* Products */;
@@ -961,6 +995,8 @@
 				AA9D64671AF7164D0078A5DE /* iTunesArtwork@2x in Resources */,
 				AAAC7CCE199F83CB00778EF5 /* InfoPlist.strings in Resources */,
 				AA9D64601AF7164D0078A5DE /* appicon-Small-50@2x.png in Resources */,
+				AA88E7021BE62A3A004D6127 /* sale.png in Resources */,
+				AAC6CBAE1C2CDEB600343D4C /* launch.png in Resources */,
 				AA9D64591AF7164D0078A5DE /* appicon-72.png in Resources */,
 				AA9D643E1AF605CA0078A5DE /* list.png in Resources */,
 				AA9D64611AF7164D0078A5DE /* appicon-Small.png in Resources */,
@@ -968,6 +1004,7 @@
 				AACAB9E61A04A706001067C7 /* haruka.png in Resources */,
 				AA9D64401AF605D50078A5DE /* info-s.png in Resources */,
 				AA9D64621AF7164D0078A5DE /* appicon-Small@2x.png in Resources */,
+				AAD791521BDB85B800EEDFD7 /* LaunchScreen.xib in Resources */,
 				AAAC7D69199F981D00778EF5 /* building.png in Resources */,
 				AA9D64641AF7164D0078A5DE /* appicon.png in Resources */,
 				AA9D64381AF5D24E0078A5DE /* info.png in Resources */,
@@ -979,6 +1016,7 @@
 				AA9D64441AF60CDE0078A5DE /* graph.png in Resources */,
 				AA9D64651AF7164D0078A5DE /* appicon@2x.png in Resources */,
 				AA9D64421AF605DF0078A5DE /* yen.png in Resources */,
+				AAD791561BDB96B900EEDFD7 /* Airees.png in Resources */,
 				AA9D643C1AF604D10078A5DE /* input-s.png in Resources */,
 				AA9D64571AF7164D0078A5DE /* appicon-60@2x.png in Resources */,
 				AA9D645E1AF7164D0078A5DE /* appicon-Small-40@2x.png in Resources */,
@@ -1032,6 +1070,7 @@
 				AA9D63C51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m in Sources */,
 				AA9D63C61AF26D4F0078A5DE /* InputTransferExpViewCtrl.m in Sources */,
 				AAAC7D55199F94F500778EF5 /* AppDelegate.m in Sources */,
+				AA32CE381C2E7C5200CCB3B5 /* GeoCode.m in Sources */,
 				AA9D63B41AF26D4F0078A5DE /* InputEstateNameViewCtrl.m in Sources */,
 				AA9D63E81AF4459C0078A5DE /* SummaryViewCtrl.m in Sources */,
 				AA9D641A1AF4481A0078A5DE /* DropboxTableVC.m in Sources */,
@@ -1058,6 +1097,7 @@
 				AAB25A4019C6DA1D006A31D1 /* Calculator.m in Sources */,
 				AA7A40D11BA54D04005AFDB2 /* ConstructPV.m in Sources */,
 				AA9D63B21AF26D4F0078A5DE /* InputBuildYearViewCtrl.m in Sources */,
+				AA38CEB91BEF6A4E0098733B /* SysInfo.m in Sources */,
 				AA9D64181AF4481A0078A5DE /* CacheFlowViewCtrl.m in Sources */,
 				AAAC7D7219A0B27E00778EF5 /* ModelRE.m in Sources */,
 				AA9D641C1AF4481A0078A5DE /* InvestAnalysisViewCtrl.m in Sources */,
@@ -1086,7 +1126,6 @@
 				AAAC7CD0199F83CB00778EF5 /* main.m in Sources */,
 				AA9D63CF1AF26D9D0078A5DE /* ExportViewCtrl.m in Sources */,
 				AA9D63B51AF26D4F0078A5DE /* InputExpenseExampleViewCtrl.m in Sources */,
-				AAAC7CD7199F83CB00778EF5 /* RealEstateDataBase.xcdatamodeld in Sources */,
 				AA9D63BB1AF26D4F0078A5DE /* InputLandAreaViewCtrl.m in Sources */,
 				AA9D63E91AF4459C0078A5DE /* TotalAnalysisViewCtrl.m in Sources */,
 				AA9D63BE1AF26D4F0078A5DE /* InputLoanBorrowViewCtrl.m in Sources */,
@@ -1127,6 +1166,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				AAAC7CCD199F83CB00778EF5 /* en */,
+				AAD791531BDB875000EEDFD7 /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1135,6 +1175,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				AAAC7CEA199F83CC00778EF5 /* en */,
+				AAD791541BDB875000EEDFD7 /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1160,6 +1201,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1174,9 +1216,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos9.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1207,8 +1249,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				SDKROOT = iphoneos;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "88fefdf2-511d-4761-a1cb-6e9026e2e495";
+				SDKROOT = iphoneos9.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1218,14 +1262,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBase/RealEstateDataBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1237,16 +1282,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBase/RealEstateDataBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b934273c-3dbb-41e3-9513-26cd468774bb";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1269,6 +1315,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "RealEstateDataBaseTests/RealEstateDataBaseTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -1288,6 +1335,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBaseTests/RealEstateDataBaseTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -1325,19 +1373,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		AAAC7CD5199F83CB00778EF5 /* RealEstateDataBase.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				AAAC7CD6199F83CB00778EF5 /* RealEstateDataBase.xcdatamodel */,
-			);
-			currentVersion = AAAC7CD6199F83CB00778EF5 /* RealEstateDataBase.xcdatamodel */;
-			path = RealEstateDataBase.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = AAAC7CB6199F83CB00778EF5 /* Project object */;
 }

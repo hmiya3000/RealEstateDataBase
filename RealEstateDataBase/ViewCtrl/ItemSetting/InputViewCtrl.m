@@ -17,7 +17,7 @@
 /****************************************************************/
 @synthesize masterVC    = _masterVC;
 /****************************************************************/
-#define BTAB_CANCEL     100
+#define BTAG_CANCEL     100
 /****************************************************************
  *
  ****************************************************************/
@@ -25,13 +25,13 @@
 {
     self = [super init];
     if (self){
-        _modelRE = [ModelRE sharedManager];
+        
         self.title = @"物件名";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"キャンセル"
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(clickButton:)];
-        self.navigationItem.rightBarButtonItem.tag  = BTAB_CANCEL;
+        self.navigationItem.rightBarButtonItem.tag  = BTAG_CANCEL;
         _b_cancel = false;
         
         
@@ -46,6 +46,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _modelRE = [ModelRE sharedManager];
+    NSString *model = [UIDevice currentDevice].model;
+    if ([model hasPrefix:@"iPad"]){
+        CGRect frame = self.view.frame;
+        [self.view setFrame:CGRectMake(frame.origin.x, frame.origin.y, 447, frame.size.height) ];
+    }
+    
+    
     /****************************************/
 //    _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
 //    [self.view addSubview:_scrollView];
@@ -69,7 +77,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
@@ -117,15 +125,12 @@
 {
     ViewMgr *viewMgr        = [ViewMgr sharedManager];
     [viewMgr setOpenInputView:true];
-    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
-        // back button was pressed.  We know this is true because self is no longer
-        // in the navigation stack.
-        [self.masterVC viewWillAppear:YES];
-    } else {
-        [self.masterVC viewWillAppear:YES];
-    }
     
+    
+    // Viewが現れるときにMasterViewを更新する
+    [self.masterVC viewWillAppear:YES];
     [super viewWillAppear:animated];
+    
 }
 
 /****************************************************************
@@ -138,14 +143,9 @@
     ViewMgr *viewMgr        = [ViewMgr sharedManager];
     [viewMgr setOpenInputView:false];
     
-    if ([self.navigationController.viewControllers indexOfObject:self]==NSNotFound) {
-        // back button was pressed.  We know this is true because self is no longer
-        // in the navigation stack.
-        [self.masterVC viewWillAppear:YES];
-    } else {
-        [self.masterVC viewWillAppear:YES];
-    }
     
+    // Viewが消えるときにMasterViewを更新する
+    [self.masterVC viewWillAppear:YES];
     [super viewWillDisappear:animated];
 }
 
@@ -154,7 +154,7 @@
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
-    if ( sender.tag == BTAB_CANCEL ){
+    if ( sender.tag == BTAG_CANCEL ){
         _b_cancel = true;
     }
     return;

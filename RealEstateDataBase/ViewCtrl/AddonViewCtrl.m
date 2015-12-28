@@ -347,9 +347,16 @@
 {
     [_timeOut invalidate];
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [[[UIAlertView alloc]initWithTitle:@"通信タイムアウト" message:@"Apple Storeとの通信ができませんでした.再度実行してください" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    
-   [self dismissViewControllerAnimated:YES completion:nil];
+    UIAlertController *al_timeout;
+    al_timeout = [UIAlertController alertControllerWithTitle:@"通信タイムアウト"
+                                                    message:@"Apple Storeとの通信ができませんでした.再度実行してください"
+                                             preferredStyle:UIAlertControllerStyleAlert];
+    [al_timeout addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        //何もしない
+    }]];
+    [self presentViewController:al_timeout animated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 /****************************************************************
@@ -378,12 +385,14 @@
 -(void)clickButtonPurchase:(UIButton*)sender
 {
     if ( [SKPaymentQueue canMakePayments] == NO ){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"購入できません"
-                                                        message:@"App内の購入が機能制限されています"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *al_purchase;
+        al_purchase = [UIAlertController alertControllerWithTitle:@"購入できません"
+                                                         message:@"App内の購入が機能制限されています"
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+        [al_purchase addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            //何もしない
+        }]];
+        [self presentViewController:al_purchase animated:YES completion:nil];
         return;
     }
     SKProduct *tgtProduct = [_addonMgr.products objectAtIndex:sender.tag];

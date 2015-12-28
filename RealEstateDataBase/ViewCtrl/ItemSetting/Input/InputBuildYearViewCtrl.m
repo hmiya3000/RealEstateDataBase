@@ -95,7 +95,7 @@
         [UIUtil setRectLabel:_l_buildYear   x:pos_x y:pos_y viewWidth:_pos.len15 viewHeight:dy color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*2);
-        [_pv setFrame:CGRectMake(_pos.x_center, _pos.y_btm - 250, _pos.len15, 216)];
+        [_pv setFrame:CGRectMake(_pos.x_center, pos_y, _pos.len30/2, 300)];
     }
     /****************************************/
     return;

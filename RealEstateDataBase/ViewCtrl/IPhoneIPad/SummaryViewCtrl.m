@@ -223,7 +223,7 @@
         if ( _pos.isPortrait == true ){
             _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
         } else {
-            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*3);
         }
         _scrollView.bounces = YES;
     } else {
@@ -238,13 +238,13 @@
     [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
     pos_y = pos_y + dy;
     [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*8)];
-    pos_y = pos_y + 6.5*dy;
+    pos_y = pos_y + 7*dy;
     /*--------------------------------------*/
     if ( _addonMgr.multiYear == true ){
         pos_y = pos_y + dy;
         [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
         [_g_cf setNeedsDisplay];
-        pos_y = pos_y + dy*3.5;
+        pos_y = pos_y + dy*4;
     }
     /*--------------------------------------*/
     pos_y = pos_y + dy;
@@ -290,7 +290,7 @@
     [UIUtil setLabel:_l_ltvVal          x:pos_x+dx*2    y:pos_y length:length];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    _tv_comment2.frame      = CGRectMake(pos_x,         pos_y, length30, dy*5.5);
+    _tv_comment2.frame      = CGRectMake(pos_x,         pos_y, length30, dy*6);
     pos_y = pos_y + 5*dy;
     /*--------------------------------------*/
     return;
@@ -307,7 +307,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }

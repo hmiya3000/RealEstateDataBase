@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++1276BB5",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++1276BB5" : 0,
+    "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++061D6E1" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "B60A1623-9F9D-4832-BE17-8723CF2770BF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++1276BB5" : "RealEstateDataBase\/",
+    "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++061D6E1" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "RealEstateDataBase",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "RealEstateDataBase.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:hmiya3000\/RealEstateDataBase.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++061D6E1"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:hmiya3000\/RealEstateDataBase.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7739A33C49922A5AB07753BC7C4B09D29267DA7B+++1276BB5"
+    }
+  ]
+}

@@ -369,7 +369,7 @@
     [_g_npv setNeedsDisplay];
     /*--------------------------------------*/
     pos_y = pos_y + dy*5;
-    _tv_comment.frame       = CGRectMake(pos_x,     pos_y, length30, dy*4.5);
+    _tv_comment.frame       = CGRectMake(pos_x,     pos_y, length30, dy*8);
     /*--------------------------------------*/
     return;
 }
@@ -385,7 +385,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }

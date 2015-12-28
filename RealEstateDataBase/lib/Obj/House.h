@@ -23,7 +23,7 @@
     };
 
     NSString                *_name;             //建物名
-    int                     _construct;         //建物構造
+    NSInteger               _construct;         //建物構造
     NSInteger               _rooms;             //部屋数
     NSInteger               _buildYear;         //建築年
     NSInteger               _yearAquisition;    //取得年
@@ -39,7 +39,7 @@
 - (NSInteger) getAmortizationCostsSum_period:(NSInteger)period;
 /****************************************************************/
 @property   (nonatomic)             NSString        *name;
-@property   (nonatomic)             int             construct;
+@property   (nonatomic)             NSInteger       construct;
 @property   (nonatomic)             NSInteger       rooms;
 @property   (nonatomic)             NSInteger       buildYear;
 @property   (nonatomic,readwrite)   NSInteger       yearAquisition;

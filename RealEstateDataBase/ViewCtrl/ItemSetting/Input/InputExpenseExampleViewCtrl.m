@@ -138,7 +138,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //    NSLog(@"%s",__FUNCTION__);
     //    return UIInterfaceOrientationMaskPortrait;

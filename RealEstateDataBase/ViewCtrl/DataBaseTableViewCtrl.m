@@ -23,6 +23,7 @@
 
     UIViewController            *_inputVC;          /* 物件名入力VC */
     UIViewController            *_infoVC;           /* バージョン情報VC */
+    UINavigationController      *_infoNAC;
 
     
     UISplitViewController       *_spVc;
@@ -342,13 +343,13 @@
     
     _inputVC    = [[InputItemViewCtrl alloc]init];
     _infoVC     = [[InfoViewCtrl alloc]init];
+    _infoNAC    = [[UINavigationController alloc]initWithRootViewController:_infoVC];
 
     _tbc = [[UITabBarController alloc]init];
-    NSArray *views = [NSArray arrayWithObjects:_inputVC,_infoVC,nil];
+    NSArray *views = [NSArray arrayWithObjects:_inputVC,_infoNAC,nil];
     [_tbc setViewControllers:views animated:YES];
     
     _tbc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//    [self.view.window.rootViewController presentViewController:_tbc animated:YES completion:nil];
     [self presentViewController:_tbc animated:YES completion:nil];
 
 }

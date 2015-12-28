@@ -11,13 +11,13 @@
 
 @interface ConstructPV : UIPopupPickerView
 {
-    int           _construct;
+    NSInteger           _construct;
 }
 /****************************************************************/
 - (id)initWitTarget:(id)target frame:(CGRect)frame;
 - (void)setIndex_construct:(NSInteger)construct;
 /****************************************************************/
-@property   (nonatomic,readonly)    int   construct;
+@property   (nonatomic,readonly)    NSInteger   construct;
 /****************************************************************/
 @end
 /****************************************************************/

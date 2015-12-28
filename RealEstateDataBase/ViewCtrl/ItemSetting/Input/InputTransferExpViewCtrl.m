@@ -60,13 +60,13 @@
     _tv_tips.editable       = false;
     _tv_tips.scrollEnabled  = false;
     _tv_tips.backgroundColor = [UIUtil color_LightYellow];
-    _tv_tips.text           = [NSString stringWithFormat:@"売却価格の約4%%が目安です。費用の内訳例はこちら"];
+    _tv_tips.text           = [NSString stringWithFormat:@"売却価格の約4%%が目安です"];
     [_scrollView addSubview:_tv_tips];
     /****************************************/
-    _b_example      = [UIUtil makeButton:@"内訳例" tag:BTAG_SAMPLE];
-    [_b_example addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
-    _b_sample   = false;
-    [_scrollView addSubview:_b_example];
+//    _b_example      = [UIUtil makeButton:@"内訳例" tag:BTAG_SAMPLE];
+//    [_b_example addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+//    _b_sample   = false;
+//    [_scrollView addSubview:_b_example];
     /****************************************/
     _l_workArea     = [UIUtil makeLabel:@"100"];
     [_l_workArea setTextAlignment:NSTextAlignmentRight];
@@ -132,19 +132,18 @@
         [UIUtil setButton:_b_example x:pos_x y:pos_y length:_pos.len10/2];
     }
     
+    /****************************************/
     if ( _pos.isPortrait == true ){
-        pos_y = _pos.y_btm - dy -dy - _pos.y_page/2;
+        pos_y = _pos.y_page/2;
         [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2)];
-        
+        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2-dy)];
     }else {
-        pos_y = 0;
-        [UIUtil setRectLabel:_l_workArea    x:_pos.x_center     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        pos_y = _pos.y_page/2-2*dy;
+        [UIUtil setRectLabel:_l_workArea    x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
-        [_uicalc setuv:CGRectMake(_pos.x_center, pos_y, _pos.len15, _pos.y_page/1.5)];
+        [_uicalc setuv:CGRectMake(pos_x, pos_y, _pos.len30, _pos.y_page/2+dy)];
     }
-    
     return;
 }
 

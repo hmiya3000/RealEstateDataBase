@@ -67,8 +67,7 @@
     _wv = [[UIWebView alloc] init];
     _wv.delegate = self;
     _wv.scalesPageToFit = YES;
-//    NSURL *url = [NSURL URLWithString:@"http://www.rosenka.nta.go.jp/main_h25/tokyo/kanagawa/prices/html/63056f.htm"];
-    NSURL *url = [NSURL URLWithString:@"http://www.rosenka.nta.go.jp/main_h26/index.htm"];
+    NSURL *url = [NSURL URLWithString:@"http://www.rosenka.nta.go.jp/main_h27/index.htm"];
 
     NSURLRequest *req = [NSURLRequest requestWithURL:url];
     [_wv loadRequest:req];

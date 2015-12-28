@@ -7,6 +7,7 @@
 //
 
 #import "Pos.h"
+#import "SysInfo.h"
 
 @implementation Pos
 
@@ -32,25 +33,34 @@
     self = [super init];
     if (self){
         UIScreen *ms    = [UIScreen mainScreen];
-        CGRect appFrame = ms.applicationFrame;
-        
+        CGRect msBounds = ms.bounds;
         
         CGFloat _origin_x;
         CGFloat _origin_y;
 
         NSString *model = [UIDevice currentDevice].model;
+//        NSLog(@"ms.bound:%3.1f %3.1f - %3.1f %3.1f",ms.bounds.origin.x, ms.bounds.origin.y, ms.bounds.size.width,ms.bounds.size.height );
+//        NSLog(@"uivc:    %3.1f %3.1f - %3.1f %3.1f",uivc.view.frame.origin.x, uivc.view.frame.origin.y, uivc.view.frame.size.width,uivc.view.frame.size.height );
+
+        CGFloat status_heigtht;
+        CGFloat navi_height = uivc.navigationController.navigationBar.bounds.size.height;
+        CGFloat netbar_height = uivc.view.frame.origin.y - ms.bounds.origin.y;
+        CGFloat offset_height;
+        
+        
         UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
         switch (orientation) {
             case UIDeviceOrientationLandscapeLeft:
             case UIDeviceOrientationLandscapeRight:
                 _isPortrait = false;
-                _origin_x   = appFrame.origin.y;
-                _origin_y   = appFrame.origin.x;
-//                _x_page     = appFrame.size.height;
-                _x_page     = uivc.view.frame.size.height;
-                _y_page     = appFrame.size.width;
+                status_heigtht = 0;
+                offset_height = status_heigtht + navi_height + netbar_height;
+                _origin_x   = msBounds.origin.y;
+                _origin_y   = msBounds.origin.x;
+                _y_top      = offset_height;
+                _y_btm      = uivc.view.bounds.size.height;
                 _x_page     = uivc.view.frame.size.width;
-                _y_page     = appFrame.size.height;
+                _y_page     = _y_btm - _y_top;
                 if ( [model hasPrefix:@"iPhone"] ){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page + 20 )/ 9;
@@ -61,16 +71,25 @@
                 }
                 break;
             default:
-            case UIDeviceOrientationPortrait:
-            case UIDeviceOrientationPortraitUpsideDown:
-            case UIDeviceOrientationFaceUp:
-            case UIDeviceOrientationFaceDown:
+//            case UIDeviceOrientationPortrait:
+//            case UIDeviceOrientationPortraitUpsideDown:
+//            case UIDeviceOrientationFaceUp:
+//            case UIDeviceOrientationFaceDown:
                 _isPortrait = true;
-                _origin_x   = appFrame.origin.x;
-                _origin_y   = appFrame.origin.y;
-//                _x_page     = appFrame.size.width;
+                if ( uivc.view.frame.origin.y > 0 ){
+                    status_heigtht = 0;
+                } else {
+                    status_heigtht = 20;
+                }
+                
+                offset_height = status_heigtht + navi_height + netbar_height;
+                _origin_x   = msBounds.origin.x;
+                _origin_y   = msBounds.origin.y;
+                _y_top      = offset_height;
+                _y_btm      = uivc.view.bounds.size.height;
                 _x_page     = uivc.view.frame.size.width;
-                _y_page     = appFrame.size.height;
+                _y_page     = _y_btm - _y_top;
+
                 if ( [model hasPrefix:@"iPhone"] ){
                     _dx         = (_x_page -20 )/3;
                     _dy         = (_y_page -150 )/ 11;
@@ -84,16 +103,12 @@
         _x_left     = uivc.view.bounds.origin.x +10;
         _x_ini      = _x_left + 5;
         _x_center   =_origin_x + _x_page / 2 + 5;
-        _y_top      = uivc.view.bounds.origin.y+20 + uivc.navigationController.navigationBar.bounds.size.height;
-        _y_btm      = uivc.view.bounds.size.height -50;
+
         _len10      = _dx * 0.9;
         _len15      = _dx * 1.4;
         _len30      = _dx * 3.0;
-        if (uivc.navigationController.navigationBar.bounds.size.height == 0){
-            _frame      = CGRectMake(_origin_x, uivc.view.bounds.origin.y+20, _x_page, _y_page);
-        } else {
-            _frame      = CGRectMake(_origin_x, uivc.view.bounds.origin.y, _x_page, _y_page);
-        }
+        _frame      = CGRectMake(0, 0, _x_page, _y_page+2*_dy);
+
         _masterFrame.size.width = 320;
         _masterFrame.size.height = 1024;
         _masterFrame.origin.x = 0;
@@ -103,7 +118,9 @@
         _detailFrame.size.height = 1024;
         _detailFrame.origin.x = 321;
         _detailFrame.origin.y = 0;
-    
+
+//        NSLog(@"Area:    %3.1f %3.1f - %3.1f %3.1f",_frame.origin.x, _frame.origin.y, _frame.size.width,_frame.size.height );
+
     }
     return self;
 }

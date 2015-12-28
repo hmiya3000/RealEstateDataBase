@@ -523,7 +523,9 @@ static ModelRE* sharedModelRE = nil;
     _estate.prices          = _investment.prices;
 
     _estate.land.area               = 100.0;
-    _estate.land.address            = [NSString stringWithFormat:@"千代田区銀座1-1-1"];
+    _estate.land.address            = [NSString stringWithFormat:@"千代田区千代田内堀通り"];
+    _estate.land.latitude           = 0;
+    _estate.land.longitude          = 0;
     _estate.land.assessment         = 125;
     _estate.house.rooms             = 8;
     _estate.house.area              = 100.00;
@@ -674,6 +676,8 @@ static ModelRE* sharedModelRE = nil;
     _estate.land.area       = [[settings objectForKey:@"土地面積"] floatValue];
     _estate.land.address    = [settings objectForKey:@"住所"];
     _estate.land.assessment = [[settings objectForKey:@"路線価"] integerValue];
+    _estate.land.latitude   = [[settings objectForKey:@"緯度"] doubleValue];
+    _estate.land.longitude  = [[settings objectForKey:@"経度"] doubleValue];
     /*--------------------------------------*/
     _estate.house.price     = [[settings objectForKey:@"建物価格"] integerValue];
     _estate.house.area      = [[settings objectForKey:@"床面積"] floatValue];
@@ -729,6 +733,8 @@ static ModelRE* sharedModelRE = nil;
     [settings setObject:[NSNumber numberWithFloat:_estate.land.area   ]             forKey:@"土地面積"];
     [settings setObject:[NSNumber numberWithInteger:_estate.land.assessment]        forKey:@"路線価"];
     [settings setObject:_estate.land.address                                        forKey:@"住所"];
+    [settings setObject:[NSNumber numberWithDouble:_estate.land.latitude]           forKey:@"緯度"];
+    [settings setObject:[NSNumber numberWithDouble:_estate.land.longitude]          forKey:@"経度"];
     /*--------------------------------------*/
     [settings setObject:[NSNumber numberWithInteger:_estate.house.price]            forKey:@"建物価格"];
     [settings setObject:[NSNumber numberWithFloat:_estate.house.area  ]             forKey:@"床面積"];
@@ -755,7 +761,7 @@ static ModelRE* sharedModelRE = nil;
  ****************************************************************/
 - (NSString*) titleString
 {
-    return @"serial,物件名,物件価格,GPI,諸費用,自己資金,借入金,金利,借入期間,土地価格,土地面積,住所,路線価,建物価格,床面積,構造,戸数,建築年,取得年,家賃下落率,空室率,管理費割合,所得税・住民税,保有期間,売却価格,改良費,譲渡費用\n";
+    return @"serial,物件名,物件価格,GPI,諸費用,自己資金,借入金,金利,借入期間,土地価格,土地面積,住所,緯度,経度,路線価,建物価格,床面積,構造,戸数,建築年,取得年,家賃下落率,空室率,管理費割合,所得税・住民税,保有期間,売却価格,改良費,譲渡費用\n";
 }
 /****************************************************************
  *
@@ -777,6 +783,8 @@ static ModelRE* sharedModelRE = nil;
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.land.price]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_estate.land.area]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%@,",_estate.land.address]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_estate.land.latitude]];
+    str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_estate.land.longitude]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.land.assessment]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%ld,",(long)_estate.house.price]];
     str = [str stringByAppendingString:[NSString stringWithFormat:@"%f,",_estate.house.area]];

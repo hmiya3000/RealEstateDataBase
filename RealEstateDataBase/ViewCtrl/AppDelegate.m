@@ -36,12 +36,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    DBSession *dbSession = [[DBSession alloc]
+                            initWithAppKey:APP_KEY
+                            appSecret:APP_SECRET
+                            root: kDBRootAppFolder]; // either kDBRootAppFolder or kDBRootDropbox
+    [DBSession setSharedSession:dbSession];
+    
+
     _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     _window.backgroundColor = [UIUtil color_LightYellow];
     [_window makeKeyAndVisible];
-    
-    UIScreen *ms = [UIScreen mainScreen];
-    CGRect appFrame         = ms.applicationFrame;
 
 
     NSString *model     = [UIDevice currentDevice].model;
@@ -51,25 +55,16 @@
     if ( [model hasPrefix:@"iPhone"] ){
         NSLog(@"iPhone");
         _iPhoneVC           = [[DataBaseIPhoneViewCtrl alloc]init];
-        [_iPhoneVC.view setFrame:appFrame];
-        [_window.rootViewController.view setFrame:appFrame];
         _window.rootViewController  = _iPhoneVC;
         
     } else if ( [model hasPrefix:@"iPad"]){
         NSLog(@"iPad");
         _iPadVC             = [[DataBaseIPadViewCtrl alloc]init];
         _iPadVC.delegate    = self;
-        [self.window addSubview:_iPadVC.view];
+        _window.rootViewController  = _iPadVC;
 
     }
     [self.window makeKeyAndVisible];
-    
-    
-    DBSession *dbSession = [[DBSession alloc]
-                            initWithAppKey:APP_KEY
-                            appSecret:APP_SECRET
-                            root: kDBRootAppFolder]; // either kDBRootAppFolder or kDBRootDropbox
-    [DBSession setSharedSession:dbSession];
     
 #if 0
     
@@ -86,6 +81,8 @@
 
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 
+
+    sleep(1);   //起動画面を保持
     return YES;
 }
 
@@ -96,8 +93,6 @@
 }
 
 /****************************************************************/
-
-#if 1 //--------------------------
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
   sourceApplication:(NSString *)source annotation:(id)annotation
 {
@@ -109,6 +104,7 @@
         return YES;
     }
     // Add whatever other url handling code your app requires here
+    NSLog(@"Not App linked successfully!");
     return NO;
 
     
@@ -128,7 +124,6 @@
     return NO;
 #endif
 }
-#endif //-------------------
 
 /****************************************************************/
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -187,7 +182,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;

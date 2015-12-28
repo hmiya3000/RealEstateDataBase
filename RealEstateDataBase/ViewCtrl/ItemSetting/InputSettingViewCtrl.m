@@ -148,6 +148,9 @@
         if ( [model hasPrefix:@"iPhone"] ){
             [self.navigationController pushViewController:_inputVC animated:YES];
         } else if ([model hasPrefix:@"iPad"] ){
+            _inputVC.masterVC = self;
+            _openIndexPath  = indexPath;
+
             UINavigationController  *tmpNAC;
             tmpNAC   = (UINavigationController*)self.detailTab.selectedViewController;
             if ( [_viewMgr isOpenInputView] == false ){
@@ -159,8 +162,6 @@
                 [tmpNAC pushViewController:_inputVC animated:NO];
             }
             [_viewMgr SetOpenInputView:true];
-            _inputVC.masterVC = self;
-            _openIndexPath  = indexPath;
         }
     }
     return;

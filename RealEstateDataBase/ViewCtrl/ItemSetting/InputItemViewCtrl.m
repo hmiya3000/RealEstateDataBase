@@ -36,7 +36,7 @@
     CGFloat             _emptyRate;
     NSInteger           _rooms;
     NSInteger           _buildYear;
-    int                 _construct;
+    NSInteger           _construct;
     NSInteger           _landPrice;
     CGFloat             _landArea;
     
@@ -222,7 +222,7 @@
     _tv_address.editable       = true;
     _tv_address.scrollEnabled  = true;
     _tv_address.backgroundColor = [UIColor whiteColor];
-    _tv_address.text           = @"千代田区銀座1-1-1";
+    _tv_address.text           = @"千代田区千代田内堀通り";
     [_tv_address   setTag:TTAG_ADDRESS];
     [_tv_address   setDelegate:(id)self];
     [_scrollView addSubview:_tv_address];
@@ -292,7 +292,10 @@
     lengthR     = _pos.len15;
     length30    = _pos.len30;
     /****************************************/
-    [_scrollView setFrame:_pos.frame];
+    [_scrollView setFrame:CGRectMake(_pos.frame.origin.x,
+                                     _pos.frame.origin.y+20,
+                                     _pos.frame.size.width,
+                                     _pos.frame.size.height)];
     /*--------------------------------------*/
     NSString *model = [UIDevice currentDevice].model;
     if ( [model hasPrefix:@"iPhone"] ){
@@ -373,7 +376,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //    NSLog(@"%s",__FUNCTION__);
     //    return UIInterfaceOrientationMaskPortrait;
@@ -563,6 +566,9 @@
                                                  name:UIKeyboardWillHideNotification object:nil];
 }
 
+/****************************************************************
+ *
+ ****************************************************************/
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
     CGPoint scrollPoint = CGPointMake(0.0,20.0);

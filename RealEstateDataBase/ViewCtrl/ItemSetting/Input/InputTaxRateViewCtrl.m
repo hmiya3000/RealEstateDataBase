@@ -96,7 +96,7 @@
         [UIUtil setRectLabel:_l_taxRate   x:pos_x y:pos_y viewWidth:_pos.len15 viewHeight:dy color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
         _tv_tips.frame = CGRectMake(pos_x, pos_y, _pos.len15, dy*2);
-        [_pv setFrame:CGRectMake(_pos.x_center, _pos.y_btm - 250, _pos.len15, 250)];
+        [_pv setFrame:CGRectMake(_pos.x_center, pos_y, _pos.len30/2, 300)];
     }
     /****************************************/
     return;
@@ -163,7 +163,7 @@
  ****************************************************************/
 -(NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return 8;
+    return 10;
 }
 /****************************************************************
  * 表示する内容を返す
@@ -174,28 +174,34 @@
     NSString *str;
     switch (row) {
         case 0:
-            str = @"15%(個人事業:1000円〜194.9万円)";
+            str = @"個人事業:〜195万円";
             break;
         case 1:
-            str = @"20%(個人事業:195万円〜329.9万円)";
+            str = @"個人事業:〜330万円";
             break;
         case 2:
-            str = @"30%(個人事業:330万円〜694.9万円)";
+            str = @"個人事業:〜695万円";
             break;
         case 3:
-            str = @"33%(個人事業:695万円〜899.9万円)";
+            str = @"個人事業:〜900万円";
             break;
         case 4:
-            str = @"43%(個人事業:900万円〜1799.9万円)";
+            str = @"個人事業:〜1800万円";
             break;
         case 5:
-            str = @"50%(個人事業:1800万円〜)";
+            str = @"個人事業:〜4000万円";
             break;
         case 6:
-            str = @"32.3%(法人:〜800万円)";
+            str = @"個人事業:4000万円超";
             break;
         case 7:
-            str = @"42.8%(法人:800万円〜)";
+            str = @"法人:〜400万円";
+            break;
+        case 8:
+            str = @"法人:〜800万円";
+            break;
+        case 9:
+            str = @"法人:800万円超";
             break;
             
         default:
@@ -229,18 +235,22 @@
         idx = 0;
     } else if ( 0.16 < taxRate && taxRate <= 0.21 ){
         idx = 1;
-    } else if ( 0.21 < taxRate && taxRate <= 0.31 ){
-        idx = 2;
-    } else if ( 0.31 < taxRate && taxRate <= 0.324 ){
-        idx = 6;
-    } else if ( 0.324 < taxRate && taxRate <= 0.34 ){
-        idx = 3;
-    } else if ( 0.34 < taxRate && taxRate <= 0.429 ){
+    } else if ( 0.21 < taxRate && taxRate <= 0.215 ){
         idx = 7;
-    } else if ( 0.429 < taxRate && taxRate <= 0.44 ){
+    } else if ( 0.215 < taxRate && taxRate <= 0.233 ){
+        idx = 8;
+    } else if ( 0.233 < taxRate && taxRate <= 0.31 ){
+        idx = 2;
+    } else if ( 0.31 < taxRate && taxRate <= 0.34 ){
+        idx = 3;
+    } else if ( 0.34 < taxRate && taxRate <= 0.37 ){
+        idx = 9;
+    } else if ( 0.37 < taxRate && taxRate <= 0.44 ){
         idx = 4;
-    } else if ( 0.44 < taxRate ){
+    } else if ( 0.44 < taxRate && taxRate <= 0.51 ){
         idx = 5;
+    } else if ( 0.51 < taxRate ){
+        idx = 6;
     }
     return idx;
 }
@@ -271,10 +281,16 @@
             taxRate = 0.50;
             break;
         case 6:
-            taxRate = 0.323;
+            taxRate = 0.55;
             break;
         case 7:
-            taxRate = 0.428;
+            taxRate = 0.21421;
+            break;
+        case 8:
+            taxRate = 0.23204;
+            break;
+        case 9:
+            taxRate = 0.36047;
             break;
         default:
             taxRate = 0.43;
@@ -309,10 +325,16 @@
             str = @"50%=所得税:40%+住民税:10%";
             break;
         case 6:
-            str = @"32.3%=所得税:15%+住民税:17.3%";
+            str = @"55%=所得税:45%+住民税:10%";
             break;
         case 7:
-            str = @"42.8%=所得税:25.5%+住民税:17.3%";
+            str = @"21.421% (法人税率:15%,事業税:3.4%)";
+            break;
+        case 8:
+            str = @"23.204% (法人税率:15%,事業税:5.1%)";
+            break;
+        case 9:
+            str = @"36.047% (法人税率:25.5%,事業税:6.7%)";
             break;
         default:
             break;

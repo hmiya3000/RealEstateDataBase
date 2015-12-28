@@ -12,13 +12,25 @@
 @implementation Land
 @synthesize address         = _address;
 @synthesize assessment      = _assessment;
-@synthesize price;
 @synthesize valuation       = _valuation;
+@synthesize latitude        = _latitude;
+@synthesize longitude       = _longitude;
 /****************************************************************/
 - (void) setAssessment:(CGFloat)assessment
 {
     _assessment = assessment;
     [self calcValuation];
+    return;
+}
+/****************************************************************/
+- (void)setAddress:(NSString *)address
+{
+    NSMutableString *text = [NSMutableString stringWithString:address];
+    [text replaceOccurrencesOfString:@"\n"
+                          withString:@""
+                             options:0
+                               range:NSMakeRange(0, [text length])];
+    _address = text;
     return;
 }
 /****************************************************************/

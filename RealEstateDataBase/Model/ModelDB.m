@@ -222,8 +222,6 @@ static ModelDB* sharedModelDB = nil;
  ****************************************************************/
 - (void) deleteAllFiles
 {
-    AddonMgr *addonMgr = [AddonMgr sharedManager];
-    [addonMgr initializeAddons];
     
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
@@ -286,37 +284,6 @@ static ModelDB* sharedModelDB = nil;
 
     return localPath;
 }
-
-#if 0
-/****************************************************************
- * 全データファイルをエクスポート
- ****************************************************************/
-- (void) exportAllFiles:(DBPath*)dbpath
-{
-    NSError *error;
-    DBFile *file;
-    file = [[DBFilesystem sharedFilesystem] openFile:dbpath error:&error];
-    if (error){
-        /* 存在しなかったので新規作成 */
-        NSLog(@"create");
-        file = [[DBFilesystem sharedFilesystem] createFile:dbpath error:nil];
-    }
-    
-    NSString *exportFile;
-    exportFile = [self createCSV];
-    
-    BOOL ret = [file writeString:exportFile error:nil];
-    if (ret) {
-        //self.fileText = [NSString stringWithString:self.documentTextView.text];
-    }else { // error
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Write Error" message:error.description delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-    }
-
-    
-    return;
-}
-#endif
 
 /****************************************************************
  * インポートファイル名を指定

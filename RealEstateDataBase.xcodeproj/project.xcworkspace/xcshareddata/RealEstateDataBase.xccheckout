@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>B60A1623-9F9D-4832-BE17-8723CF2770BF</string>
 	<key>IDESourceControlProjectName</key>
-	<string>RealEstateDataBase</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>7739A33C49922A5AB07753BC7C4B09D29267DA7B</key>
 		<string>github.com:hmiya3000/RealEstateDataBase.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>RealEstateDataBase.xcodeproj</string>
+	<string>RealEstateDataBase.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>7739A33C49922A5AB07753BC7C4B09D29267DA7B</key>

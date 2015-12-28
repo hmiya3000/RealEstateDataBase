@@ -319,7 +319,7 @@
 /****************************************************************
  * 回転処理の許可
  ****************************************************************/
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
@@ -348,14 +348,33 @@
 -(void)clickButton:(UIButton*)sender
 {
     if ( sender.tag == BTAG_INITIAL ){
-        UIAlertView *_as_clear;
-        _as_clear = [[UIAlertView alloc] init];
-        _as_clear.title = @"全データを初期化しますか？(購入情報は初期化しません)";
-        _as_clear.delegate = self;
-        [_as_clear addButtonWithTitle:@"実行する" ];
-        [_as_clear addButtonWithTitle:@"やめる" ];
-        [_as_clear show];
+        UIAlertController *_as_clear;
+        _as_clear = [UIAlertController alertControllerWithTitle:@"全データを初期化しますか？"
+                                                        message:@"購入情報は初期化しません"
+                                                 preferredStyle:UIAlertControllerStyleAlert];
+        [_as_clear addAction:[UIAlertAction actionWithTitle:@"実行する" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            AddonMgr *addonMgr = [AddonMgr sharedManager];
+            if ( addonMgr.friendMode == true ){
+                [addonMgr initializeAddons];
+            }
+            [_modelDB  deleteAllFiles];
+            ViewMgr *viewMgr = [ViewMgr sharedManager];
+            viewMgr.reqViewInit = true;
+            if ( [viewMgr isReturnDataList ] == true ){
+                [self dismissViewControllerAnimated:YES completion:nil];
+                viewMgr.stage   = STAGE_DATALIST;
+            }
+            if ( self.masterVC != nil ){
+                self.tabBarController.selectedIndex = 0;
+                [self.masterVC viewWillAppear:YES];
+            }
+        }]];
+        [_as_clear addAction:[UIAlertAction actionWithTitle:@"やめる"  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            //何もしない
+        }]];
+        [self presentViewController:_as_clear animated:YES completion:nil];
         [_modelDB showAllFiles];
+
     } else if ( sender.tag == BTAG_IMPORT){
         if ( _addOnMgr.importExport == true ){
             _importVC       = [[ImportViewCtrl alloc]init];
@@ -397,33 +416,6 @@
             _dropboxVC       = [[ImportExportHelpViewCtrl alloc]init];
             [self.navigationController pushViewController:_dropboxVC animated:YES];
         }
-    }
-}
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    ViewMgr *viewMgr = [ViewMgr sharedManager];
-    switch (buttonIndex){
-        case 0:
-            //AlertViewで「実行」が選択されたのでデータ削除
-            [_modelDB  deleteAllFiles];
-            viewMgr.reqViewInit = true;
-            if ( [viewMgr isReturnDataList ] == true ){
-                [self dismissViewControllerAnimated:YES completion:nil];
-                viewMgr.stage   = STAGE_DATALIST;
-            }
-            if ( self.masterVC != nil ){
-                self.tabBarController.selectedIndex = 0;
-                [self.masterVC viewWillAppear:YES];
-            }
-            break;
-        case 1:
-            break;
-        default:
-            break;
     }
 }
 

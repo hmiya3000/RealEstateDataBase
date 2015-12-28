@@ -87,7 +87,7 @@
     NSMutableArray *arr = [[NSMutableArray alloc]init];
     while( 1 ){
         [arr addObject:[NSNumber numberWithFloat:tmp]];
-        if( tmp >= max ){
+        if( tmp >= max || scale == 0 ){
             break;
         }
         tmp = tmp + scale;

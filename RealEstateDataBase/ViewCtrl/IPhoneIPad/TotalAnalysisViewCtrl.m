@@ -303,8 +303,8 @@
     [UIUtil setLabel:_l_priceBuyVal         x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_equity              x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_equityVal           x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_equity              x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_equityVal           x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_holdingPeriod       x:pos_x         y:pos_y length:length*2];
@@ -318,43 +318,43 @@
     [UIUtil setRectLabel:_l_TitleCF x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_btcfOpe             x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_btcfOpeVal          x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfOpe             x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_btcfOpeVal          x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_btcfSale             x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_btcfSaleVal          x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfSale             x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_btcfSaleVal          x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_btcfAll              x:pos_x        y:pos_y length:length*2];
-    [UIUtil setLabel:_l_btcfAllVal           x:pos_x+dx*2   y:pos_y length:length];
+    [UIUtil setLabel:_l_btcfAll              x:pos_x        y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_btcfAllVal           x:pos_x+dx*1.5 y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_btInOut              x:pos_x        y:pos_y length:length*2];
-    [UIUtil setLabel:_l_btInOutVal           x:pos_x+dx*2   y:pos_y length:length];
+    [UIUtil setLabel:_l_btInOut              x:pos_x        y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_btInOutVal           x:pos_x+dx*1.5 y:pos_y length:lengthR];
     /****************************************/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atcfOpe             x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_atcfOpeVal          x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_atcfOpe             x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_atcfOpeVal          x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atcfSale             x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_atcfSaleVal          x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_atcfSale             x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_atcfSaleVal          x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atcfAll              x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_atcfAllVal           x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_atcfAll              x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_atcfAllVal           x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_atInOut              x:pos_x        y:pos_y length:length*2];
-    [UIUtil setLabel:_l_atInOutVal           x:pos_x+dx*2   y:pos_y length:length];
+    [UIUtil setLabel:_l_atInOut              x:pos_x        y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_atInOutVal           x:pos_x+dx*1.5 y:pos_y length:lengthR];
     /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleAnalyze x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_npv                 x:pos_x         y:pos_y length:length*2];
-    [UIUtil setLabel:_l_npvVal              x:pos_x+dx*2    y:pos_y length:length];
+    [UIUtil setLabel:_l_npv                 x:pos_x         y:pos_y length:lengthR];
+    [UIUtil setLabel:_l_npvVal              x:pos_x+dx*1.5  y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_btIrr               x:pos_x         y:pos_y length:length*2];

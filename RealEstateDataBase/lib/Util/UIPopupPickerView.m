@@ -65,20 +65,6 @@
 /****************************************************************
  *
  ****************************************************************/
-#if 0
-- (id)init
-{
-    self = [super init];
-    if (self){
-        self.title  = @"PickerView";
-        self.view.backgroundColor = [UIUtil color_LightYellow];
-    }
-    return self;
-}
-#endif
-/****************************************************************
- *
- ****************************************************************/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -119,14 +105,25 @@
     dy          = _pos.dy;
     length      = _pos.len10;
     length30    = _pos.len30;
+    if ( _pos.isPortrait == true ){
 
-    pos_y = _pos.y_btm -230 -dy;
-    [UIUtil setRectLabel:_l_bg x:0 y:pos_y viewWidth:_pos.frame.size.width viewHeight:_pos.frame.size.height color:[UIUtil color_LightYellow]];
-    pos_y = pos_y + dy;
-    [_pv setFrame:CGRectMake(pos_x, pos_y, length30, _pos.frame.size.height)];
-    pos_y = _pos.y_btm;
-    [UIUtil setButton:_btn_cancel x:pos_x y:pos_y length:length30];
+        pos_y = _pos.y_btm -230-dy;
+        [UIUtil setRectLabel:_l_bg x:0 y:pos_y viewWidth:_pos.frame.size.width viewHeight:_pos.frame.size.height color:[UIUtil color_LightYellow]];
+        pos_y = pos_y+dy;
+        [_pv setFrame:CGRectMake(pos_x, pos_y, length30, _pos.y_btm - pos_y -dy)];
+        pos_y = _pos.y_btm - dy;
+        [UIUtil setButton:_btn_cancel x:pos_x y:pos_y length:length30];
+    }
     [self rewriteProperty];
+}
+/****************************************************************
+ * 回転処理の許可
+ ****************************************************************/
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    //    NSLog(@"%s",__FUNCTION__);
+    return UIInterfaceOrientationMaskPortrait;
+    //return UIInterfaceOrientationMaskAll;
 }
 
 /****************************************************************

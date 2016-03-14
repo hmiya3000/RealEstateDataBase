@@ -50,7 +50,12 @@
     NSString *model = [UIDevice currentDevice].model;
     if ([model hasPrefix:@"iPad"]){
         CGRect frame = self.view.frame;
-        [self.view setFrame:CGRectMake(frame.origin.x, frame.origin.y, 447, frame.size.height) ];
+        if ( frame.size.width == 768 ){
+            frame.size.width = frame.size.width - 320;
+        } else {
+            frame.size.width = frame.size.width - 380;
+        }
+        [self.view setFrame:frame];
     }
     
     

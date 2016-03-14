@@ -223,18 +223,10 @@
     /*--------------------------------------*/
     NSString *model = [UIDevice currentDevice].model;
     if ( [model hasPrefix:@"iPhone"] ){
-        if ( _addonMgr.saleAnalysys == true ){
-            if ( _pos.isPortrait == true ){
-                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
-            } else {
-                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2.9);
-            }
+        if ( _pos.isPortrait == true ){
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*2);
         } else {
-            if ( _pos.isPortrait == true ){
-                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1);
-            } else {
-                _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.5);
-            }
+            _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*3);
         }
         _scrollView.bounces = YES;
     } else {

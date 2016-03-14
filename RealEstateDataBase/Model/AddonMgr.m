@@ -157,32 +157,16 @@ static AddonMgr* sharedAddonMgr = nil;
     switch (appMode) {
         case APP_FREE:
         default:
-            if ( _friendMode == false ){
-                str = @"AIREES Free";
-            } else {
-                str = @"AIREES-F Free";
-            }
+            str = @"AIREES Free";
             break;
         case APP_LITE:
-            if ( _friendMode == false ){
-                str = @"AIREES Lite";
-            } else {
-                str = @"AIREES-F Lite";
-            }
+            str = @"AIREES Lite";
             break;
         case APP_STANDALONE:
-            if ( _friendMode == false ){
-                str = @"AIREES Stand Alone";
-            } else {
-                str = @"AIREES-F Stand Alone";
-            }
+            str = @"AIREES Stand Alone";
             break;
         case APP_NETWORK:
-            if ( _friendMode == false ){
-                str = @"AIREES Network";
-            } else {
-                str = @"AIREES-F Network";
-            }
+            str = @"AIREES Network";
             break;
     }
     return str;

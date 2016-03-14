@@ -45,6 +45,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSString *model = [UIDevice currentDevice].model;
+    if ([model hasPrefix:@"iPad"]){
+        CGRect frame = self.view.frame;
+        if ( frame.size.width == 768 ){
+            frame.size.width = frame.size.width - 320;
+        } else {
+            frame.size.width = frame.size.width - 380;
+        }
+        [self.view setFrame:frame];
+    }
     /****************************************/
     _modelRE    = [ModelRE sharedManager];
     _expense    = [[Expense alloc]initWithPrice:_modelRE.estate.prices.price

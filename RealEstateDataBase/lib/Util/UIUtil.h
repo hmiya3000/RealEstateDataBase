@@ -47,12 +47,16 @@
 /****************************************************************/
 + (SVSegmentedControl*)makeSegmentedControl_x:(CGFloat)x y:(CGFloat)y length:(CGFloat)len array:(NSArray*)arr;
 /****************************************************************/
-+ (UITextView*)makeTextView_x:(CGFloat)x y:(CGFloat)y width:(CGFloat)w height:(CGFloat)h;
-/****************************************************************/
 + (NSString*)fixString:(NSString*)str length:(NSInteger)length;
++(NSString*)removePrefix:(NSString*)prefix targetStr:(NSString*)targetStr;
 /****************************************************************/
 + (UIScrollView*)makeScrollView:(CGRect)rect  xpage:(CGFloat)xpage ypage:(NSInteger)ypage tgt:(id)obj;
-/****************************************************************/
+//====================================================================
++ (UITextView*)makeTextView_x:(CGFloat)x y:(CGFloat)y width:(CGFloat)w height:(CGFloat)h;
+//====================================================================
++ (UIImageView*)makeImageView;
++ (void)setImageView:(UIImageView*)image frame:(CGRect)frame;
+//====================================================================
 + (CGRect)mergin_rect:(CGRect)rect top:(CGFloat)top bottom:(CGFloat)bottom left:(CGFloat)left right:(CGFloat)right;
 /****************************************************************/
 + (UIColor*)color_Yellow;

@@ -40,6 +40,7 @@
 #import "InputTransferExpViewCtrl.h"
 #import "InputImproveViewCtrl.h"
 
+#import "RentViewCtrl.h"
 
 @interface InputSettingViewCtrl ()
 {
@@ -184,7 +185,12 @@
     } else {
         self.navigationItem.leftBarButtonItem = nil;
     }
-    self.navigationItem.rightBarButtonItem = nil;
+    UIBarButtonItem *rentMonthButton =
+    [[UIBarButtonItem alloc] initWithTitle:@"利回り検証"
+                                     style:UIBarButtonItemStylePlain
+                                    target:self
+                                    action:@selector(retMonthButtonTapped:)];
+    self.navigationItem.rightBarButtonItem = rentMonthButton;
     
 }
 
@@ -222,6 +228,33 @@
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+/****************************************************************
+ * ModalViewから戻る
+ ****************************************************************/
+- (IBAction)retMonthButtonTapped:(id)sender
+{
+    _inputVC = [[RentViewCtrl alloc]init];
+    _inputVC.hidesBottomBarWhenPushed = YES;
+    NSString *model = [UIDevice currentDevice].model;
+    if ( [model hasPrefix:@"iPhone"] ){
+        [self.navigationController pushViewController:_inputVC animated:YES];
+    } else if ([model hasPrefix:@"iPad"] ){
+        _inputVC.masterVC = self;
+//        _openIndexPath  = indexPath;
+        
+        UINavigationController  *tmpNAC;
+        tmpNAC   = (UINavigationController*)self.detailTab.selectedViewController;
+        if ( [_viewMgr isOpenInputView] == false ){
+            // 項目入力ビューを開いてないので普通に開く
+            [tmpNAC pushViewController:_inputVC animated:YES];
+        } else {
+            // 項目入力ビューを開いた状態だったので一旦戻してから開く
+            [tmpNAC popToRootViewControllerAnimated:NO];
+            [tmpNAC pushViewController:_inputVC animated:NO];
+        }
+        [_viewMgr SetOpenInputView:true];
+    }
 }
 /****************************************************************/
 @end

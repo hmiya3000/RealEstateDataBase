@@ -24,6 +24,7 @@
     UIScrollView        *_scrollView;
     UIView              *_uv_grid;
     UITextView          *_tv_comment;
+    UILabel             *_l_friend;
 
     UILabel             *_l_restore;
     UIButton            *_b_restore;
@@ -99,6 +100,8 @@
     [_scrollView addSubview:_tv_comment];
     /****************************************/
     if ( _addonMgr.friendMode == true ){
+        _l_friend = [UIUtil makeLabel:@"Friend Mode"];
+        [_scrollView addSubview:_l_friend];
         _pv   = [[UIPickerView alloc]init];
         [_pv setBackgroundColor:[UIColor whiteColor]];
         [_pv setDelegate:self];
@@ -222,6 +225,8 @@
     pos_y = pos_y + 4*dy;
     /****************************************/
     if ( _addonMgr.friendMode == true ){
+        pos_y = pos_y + dy;
+        [UIUtil setRectLabel:_l_friend x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
         pos_y = pos_y + dy;
         [_pv setFrame:CGRectMake(_pos.x_left,   pos_y, _pos.len30, 216)];
     } else {

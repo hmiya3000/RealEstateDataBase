@@ -37,6 +37,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSString *model = [UIDevice currentDevice].model;
+    if ([model hasPrefix:@"iPad"]){
+        CGRect frame = self.view.frame;
+        [self.view setFrame:CGRectMake(frame.origin.x, frame.origin.y, 447, frame.size.height) ];
+    }
+
     self.title = @"譲渡費用";
     
     _value  = _modelRE.sale.expense/10000;

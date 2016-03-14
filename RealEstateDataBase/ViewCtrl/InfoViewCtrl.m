@@ -10,7 +10,7 @@
 #import "ModelDB.h"
 #import "UIUtil.h"
 #import "Pos.h"
-#import "DropboxTableVC.h"
+#import "DisclaimerViewCtrl.h"
 #import "ExportViewCtrl.h"
 #import "ImportViewCtrl.h"
 #import "PDFViewCtrl.h"
@@ -43,11 +43,14 @@
     UISwitch                *_sw_importExport;
     UISwitch                *_sw_pdfOut;
     
+    UIButton                *_b_disclaimer;
     UIButton                *_b_initial;
     UIButton                *_b_dropbox;
     UIButton                *_b_import;
     UIButton                *_b_export;
     UIButton                *_b_pdf;
+
+    UIViewController        *_disclaimerVC;
 
     UIViewController        *_importVC;
     UINavigationController  *_importNAC;
@@ -74,7 +77,7 @@
 #define BTAG_IMPORT     2
 #define BTAG_EXPORT     3
 #define BTAG_PDF        4
-#define BTAG_DROPBOX    5
+#define BTAG_DISCLAIMER 6
 
 #define STAG_MULTIYEAR  1
 #define STAG_OPESETTING 2
@@ -119,10 +122,14 @@
     /****************************************/
     _tv_comment    = [[UITextView alloc]init];
     _tv_comment.editable       = false;
-    _tv_comment.scrollEnabled  = false;
+    _tv_comment.scrollEnabled  = true;
     _tv_comment.text           = [NSString stringWithFormat:@""];
     _tv_comment.text       = APP_COMMENT;
     [_scrollView addSubview:_tv_comment];
+    /****************************************/
+    _b_disclaimer  = [UIUtil makeButton:@"免責事項" tag:BTAG_DISCLAIMER];
+    [_b_disclaimer addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:_b_disclaimer];
     /****************************************/
     _l_multiYear        = [UIUtil makeLabel:@"複数年分析"];
     [_l_multiYear setTextAlignment:NSTextAlignmentLeft];
@@ -267,6 +274,9 @@
     _tv_comment.frame      = CGRectMake(pos_x,         pos_y, length30, dy*3);
     /****************************************/
     pos_y   = pos_y + 3*dy;
+    [UIUtil setButton:_b_disclaimer x:pos_x y:pos_y length:length];
+    /****************************************/
+    pos_y = pos_y + dy;
     [UIUtil setLabel:_l_multiYear       x:pos_x y:pos_y length:length*2];
     _sw_multiYear.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
     /****************************************/
@@ -347,7 +357,10 @@
  ****************************************************************/
 -(void)clickButton:(UIButton*)sender
 {
-    if ( sender.tag == BTAG_INITIAL ){
+    if ( sender.tag == BTAG_DISCLAIMER){
+        _disclaimerVC   = [[DisclaimerViewCtrl alloc]init];
+        [self presentViewController:_disclaimerVC animated:YES completion:nil];
+    } else if ( sender.tag == BTAG_INITIAL ){
         UIAlertController *_as_clear;
         _as_clear = [UIAlertController alertControllerWithTitle:@"全データを初期化しますか？"
                                                         message:@"購入情報は初期化しません"
@@ -407,15 +420,6 @@
         _pdfNAC      = [[UINavigationController alloc]initWithRootViewController:_pdfVC];
         [self presentViewController:_pdfNAC animated:YES completion:nil];
 
-    } else if ( sender.tag == BTAG_DROPBOX){
-        if ( _addOnMgr.importExport == true ){
-            _dropboxVC  = [[DropboxTableVC alloc]init];
-            _dropboxNAC        = [[UINavigationController alloc]initWithRootViewController:_dropboxVC];
-            [self presentViewController:_dropboxNAC animated:YES completion:nil];
-        } else {
-            _dropboxVC       = [[ImportExportHelpViewCtrl alloc]init];
-            [self.navigationController pushViewController:_dropboxVC animated:YES];
-        }
     }
 }
 

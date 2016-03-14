@@ -39,8 +39,6 @@
         CGFloat _origin_y;
 
         NSString *model = [UIDevice currentDevice].model;
-//        NSLog(@"ms.bound:%3.1f %3.1f - %3.1f %3.1f",ms.bounds.origin.x, ms.bounds.origin.y, ms.bounds.size.width,ms.bounds.size.height );
-//        NSLog(@"uivc:    %3.1f %3.1f - %3.1f %3.1f",uivc.view.frame.origin.x, uivc.view.frame.origin.y, uivc.view.frame.size.width,uivc.view.frame.size.height );
 
         CGFloat status_heigtht;
         CGFloat navi_height = uivc.navigationController.navigationBar.bounds.size.height;

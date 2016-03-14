@@ -8,6 +8,7 @@
 
 #import "SysInfo.h"
 #include <sys/utsname.h>
+#import  <UIKit/UIKit.h>
 
 @implementation SysInfo
 

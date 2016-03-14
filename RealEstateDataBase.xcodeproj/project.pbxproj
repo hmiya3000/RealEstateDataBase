@@ -10,6 +10,7 @@
 		AA1A35FE1AD02065001C41AE /* ModelCF.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1A35FD1AD02065001C41AE /* ModelCF.m */; };
 		AA32CE381C2E7C5200CCB3B5 /* GeoCode.m in Sources */ = {isa = PBXBuildFile; fileRef = AA32CE371C2E7C5200CCB3B5 /* GeoCode.m */; };
 		AA38CEB91BEF6A4E0098733B /* SysInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = AA38CEB81BEF6A4E0098733B /* SysInfo.m */; };
+		AA5A3E951C819F86009889D9 /* RentViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5A3E941C819F86009889D9 /* RentViewCtrl.m */; };
 		AA5F0F0E1AEF851D003280D8 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		AA7A40CB1B972EDE005AFDB2 /* InputImproveViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */; };
 		AA7A40CE1BA54CE1005AFDB2 /* BuildYearPV.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A40CD1BA54CE0005AFDB2 /* BuildYearPV.m */; };
@@ -139,6 +140,8 @@
 		AAB25A3F19C6DA1D006A31D1 /* CalcKey.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB25A3C19C6DA1D006A31D1 /* CalcKey.m */; };
 		AAB25A4019C6DA1D006A31D1 /* Calculator.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB25A3E19C6DA1D006A31D1 /* Calculator.m */; };
 		AAB27ED119CC6C3B000C471A /* UICalc.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB27ED019CC6C3B000C471A /* UICalc.m */; };
+		AABE68821C661D360099BD7E /* DisclaimerViewCtrl.m in Sources */ = {isa = PBXBuildFile; fileRef = AABE68811C661D360099BD7E /* DisclaimerViewCtrl.m */; };
+		AABE68851C663E820099BD7E /* disclaimer.html in Resources */ = {isa = PBXBuildFile; fileRef = AABE68841C663E820099BD7E /* disclaimer.html */; };
 		AAC2BC2719D11C51002E9E7F /* ModelExpense.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC2BC2619D11C51002E9E7F /* ModelExpense.m */; };
 		AAC2BC2A19D15F10002E9E7F /* Expense.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC2BC2919D15F10002E9E7F /* Expense.m */; };
 		AAC6CBAE1C2CDEB600343D4C /* launch.png in Resources */ = {isa = PBXBuildFile; fileRef = AAC6CBAD1C2CDEB600343D4C /* launch.png */; };
@@ -174,6 +177,8 @@
 		AA32CE371C2E7C5200CCB3B5 /* GeoCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GeoCode.m; path = Util/GeoCode.m; sourceTree = "<group>"; };
 		AA38CEB71BEF6A4E0098733B /* SysInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SysInfo.h; sourceTree = "<group>"; };
 		AA38CEB81BEF6A4E0098733B /* SysInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SysInfo.m; sourceTree = "<group>"; };
+		AA5A3E931C819F85009889D9 /* RentViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RentViewCtrl.h; sourceTree = "<group>"; };
+		AA5A3E941C819F86009889D9 /* RentViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RentViewCtrl.m; sourceTree = "<group>"; };
 		AA5F0F0D1AEF851D003280D8 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
 		AA7A40C91B972EDE005AFDB2 /* InputImproveViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputImproveViewCtrl.h; sourceTree = "<group>"; };
 		AA7A40CA1B972EDE005AFDB2 /* InputImproveViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputImproveViewCtrl.m; sourceTree = "<group>"; };
@@ -388,6 +393,9 @@
 		AAB25A3E19C6DA1D006A31D1 /* Calculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calculator.m; sourceTree = "<group>"; };
 		AAB27ECF19CC6C3B000C471A /* UICalc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICalc.h; sourceTree = "<group>"; };
 		AAB27ED019CC6C3B000C471A /* UICalc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICalc.m; sourceTree = "<group>"; };
+		AABE68801C661D360099BD7E /* DisclaimerViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DisclaimerViewCtrl.h; path = ViewCtrl/DisclaimerViewCtrl.h; sourceTree = "<group>"; };
+		AABE68811C661D360099BD7E /* DisclaimerViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DisclaimerViewCtrl.m; path = ViewCtrl/DisclaimerViewCtrl.m; sourceTree = "<group>"; };
+		AABE68841C663E820099BD7E /* disclaimer.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = disclaimer.html; path = html/disclaimer.html; sourceTree = "<group>"; };
 		AAC2BC2519D11C51002E9E7F /* ModelExpense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelExpense.h; sourceTree = "<group>"; };
 		AAC2BC2619D11C51002E9E7F /* ModelExpense.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelExpense.m; sourceTree = "<group>"; };
 		AAC2BC2819D15F10002E9E7F /* Expense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Expense.h; sourceTree = "<group>"; };
@@ -403,7 +411,7 @@
 		AAD791511BDB85B800EEDFD7 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		AAD791531BDB875000EEDFD7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AAD791541BDB875000EEDFD7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		AAD791551BDB96B900EEDFD7 /* Airees.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Airees.png; sourceTree = "<group>"; };
+		AAD791551BDB96B900EEDFD7 /* Airees.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Airees.png; path = icon/appicon/Airees.png; sourceTree = "<group>"; };
 		AAE466971AFDC93E00D8DC93 /* Graph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
 		AAE466991B0624D200D8DC93 /* SaleViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SaleViewCtrl.h; sourceTree = "<group>"; };
 		AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SaleViewCtrl.m; sourceTree = "<group>"; };
@@ -584,6 +592,8 @@
 				AAE4669A1B0624D200D8DC93 /* SaleViewCtrl.m */,
 				AA9D63E51AF4459C0078A5DE /* TotalAnalysisViewCtrl.h */,
 				AA9D63E61AF4459C0078A5DE /* TotalAnalysisViewCtrl.m */,
+				AA5A3E931C819F85009889D9 /* RentViewCtrl.h */,
+				AA5A3E941C819F86009889D9 /* RentViewCtrl.m */,
 			);
 			name = IPhoneIPad;
 			path = ViewCtrl/IPhoneIPad;
@@ -593,7 +603,6 @@
 			isa = PBXGroup;
 			children = (
 				AAC6CBAD1C2CDEB600343D4C /* launch.png */,
-				AAD791551BDB96B900EEDFD7 /* Airees.png */,
 				AA9D64461AF7164C0078A5DE /* appicon-60@2x.png */,
 				AA9D64471AF7164C0078A5DE /* appicon-60@3x.png */,
 				AA9D64481AF7164C0078A5DE /* appicon-72.png */,
@@ -667,6 +676,7 @@
 		AAAC7CC9199F83CB00778EF5 /* RealEstateDataBase */ = {
 			isa = PBXGroup;
 			children = (
+				AABE68831C663E250099BD7E /* html */,
 				AAB25A2C19C5A107006A31D1 /* backup */,
 				AAAC7D10199F927200778EF5 /* icon */,
 				AAAC7CF6199F88D300778EF5 /* ViewCtrl */,
@@ -675,6 +685,7 @@
 				AAAC7D57199F952D00778EF5 /* Model */,
 				AAAC7CCA199F83CB00778EF5 /* Supporting Files */,
 				AAD791511BDB85B800EEDFD7 /* LaunchScreen.xib */,
+				AAD791551BDB96B900EEDFD7 /* Airees.png */,
 			);
 			path = RealEstateDataBase;
 			sourceTree = "<group>";
@@ -717,15 +728,17 @@
 				AAAC7D66199F96A700778EF5 /* DataBaseTableViewCtrl.m */,
 				AAAC7D6D19A072E300778EF5 /* InfoViewCtrl.h */,
 				AAAC7D6E19A072E300778EF5 /* InfoViewCtrl.m */,
+				AABE68801C661D360099BD7E /* DisclaimerViewCtrl.h */,
+				AABE68811C661D360099BD7E /* DisclaimerViewCtrl.m */,
+				AACAB9E71A0603FC001067C7 /* PDFViewCtrl.h */,
+				AACAB9E81A0603FC001067C7 /* PDFViewCtrl.m */,
+				AA9D64201AF4AAC70078A5DE /* AddonViewCtrl.h */,
+				AA9D64211AF4AAC70078A5DE /* AddonViewCtrl.m */,
 				AA9D63781AF26D4F0078A5DE /* ItemSetting */,
 				AA948C501A53C64800750262 /* ImportExport */,
 				AA948C4F1A53C5E300750262 /* iPhone */,
 				AA948C4E1A53C59F00750262 /* iPad */,
 				AA9D63E01AF4459C0078A5DE /* IPhoneIPad */,
-				AACAB9E71A0603FC001067C7 /* PDFViewCtrl.h */,
-				AACAB9E81A0603FC001067C7 /* PDFViewCtrl.m */,
-				AA9D64201AF4AAC70078A5DE /* AddonViewCtrl.h */,
-				AA9D64211AF4AAC70078A5DE /* AddonViewCtrl.m */,
 			);
 			name = ViewCtrl;
 			sourceTree = "<group>";
@@ -913,6 +926,14 @@
 			path = Calcurator;
 			sourceTree = "<group>";
 		};
+		AABE68831C663E250099BD7E /* html */ = {
+			isa = PBXGroup;
+			children = (
+				AABE68841C663E820099BD7E /* disclaimer.html */,
+			);
+			name = html;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -957,7 +978,7 @@
 		AAAC7CB6199F83CB00778EF5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Beetre;
 				TargetAttributes = {
 					AAAC7CBD199F83CB00778EF5 = {
@@ -1023,6 +1044,7 @@
 				AA9D645C1AF7164D0078A5DE /* appicon-76@2x.png in Resources */,
 				AA9D643A1AF5D3C30078A5DE /* input.png in Resources */,
 				AACAB9EE1A0753D2001067C7 /* sample2.pdf in Resources */,
+				AABE68851C663E820099BD7E /* disclaimer.html in Resources */,
 				AAAC7CD9199F83CB00778EF5 /* Images.xcassets in Resources */,
 				AA9D64361AF5C2F30078A5DE /* operation.png in Resources */,
 				AA9D645F1AF7164D0078A5DE /* appicon-Small-50.png in Resources */,
@@ -1068,6 +1090,7 @@
 				AA9D63D01AF26D9D0078A5DE /* ImportViewCtrl.m in Sources */,
 				AAA556C119E2D96E00ADFFF4 /* Operation.m in Sources */,
 				AA9D63C51AF26D4F0078A5DE /* InputTaxRateViewCtrl.m in Sources */,
+				AA5A3E951C819F86009889D9 /* RentViewCtrl.m in Sources */,
 				AA9D63C61AF26D4F0078A5DE /* InputTransferExpViewCtrl.m in Sources */,
 				AAAC7D55199F94F500778EF5 /* AppDelegate.m in Sources */,
 				AA32CE381C2E7C5200CCB3B5 /* GeoCode.m in Sources */,
@@ -1087,6 +1110,7 @@
 				AAFD411D1BA5C20B008B03D1 /* LoanViewCtrl.m in Sources */,
 				AA9D63BA1AF26D4F0078A5DE /* InputInterestViewCtrl.m in Sources */,
 				AA9D64171AF4481A0078A5DE /* AnalysisViewCtrl.m in Sources */,
+				AABE68821C661D360099BD7E /* DisclaimerViewCtrl.m in Sources */,
 				AAAC7D4F199F94D900778EF5 /* UIPopupPickerView.m in Sources */,
 				AAAC7D4A199F94D900778EF5 /* Prices.m in Sources */,
 				AA9D63B11AF26D4F0078A5DE /* InputAquYearViewCtrl.m in Sources */,
@@ -1199,7 +1223,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Hironobu Miyazaki (88KN275D9F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Hironobu Miyazaki (88KN275D9F)";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1218,7 +1243,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos9.2;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1239,7 +1264,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iOS Development: Hironobu Miyazaki (88KN275D9F)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iOS Development: Hironobu Miyazaki (88KN275D9F)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1252,7 +1278,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "88fefdf2-511d-4761-a1cb-6e9026e2e495";
-				SDKROOT = iphoneos9.2;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1269,7 +1295,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBase/RealEstateDataBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1283,13 +1309,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RealEstateDataBase/RealEstateDataBase-Prefix.pch";
 				INFOPLIST_FILE = "RealEstateDataBase/RealEstateDataBase-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.beetre.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

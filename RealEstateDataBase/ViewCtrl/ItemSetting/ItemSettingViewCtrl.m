@@ -201,8 +201,8 @@
                 case 0: count = _settingList0.count;    break;
                 case 1: count = _settingList1.count;    break;
                 case 2: count = _settingList2.count;    break;
-                case 3: count = _settingList3.count;    break;
-                case 4: count = _settingList4.count;    break;
+                case 3: count = _settingList4.count;    break;
+                case 4: count = _settingList5.count;    break;
                 case 5: count = _settingList6.count;    break;
                 default:count = 0;                      break;
             }
@@ -223,8 +223,8 @@
                 case 0: count = _settingList0.count;    break;
                 case 1: count = _settingList1.count;    break;
                 case 2: count = _settingList2.count;    break;
-                case 3: count = _settingList3.count;    break;
-                case 4: count = _settingList4.count;    break;
+                case 3: count = _settingList4.count;    break;
+                case 4: count = _settingList5.count;    break;
                 default:count = 0;                      break;
             }
         }
@@ -275,26 +275,26 @@
                      @"借入期間",
                      nil];
     _settingList3 = [NSArray arrayWithObjects:
+                     @"取得年",
+                     @"家賃下落率",
+                     @"空室率",
+                     @"管理費割合",
+                     @"所得税・住民税",
+                     nil
+                     ];
+    _settingList4 = [NSArray arrayWithObjects:
                      @"土地価格",
                      @"土地面積",
                      @"住所",
                      @"路線価",
                      nil
                      ];
-    _settingList4 = [NSArray arrayWithObjects:
+    _settingList5 = [NSArray arrayWithObjects:
                      @"建物価格",
                      @"床面積",
                      @"構造",
                      @"戸数",
                      @"建築年",
-                     nil
-                     ];
-    _settingList5 = [NSArray arrayWithObjects:
-                     @"取得年",
-                     @"家賃下落率",
-                     @"空室率",
-                     @"管理費割合",
-                     @"所得税・住民税",
                      nil
                      ];
     _settingList6 = [NSArray arrayWithObjects:
@@ -330,8 +330,8 @@
                 case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
                 case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
                 case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
-                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
-                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList5 objectAtIndex:indexPath.row];  break;
                 case 5: key = [_settingList6 objectAtIndex:indexPath.row];  break;
                 default:                                                    break;
             }
@@ -352,8 +352,8 @@
                 case 0: key = [_settingList0 objectAtIndex:indexPath.row];  break;
                 case 1: key = [_settingList1 objectAtIndex:indexPath.row];  break;
                 case 2: key = [_settingList2 objectAtIndex:indexPath.row];  break;
-                case 3: key = [_settingList3 objectAtIndex:indexPath.row];  break;
-                case 4: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 3: key = [_settingList4 objectAtIndex:indexPath.row];  break;
+                case 4: key = [_settingList5 objectAtIndex:indexPath.row];  break;
                 default:                                                    break;
             }
         }
@@ -373,9 +373,9 @@
                 case 0: str = @"基本情報";      break;
                 case 1: str = @"資金";         break;
                 case 2: str = @"融資設定";      break;
-                case 3: str = @"土地情報";      break;
-                case 4: str = @"建物情報";      break;
-                case 5: str = @"運営設定";      break;
+                case 3: str = @"運営設定";      break;
+                case 4: str = @"土地情報";      break;
+                case 5: str = @"建物情報";      break;
                 case 6: str = @"売却設定";      break;
                 default:str = @"その他";       break;
             }
@@ -396,9 +396,9 @@
                 case 0: str = @"基本情報";      break;
                 case 1: str = @"資金";         break;
                 case 2: str = @"融資設定";      break;
-                case 3: str = @"土地情報";      break;
-                case 4: str = @"建物情報";      break;
-                case 5: str = @"運営設定";      break;
+                case 3: str = @"運営設定";      break;
+                case 4: str = @"土地情報";      break;
+                case 5: str = @"建物情報";      break;
                 default:str = @"その他";       break;
             }
         } else {
@@ -408,7 +408,7 @@
                 case 2: str = @"融資設定";      break;
                 case 3: str = @"土地情報";      break;
                 case 4: str = @"建物情報";      break;
-                default:str = @"その他";       break;
+                default:str = @"その他";        break;
             }
         }
     }

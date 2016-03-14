@@ -103,8 +103,8 @@
                                    levelPayment:true];
         _emptyRate          = 0.1;
         _rooms              = 8;
-        _buildYear          = 2015;
-        _construct          = 1;
+        _buildYear          = [UIUtil getThisYear];
+        _construct          = CONST_WOOD;
         _landPrice          = 2000 * 10000;
         _landArea           = 100;
         
@@ -329,8 +329,13 @@
     [UIUtil setTextButton:_b_buildYear      x:pos_x+dx*2    y:pos_y length:length];
     /****************************************/
     pos_y = pos_y + dy;
-    [UIUtil setLabel:_l_landPrice           x:pos_x+dx*0    y:pos_y length:lengthR];
-    [UIUtil setLabel:_l_landArea            x:pos_x+dx*1.5  y:pos_y length:lengthR];
+    if ( [model hasPrefix:@"iPhone"] ){
+        [UIUtil setLabel:_l_landPrice       x:pos_x+dx*0    y:pos_y length:lengthR];
+        [UIUtil setLabel:_l_landArea        x:pos_x+dx*1.5  y:pos_y length:lengthR];
+    } else {
+        [UIUtil setLabel:_l_landPrice       x:pos_x+dx*0    y:pos_y length:length];
+        [UIUtil setLabel:_l_landArea        x:pos_x+dx*2    y:pos_y length:length];
+    }
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     [UIUtil setTextField:_t_landPrice       x:pos_x+dx*0    y:pos_y length:length];
@@ -543,6 +548,7 @@
     } else if ( sender.tag == BTAG_BUILDYEAR ){
         [_pv_build setIndex_year:_buildYear];
         [_pv_build showPickerView:self.view];
+
 
     } else if ( sender.tag == BTAG_CONSTRUCT ){
         [_pv_construct setIndex_construct:_construct];

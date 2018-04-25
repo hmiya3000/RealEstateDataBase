@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-/****************************************************************/
+//======================================================================
 @interface DrawTool : UIView
-/****************************************************************/
+//======================================================================
 -(void) setContext:(CGContextRef)context;
 -(void) setLineWidth:(CGFloat)width;
 -(void) setColor_r:(NSInteger)r g:(NSInteger)g b:(NSInteger)b;
@@ -19,6 +19,6 @@
 -(void) drawRect_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h;
 -(void) drawCircle_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h;
 -(void) fillCircle_x:(CGFloat)x y:(CGFloat)y w:(CGFloat)w h:(CGFloat)h;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

@@ -26,6 +26,7 @@
 #import "InputLandAssessmentViewCtrl.h"
 
 #import "InputHousePriceViewCtrl.h"
+#import "InputEquipmentRateViewCtrl.h"
 #import "InputFloorAreaViewCtrl.h"
 #import "InputConstructViewCtrl.h"
 #import "InputRoomsViewCtrl.h"
@@ -33,6 +34,7 @@
 
 #import "InputAquYearViewCtrl.h"
 #import "InputOperationViewCtrl.h"
+#import "InputOpeEmptyViewCtrl.h"
 #import "InputTaxRateViewCtrl.h"
 
 #import "InputHoldingPeriodViewCtrl.h"
@@ -52,14 +54,14 @@
 @end
 
 @implementation InputSettingViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize detailVC    = _detailVC;
 @synthesize detailTab   = _detailTab;
 
-/****************************************************************
- *
- ****************************************************************/
-- (id)initWithStyle:(UITableViewStyle)style
+//======================================================================
+//
+//======================================================================
+-(id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
@@ -72,11 +74,10 @@
     }
     return self;
 }
-
-/****************************************************************
- * セルの選択時で、次のビューを開く
- ****************************************************************/
-- (void)selectCell:(NSIndexPath*)indexPath
+//======================================================================
+// セルの選択時で、次のビューを開く
+//======================================================================
+-(void)selectCell:(NSIndexPath*)indexPath
 {
     
     NSString    *key = [self getKeyIndexPath:indexPath];
@@ -88,6 +89,8 @@
         _inputVC = [[InputInterestViewCtrl alloc]init];
         /****************************************/
     } else if ( [key isEqualToString:@"諸費用"]){
+        _inputVC = [[InputExpenseViewCtrl alloc]init];
+    } else if ( [key isEqualToString:@"仲介手数料"]){
         _inputVC = [[InputExpenseViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"自己資金"]){
         _inputVC = [[InputEquityViewCtrl alloc]init];
@@ -110,6 +113,8 @@
         /****************************************/
     } else if ( [key isEqualToString:@"建物価格"]){
         _inputVC = [[InputHousePriceViewCtrl alloc]init];
+    } else if ( [key isEqualToString:@"設備割合"]){
+        _inputVC = [[InputEquipmentRateViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"床面積"]){
         _inputVC = [[InputFloorAreaViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"構造"]){
@@ -122,10 +127,14 @@
     } else if ( [key isEqualToString:@"取得年"]){
         _inputVC = [[InputAquYearViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"家賃下落率"]){
-        _inputVC = [[InputOperationViewCtrl alloc]init];
+        _inputVC = [[InputOpeEmptyViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"空室率"]){
-        _inputVC = [[InputOperationViewCtrl alloc]init];
+        _inputVC = [[InputOpeEmptyViewCtrl alloc]init];
+    } else if ( [key isEqualToString:@"立ち上げ期間"]){
+        _inputVC = [[InputOpeEmptyViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"管理費割合"]){
+        _inputVC = [[InputOperationViewCtrl alloc]init];
+    } else if ( [key isEqualToString:@"その他運営費"]){
         _inputVC = [[InputOperationViewCtrl alloc]init];
     } else if ( [key isEqualToString:@"所得税・住民税"]){
         _inputVC = [[InputTaxRateViewCtrl alloc]init];
@@ -168,10 +177,10 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     
@@ -193,19 +202,18 @@
     self.navigationItem.rightBarButtonItem = rentMonthButton;
     
 }
-
-/****************************************************************
- * セルの選択時に呼ばれる
- ****************************************************************/
-- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//======================================================================
+// セルの選択時に呼ばれる
+//======================================================================
+-(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self selectCell:indexPath];
 }
 
-/****************************************************************
- * ビューの表示直前に呼ばれる
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     //データの値を更新させる
     [super viewWillAppear:animated];
@@ -256,6 +264,6 @@
         [_viewMgr SetOpenInputView:true];
     }
 }
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

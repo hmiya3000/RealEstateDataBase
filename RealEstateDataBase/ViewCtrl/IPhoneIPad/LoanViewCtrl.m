@@ -13,7 +13,7 @@
 #import "Graph.h"
 #import "GraphData.h"
 #import "AddonMgr.h"
-
+#import "PaymentViewCtrl.h"
 
 @interface LoanViewCtrl ()
 {
@@ -24,6 +24,10 @@
     UILabel             *_l_name;
     
     UILabel             *_l_TitleValuation;
+    UILabel             *_l_marketLand;
+    UILabel             *_l_marketLandVal;
+    UILabel             *_l_assemLand;
+    UILabel             *_l_assemLandVal;
     UILabel             *_l_valuLand;
     UILabel             *_l_valuLandVal;
     UILabel             *_l_valuHouse;
@@ -45,23 +49,27 @@
     UILabel             *_l_DebtRpVal;
     UITextView          *_tv_bank;
     
+    UIViewController        *_paymentVC;
+    UIButton                *_b_paylist;
     
     UILabel             *_l_TitleTransition;
     Graph               *_g_pmt;
+    Graph               *_g_valuation;
     Graph               *_g_drp;
     
     AddonMgr            *_addonMgr;
 }
 @end
-/****************************************************************/
+//======================================================================
 
 @implementation LoanViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize masterVC    = _masterVC;
 
-/****************************************************************
- *
- ****************************************************************/
+#define BTAG_PAYLIST     1
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -73,10 +81,10 @@
     }
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     _modelRE        = [ModelRE sharedManager];
@@ -108,8 +116,15 @@
     _g_pmt  = [[Graph alloc]init];
     [_scrollView addSubview:_g_pmt];
     /****************************************/
+    _b_paylist      = [UIUtil makeButton:@"残高推移" tag:BTAG_PAYLIST];
+    [_b_paylist addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:_b_paylist];
+    /****************************************/
     _l_TitleValuation  = [UIUtil makeLabel:@"積算評価"];
     [_scrollView addSubview:_l_TitleValuation];
+    /****************************************/
+    _g_valuation  = [[Graph alloc]init];
+    [_scrollView addSubview:_g_valuation];
     /****************************************/
     _l_valuLand          = [UIUtil makeLabel:@"土地"];
     [_l_valuLand setTextAlignment:NSTextAlignmentLeft];
@@ -119,7 +134,31 @@
     [_l_valuLandVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_valuLandVal];
     /****************************************/
-    _l_valuHouse         = [UIUtil makeLabel:@"建物"];
+    _l_marketLand          = [UIUtil makeLabel:@"土地:公示地価"];
+    [_l_marketLand setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_marketLand];
+    /*--------------------------------------*/
+    _l_marketLandVal       = [UIUtil makeLabel:@""];
+    [_l_marketLandVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_marketLandVal];
+    /****************************************/
+    _l_assemLand          = [UIUtil makeLabel:@"土地:路線価"];
+    [_l_assemLand setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_assemLand];
+    /*--------------------------------------*/
+    _l_assemLandVal       = [UIUtil makeLabel:@""];
+    [_l_assemLandVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_assemLandVal];
+    /****************************************/
+    _l_valuLand          = [UIUtil makeLabel:@"土地:固定資産税評価額"];
+    [_l_valuLand setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_valuLand];
+    /*--------------------------------------*/
+    _l_valuLandVal       = [UIUtil makeLabel:@""];
+    [_l_valuLandVal setTextAlignment:NSTextAlignmentRight];
+    [_scrollView addSubview:_l_valuLandVal];
+    /****************************************/
+    _l_valuHouse         = [UIUtil makeLabel:@"建物:再調達価格"];
     [_l_valuHouse setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_valuHouse];
     /*--------------------------------------*/
@@ -127,7 +166,7 @@
     [_l_valuHouseVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_valuHouseVal];
     /****************************************/
-    _l_valuAll              = [UIUtil makeLabel:@"合計"];
+    _l_valuAll              = [UIUtil makeLabel:@"積算評価(路線価+再調達価格)"];
     [_l_valuAll setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_valuAll];
     /*--------------------------------------*/
@@ -195,19 +234,19 @@
     [_scrollView addSubview:_g_drp];
     /****************************************/
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake
 {
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
@@ -241,10 +280,26 @@
     pos_y = pos_y + dy;
     [_g_pmt     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
     [_g_pmt setNeedsDisplay];
-    pos_y = pos_y + dy*4;
+    pos_y = pos_y + dy*3.5;
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setButton:_b_paylist x:pos_x y:pos_y length:_pos.len10];
     /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleValuation x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [_g_valuation     setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_valuation setNeedsDisplay];
+    pos_y = pos_y + dy*4;
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_marketLand          x:pos_x             y:pos_y length:length*2];
+    [UIUtil setLabel:_l_marketLandVal       x:pos_x+dx*1.5      y:pos_y length:lengthR];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [UIUtil setLabel:_l_assemLand            x:pos_x             y:pos_y length:length*2];
+    [UIUtil setLabel:_l_assemLandVal         x:pos_x+dx*1.5      y:pos_y length:lengthR];
     /*--------------------------------------*/
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_valuLand            x:pos_x             y:pos_y length:length*2];
@@ -298,26 +353,26 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -331,28 +386,33 @@
     }
     [self viewMake];
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
     
     /****************************************/
-    [UIUtil labelYen:_l_valuLandVal         yen:_modelRE.estate.land.valuation];
+    [UIUtil labelYen:_l_marketLandVal         yen:_modelRE.estate.land.marketValue];
+    [UIUtil labelYen:_l_assemLandVal         yen:_modelRE.estate.land.assessValue];
+    [UIUtil labelYen:_l_valuLandVal         yen:_modelRE.estate.land.propValue];
     [UIUtil labelYen:_l_valuHouseVal        yen:_modelRE.estate.house.valuation];
-    [UIUtil labelYen:_l_valuAllVal          yen:_modelRE.estate.land.valuation+_modelRE.estate.house.valuation];
+    [UIUtil labelYen:_l_valuAllVal          yen:_modelRE.estate.land.assessValue+_modelRE.estate.house.valuation];
     /****************************************/
-    NSInteger amCost = [_modelRE.estate.house getAmortizationCosts_term:1];
+    NSInteger amCost = 0;
+    for( NSInteger term=1; term<=12; term++){
+        amCost = amCost + [_modelRE.estate.house getAmortizationCosts_term:term];
+    }
     NSInteger btIncome = _modelRE.ope1.taxIncome+amCost;
     CGFloat   debtRp    = [_modelRE.investment.loan getLb:1] / btIncome;
     [UIUtil labelYen:_l_BtIncomeVal         yen:btIncome];
@@ -372,10 +432,25 @@
     gd_ppmt.type        = BAR_GPAPH;
     
     _g_pmt.GraphDataAll = [[NSArray alloc]initWithObjects:gd_pmt,gd_ppmt,nil];
-    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear+0.5 ymax:[_loan getPmtYear:1]];
+    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodTerm/12+0.5 ymax:[_loan getPmtYear:1]];
     _g_pmt.title        = @"借入返済内訳";
     
     [_g_pmt setNeedsDisplay];
+    /****************************************/
+    GraphData *gd_valuHouse = [[GraphData alloc]initWithData:[_modelRE getAllValArrayYear]];
+    gd_valuHouse.precedent  = @"建物(再調達価格)";
+    gd_valuHouse.type       = BAR_GPAPH;
+
+    GraphData *gd_valuLand  = [[GraphData alloc]initWithData:[_modelRE getLandValArrayYear]];
+    gd_valuLand.precedent   = @"土地(路線価)";
+    gd_valuLand.type        = BAR_GPAPH;
+    
+    
+    _g_valuation.GraphDataAll = [[NSArray alloc]initWithObjects:gd_valuHouse,gd_valuLand,nil];
+    [_g_valuation setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodTerm/12+0.5 ymax:_modelRE.estate.land.assessValue+_modelRE.estate.house.valuation];
+    _g_valuation.title        = @"積算評価推移";
+    
+    [_g_valuation setNeedsDisplay];
     /****************************************/
     GraphData *gd_drp = [[GraphData alloc]initWithData:[_modelRE getDebtRepaymentPeriodArray]];
     gd_drp.precedent   = @"債務償還年数=借入残高/税引前CF";
@@ -389,16 +464,29 @@
     _g_drp.title        = @"債務償還年数推移";
     
     [_g_drp setNeedsDisplay];
-    
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
+-(void)clickButton:(UIButton*)sender
+{
+    //    [super clickButton:sender];
+    if ( sender.tag == BTAG_PAYLIST ){
+        _paymentVC = [[PaymentViewCtrl alloc]init];
+        [self.navigationController pushViewController:_paymentVC animated:YES];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    return;
+}
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

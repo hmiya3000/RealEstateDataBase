@@ -7,31 +7,31 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <DropboxSDK/DropboxSDK.h>
+//#import <DropboxSDK/DropboxSDK.h>
 
 @interface ModelDB : NSObject
 {
     NSMutableArray          *_list;
 
 }
-/****************************************************************/
+//======================================================================
 + (ModelDB*)sharedManager;
-- (void) loadIndex:(NSInteger)index;
-- (void) deleteIndex:(NSInteger)index;
-- (void) moveIndex:(NSInteger)fromIndex ToIndex:(NSInteger)toIndex;
-- (void) insertRec:(NSDictionary*)record atIndex:(NSInteger)index;
-- (void) createRec:(NSString*)name atIndex:(NSInteger)index;
-- (void) updateSerial:(NSString*)serial name:(NSString*)name;
+-(void) loadIndex:(NSInteger)index;
+-(void) deleteIndex:(NSInteger)index;
+-(void) moveIndex:(NSInteger)fromIndex ToIndex:(NSInteger)toIndex;
+-(void) insertRec:(NSDictionary*)record atIndex:(NSInteger)index;
+-(void) createRec:(NSString*)name atIndex:(NSInteger)index;
+-(void) updateSerial:(NSString*)serial name:(NSString*)name;
 - (BOOL) isInitialized;
-- (void) showAllFiles;
-- (void) deleteAllFiles;
-- (void) createExportFilename;
-- (NSString*) getExportFilename;
-- (NSString*) makeLocalFile:(NSString*)filename;
-/////- (void) exportAllFiles:(DBPath*)dbpath;
-- (void) importData:(NSString*)data;
-/****************************************************************/
+-(void) showAllFiles;
+-(void) deleteAllFiles;
+-(void) createExportFilename;
+-(NSString*) getExportFilename;
+-(NSString*) makeLocalFile:(NSString*)filename;
+/////-(void) exportAllFiles:(DBPath*)dbpath;
+-(void) importData:(NSString*)data;
+//======================================================================
 @property   (nonatomic)     NSMutableArray  *list;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

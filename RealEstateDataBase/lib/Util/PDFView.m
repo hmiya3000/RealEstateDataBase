@@ -17,7 +17,7 @@
 #pragma mark -- Property --
 //--------------------------------------------------------------//
 
-- (void)setPage:(CGPDFPageRef)page
+-(void)setPage:(CGPDFPageRef)page
 {
     // ページの設定
     _page = page;
@@ -30,7 +30,7 @@
 #pragma mark -- Drawing --
 //--------------------------------------------------------------//
 
-- (void)drawRect:(CGRect)rect
+-(void)drawRect:(CGRect)rect
 {
     // ページのチェック
     if (!_page) {

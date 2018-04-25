@@ -86,9 +86,9 @@
 #define TTAG_ADDRESS        7
 #define TTAG_LANDPRICE      8
 #define TTAG_LANDAREA       9
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -99,7 +99,7 @@
         _interest           = 0.08;
         _loan = [[Loan alloc]initWithLoanBorrow:4000*10000
                                        rateYear:0.02
-                                     periodYear:30
+                                     periodTerm:30*12
                                    levelPayment:true];
         _emptyRate          = 0.1;
         _rooms              = 8;
@@ -116,10 +116,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     /****************************************/
@@ -259,29 +259,28 @@
     [self registerForKeyboardNotifications];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidAppear:(BOOL)animated
+//======================================================================
+//
+//======================================================================
+-(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -370,17 +369,17 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //    NSLog(@"%s",__FUNCTION__);
@@ -388,10 +387,10 @@
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -407,29 +406,28 @@
 
     [self viewMake];
 }
-
-/****************************************************************
- * Returnでキーボードを閉じる
- ****************************************************************/
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//======================================================================
+// Returnでキーボードを閉じる
+//======================================================================
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
     return YES;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     [self readTextFieldData];
     return YES;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (BOOL)closePopup:(id)sender
+//======================================================================
+//
+//======================================================================
+-(BOOL)closePopup:(id)sender
 {
     _construct              = _pv_construct.construct;
     _buildYear              = _pv_build.year;
@@ -437,28 +435,28 @@
     return YES;
     
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)closeKeyboard:(id)sender
 {
     [UIUtil closeKeyboard:sender];
     [self readTextFieldData];
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [_t_name resignFirstResponder];
     [_tv_address resignFirstResponder];
 //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void) readTextFieldData
 {
     /*--------------------------------------*/
@@ -485,7 +483,7 @@
     NSInteger tmp_period;
     tmp_period = [_t_period.text integerValue];
     if ( 100 > tmp_period && tmp_period > 0 ){
-        _loan.periodYear = tmp_period;
+        _loan.periodTerm = tmp_period*12;
         
     }
     /*--------------------------------------*/
@@ -507,9 +505,9 @@
     [self rewriteProperty];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     if ( sender.tag == BTAG_ENTER ){
@@ -523,17 +521,16 @@
             //------------------------------
             [_modelRE setPrice:_price];
             NSInteger   gpi   = _price * _interest;
-            _modelRE.estate.prices.gpi      = gpi;
-            _modelRE.investment.prices.gpi  = gpi;
+            _modelRE.investment.gpi  = gpi;
             _modelRE.investment.loan.loanBorrow     = _loan.loanBorrow;
             _modelRE.investment.loan.rateYear       = _loan.rateYear;
-            _modelRE.investment.loan.periodYear     = _loan.periodYear;
+            _modelRE.investment.loan.periodTerm     = _loan.periodTerm;
             _modelRE.investment.emptyRate           = _emptyRate;
             _modelRE.estate.house.rooms             = _rooms;
             _modelRE.estate.land.price              = _landPrice;
             _modelRE.estate.land.area               = _landArea;
             _modelRE.estate.land.address            = _tv_address.text;
-            _modelRE.estate.house.buildYear         = _buildYear;
+            _modelRE.estate.house.buildTerm         = [UIUtil getTerm_year:_buildYear month:1];
             _modelRE.estate.house.construct         = _construct;
             [_modelRE autoInput];
             [_modelRE valToFile];
@@ -559,10 +556,10 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)registerForKeyboardNotifications
+//======================================================================
+//
+//======================================================================
+-(void)registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWasShown:)
@@ -572,10 +569,10 @@
                                                  name:UIKeyboardWillHideNotification object:nil];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)keyboardWasShown:(NSNotification*)aNotification
+//======================================================================
+//
+//======================================================================
+-(void)keyboardWasShown:(NSNotification*)aNotification
 {
     CGPoint scrollPoint = CGPointMake(0.0,20.0);
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
@@ -590,18 +587,18 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+//======================================================================
+//
+//======================================================================
+-(void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
     [_scrollView setContentOffset:CGPointZero animated:YES];
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     [_b_buildYear setTitle:[NSString stringWithFormat:@"%4d",(int)_buildYear] forState:UIControlStateNormal];
@@ -613,9 +610,11 @@
     _t_interest.text    = [NSString stringWithFormat:@"%2.2f",_interest*100];
     _t_loanBorrow.text  = [NSString stringWithFormat:@"%ld",_loan.loanBorrow/10000];
     _t_rate.text        = [NSString stringWithFormat:@"%1.2f",_loan.rateYear*100];
-    _t_period.text      = [NSString stringWithFormat:@"%ld",(long)_loan.periodYear];
+    _t_period.text      = [NSString stringWithFormat:@"%ld",(long)_loan.periodTerm/12];
     _t_emptyRate.text   = [NSString stringWithFormat:@"%g",_emptyRate*100];
     _t_rooms.text       = [NSString stringWithFormat:@"%ld",(long) _rooms];
 }
 
+//======================================================================
 @end
+//======================================================================

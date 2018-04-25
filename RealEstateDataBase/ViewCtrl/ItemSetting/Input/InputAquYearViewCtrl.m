@@ -13,27 +13,31 @@
     UILabel         *_l_aquYear;
     UITextView      *_tv_tips;
     UIPickerView    *_pv;
-    NSInteger       _selectIdx;
+    NSInteger           _selectIdxYear;
+    NSInteger           _selectIdxMonth;
     NSInteger       _thisYear;
 }
 @end
 
 @implementation InputAquYearViewCtrl
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+#define ROW_YEAR    25
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"取得年";
     
     /****************************************/
     _thisYear = [UIUtil getThisYear];
+    NSInteger acquYear  = [UIUtil getYear_term:_modelRE.estate.house.acquisitionTerm];
+    NSInteger acquMonth = [UIUtil getMonth_term:_modelRE.estate.house.acquisitionTerm];
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
     /****************************************/
-    _l_aquYear        = [UIUtil makeLabel:[self getYearStr:_modelRE.estate.house.yearAquisition]];
+    _l_aquYear        = [UIUtil makeLabel:[self getAcquStr_year:acquYear month:acquMonth]];
     [_scrollView addSubview:_l_aquYear];
     /****************************************/
     _tv_tips                = [[UITextView alloc]init];
@@ -48,8 +52,10 @@
     [_pv setDelegate:self];
     [_pv setDataSource:self];
     [_pv setShowsSelectionIndicator:YES];
-    _selectIdx = _thisYear - _modelRE.estate.house.yearAquisition +10;
-    [_pv selectRow:_selectIdx inComponent:0 animated:NO];
+    _selectIdxYear      = acquYear- _thisYear + ROW_YEAR -3;
+    _selectIdxMonth     = acquMonth -1;
+    [_pv selectRow:_selectIdxYear   inComponent:0 animated:NO];
+    [_pv selectRow:_selectIdxMonth  inComponent:1 animated:NO];
     [_scrollView addSubview:_pv];
     
     
@@ -59,19 +65,18 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -99,41 +104,43 @@
     /****************************************/
     return;
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [super view_Tapped:sender];
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     [self viewMake];
     return;
 }
 
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false ){
-        _modelRE.estate.house.yearAquisition = _thisYear - _selectIdx +10;
+        NSInteger acquYear  = _selectIdxYear + _thisYear - ROW_YEAR +3;
+        NSInteger acquMonth = _selectIdxMonth +1;
+        _modelRE.estate.house.acquisitionTerm = [UIUtil getTerm_year:acquYear month:acquMonth];
         [_modelRE valToFile];
     }
     [super viewWillDisappear:animated];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
@@ -141,67 +148,100 @@
     
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (NSString*) getYearStr:(NSInteger)year
+//======================================================================
+//
+//======================================================================
+-(NSString*) getYearStr:(NSInteger)year
 {
     return [NSString stringWithFormat:@"%4d年/%@",
             (int)(year),
             [UIUtil getJpnYear:year]];
 }
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************
- * 列数設定
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
+-(NSString*) getAcquStr_year:(NSInteger)year month:(NSInteger)month
+{
+    return [NSString stringWithFormat:@"%4d年(%@)%ld月",
+            (int)(year),
+            [UIUtil getJpnYear:year],
+            month];
+}
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+// 列数設定
+//======================================================================
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView*)pickerView
 {
-    return 1;
+    return 2;
 }
-/****************************************************************
- *　行数設定
- ****************************************************************/
+//======================================================================
+// 行数設定
+//======================================================================
 -(NSInteger)pickerView:(UIPickerView*)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return 50;
+    if ( component == 0 ){
+        return ROW_YEAR;
+    } else {
+        return 12;
+    }
 }
-/****************************************************************
- * 表示する内容を返す
- ****************************************************************/
+//======================================================================
+// 表示する内容を返す
+//======================================================================
 -(NSString*)pickerView:(UIPickerView*)pickerView
            titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [self getYearStr:_thisYear - row+10];
+    if ( component == 0 ){
+        return [self getYearStr:(row + _thisYear - ROW_YEAR+3)];
+    } else {
+        return [NSString stringWithFormat:@"%2ld月",row+1];
+    }
+
 }
-/****************************************************************
- *　行数の高さ指定
- ****************************************************************/
+//======================================================================
+// 行数の高さ指定
+//======================================================================
 -(CGFloat)pickerView:(UIPickerView*)pickerView rowHeightForComponent:(NSInteger)component
 {
     return 30;
 }
-/****************************************************************
- *　行数取得：継承先でオーバーライド
- ****************************************************************/
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+//======================================================================
+// 列の幅指定
+//======================================================================
+-(CGFloat)pickerView:(UIPickerView*)pickerView widthForComponent:(NSInteger)component
 {
-    _selectIdx             = row;
-    _l_aquYear.text = [self getYearStr:_thisYear - row+10];
-    return;
+    if ( _pos.isPortrait == true ){
+        if ( component == 0 ){
+            return _pos.len30 * 0.7;
+        } else {
+            return _pos.len30 * 0.3;
+        }
+    } else {
+        if ( component == 0 ){
+            return _pos.len30/2 * 0.7;
+        } else {
+            return _pos.len30/2 * 0.3;
+        }
+    }
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
+//======================================================================
+// 行数取得：継承先でオーバーライド
+//======================================================================
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if ( component == 0 ){
+        _selectIdxYear          = row;
+    } else {
+        _selectIdxMonth         = row;
+    };
+    _l_aquYear.text = [self getAcquStr_year:(_selectIdxYear + _thisYear - ROW_YEAR+3) month:_selectIdxMonth+1];
+    return;
+}
+//======================================================================
 @end
+//======================================================================

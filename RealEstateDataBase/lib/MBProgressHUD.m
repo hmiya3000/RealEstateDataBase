@@ -218,7 +218,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return [self initWithView:window];
 }
 
-- (void)dealloc {
+-(void)dealloc {
 	[self unregisterFromNotifications];
 	[self unregisterFromKVO];
 #if !__has_feature(objc_arc)
@@ -245,7 +245,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Show & hide
 
-- (void)show:(BOOL)animated {
+-(void)show:(BOOL)animated {
 	useAnimation = animated;
 	// If the grace time is set postpone the HUD display
 	if (self.graceTime > 0.0) {
@@ -259,7 +259,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)hide:(BOOL)animated {
+-(void)hide:(BOOL)animated {
 	useAnimation = animated;
 	// If the minShow time is set, calculate how long the hud was shown,
 	// and pospone the hiding operation if necessary
@@ -275,17 +275,17 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	[self hideUsingAnimation:useAnimation];
 }
 
-- (void)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay {
+-(void)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay {
 	[self performSelector:@selector(hideDelayed:) withObject:[NSNumber numberWithBool:animated] afterDelay:delay];
 }
 
-- (void)hideDelayed:(NSNumber *)animated {
+-(void)hideDelayed:(NSNumber *)animated {
 	[self hide:[animated boolValue]];
 }
 
 #pragma mark - Timer callbacks
 
-- (void)handleGraceTimer:(NSTimer *)theTimer {
+-(void)handleGraceTimer:(NSTimer *)theTimer {
 	// Show the HUD only if the task is still running
 	if (taskInProgress) {
 		[self setNeedsDisplay];
@@ -293,7 +293,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)handleMinShowTimer:(NSTimer *)theTimer {
+-(void)handleMinShowTimer:(NSTimer *)theTimer {
 	[self hideUsingAnimation:useAnimation];
 }
 
@@ -305,7 +305,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return isPreiOS8 && [self.superview isKindOfClass:[UIWindow class]];
 }
 
-- (void)didMoveToSuperview {
+-(void)didMoveToSuperview {
 	if ([self shouldPerformOrientationTransform]) {
 		[self setTransformForCurrentOrientation:NO];
 	}
@@ -313,7 +313,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Internal show & hide operations
 
-- (void)showUsingAnimation:(BOOL)animated {
+-(void)showUsingAnimation:(BOOL)animated {
 	if (animated && animationType == MBProgressHUDAnimationZoomIn) {
 		self.transform = CGAffineTransformConcat(rotationTransform, CGAffineTransformMakeScale(0.5f, 0.5f));
 	} else if (animated && animationType == MBProgressHUDAnimationZoomOut) {
@@ -335,7 +335,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)hideUsingAnimation:(BOOL)animated {
+-(void)hideUsingAnimation:(BOOL)animated {
 	// Fade out
 	if (animated && showStarted) {
 		[UIView beginAnimations:nil context:NULL];
@@ -360,11 +360,11 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	self.showStarted = nil;
 }
 
-- (void)animationFinished:(NSString *)animationID finished:(BOOL)finished context:(void*)context {
+-(void)animationFinished:(NSString *)animationID finished:(BOOL)finished context:(void*)context {
 	[self done];
 }
 
-- (void)done {
+-(void)done {
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	isFinished = YES;
 	self.alpha = 0.0f;
@@ -384,7 +384,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Threading
 
-- (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated {
+-(void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated {
 	methodForExecution = method;
 	targetForExecution = MB_RETAIN(target);
 	objectForExecution = MB_RETAIN(object);	
@@ -397,21 +397,21 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #if NS_BLOCKS_AVAILABLE
 
-- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block {
+-(void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block {
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	[self showAnimated:animated whileExecutingBlock:block onQueue:queue completionBlock:NULL];
 }
 
-- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block completionBlock:(void (^)())completion {
+-(void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block completionBlock:(void (^)())completion {
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 	[self showAnimated:animated whileExecutingBlock:block onQueue:queue completionBlock:completion];
 }
 
-- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue {
+-(void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue {
 	[self showAnimated:animated whileExecutingBlock:block onQueue:queue	completionBlock:NULL];
 }
 
-- (void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue
+-(void)showAnimated:(BOOL)animated whileExecutingBlock:(dispatch_block_t)block onQueue:(dispatch_queue_t)queue
 	 completionBlock:(MBProgressHUDCompletionBlock)completion {
 	self.taskInProgress = YES;
 	self.completionBlock = completion;
@@ -426,7 +426,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #endif
 
-- (void)launchExecution {
+-(void)launchExecution {
 	@autoreleasepool {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -439,7 +439,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)cleanUp {
+-(void)cleanUp {
 	taskInProgress = NO;
 #if !__has_feature(objc_arc)
 	[targetForExecution release];
@@ -453,7 +453,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - UI
 
-- (void)setupLabels {
+-(void)setupLabels {
 	label = [[UILabel alloc] initWithFrame:self.bounds];
 	label.adjustsFontSizeToFitWidth = NO;
 	label.textAlignment = MBLabelAlignmentCenter;
@@ -477,7 +477,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	[self addSubview:detailsLabel];
 }
 
-- (void)updateIndicators {
+-(void)updateIndicators {
 	
 	BOOL isActivityIndicator = [indicator isKindOfClass:[UIActivityIndicatorView class]];
 	BOOL isRoundIndicator = [indicator isKindOfClass:[MBRoundProgressView class]];
@@ -525,7 +525,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Layout
 
-- (void)layoutSubviews {
+-(void)layoutSubviews {
 	[super layoutSubviews];
 	
 	// Entirely cover the parent view
@@ -613,7 +613,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark BG Drawing
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect {
 	
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	UIGraphicsPushContext(context);
@@ -665,13 +665,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - KVO
 
-- (void)registerForKVO {
+-(void)registerForKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
 	}
 }
 
-- (void)unregisterFromKVO {
+-(void)unregisterFromKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self removeObserver:self forKeyPath:keyPath];
 	}
@@ -682,7 +682,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 			@"detailsLabelText", @"detailsLabelFont", @"detailsLabelColor", @"progress", @"activityIndicatorColor", nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	if (![NSThread isMainThread]) {
 		[self performSelectorOnMainThread:@selector(updateUIForKeypath:) withObject:keyPath waitUntilDone:NO];
 	} else {
@@ -690,7 +690,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)updateUIForKeypath:(NSString *)keyPath {
+-(void)updateUIForKeypath:(NSString *)keyPath {
 	if ([keyPath isEqualToString:@"mode"] || [keyPath isEqualToString:@"customView"] ||
 		[keyPath isEqualToString:@"activityIndicatorColor"]) {
 		[self updateIndicators];
@@ -718,19 +718,19 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Notifications
 
-- (void)registerForNotifications {
+-(void)registerForNotifications {
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 
 	[nc addObserver:self selector:@selector(statusBarOrientationDidChange:)
 			   name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
-- (void)unregisterFromNotifications {
+-(void)unregisterFromNotifications {
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	[nc removeObserver:self name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
-- (void)statusBarOrientationDidChange:(NSNotification *)notification {
+-(void)statusBarOrientationDidChange:(NSNotification *)notification {
 	UIView *superview = self.superview;
 	if (!superview) {
 		return;
@@ -742,7 +742,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	}
 }
 
-- (void)setTransformForCurrentOrientation:(BOOL)animated {
+-(void)setTransformForCurrentOrientation:(BOOL)animated {
 	// Stay in sync with the superview
 	if (self.superview) {
 		self.bounds = self.superview.bounds;
@@ -797,7 +797,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return self;
 }
 
-- (void)dealloc {
+-(void)dealloc {
 	[self unregisterFromKVO];
 #if !__has_feature(objc_arc)
 	[_progressTintColor release];
@@ -808,7 +808,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Drawing
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect {
 	
 	CGRect allRect = self.bounds;
 	CGRect circleRect = CGRectInset(allRect, 2.0f, 2.0f);
@@ -858,13 +858,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - KVO
 
-- (void)registerForKVO {
+-(void)registerForKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
 	}
 }
 
-- (void)unregisterFromKVO {
+-(void)unregisterFromKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self removeObserver:self forKeyPath:keyPath];
 	}
@@ -874,7 +874,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return [NSArray arrayWithObjects:@"progressTintColor", @"backgroundTintColor", @"progress", @"annular", nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	[self setNeedsDisplay];
 }
 
@@ -903,7 +903,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return self;
 }
 
-- (void)dealloc {
+-(void)dealloc {
 	[self unregisterFromKVO];
 #if !__has_feature(objc_arc)
 	[_lineColor release];
@@ -915,7 +915,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - Drawing
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect {
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
 	CGContextSetLineWidth(context, 2);
@@ -1001,13 +1001,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 #pragma mark - KVO
 
-- (void)registerForKVO {
+-(void)registerForKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self addObserver:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew context:NULL];
 	}
 }
 
-- (void)unregisterFromKVO {
+-(void)unregisterFromKVO {
 	for (NSString *keyPath in [self observableKeypaths]) {
 		[self removeObserver:self forKeyPath:keyPath];
 	}
@@ -1017,7 +1017,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	return [NSArray arrayWithObjects:@"lineColor", @"progressRemainingColor", @"progressColor", @"progress", nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 	[self setNeedsDisplay];
 }
 

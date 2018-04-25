@@ -13,10 +13,10 @@
 @implementation ModelSale
 
 #define GRAPH_PERIOD    40
-/****************************************************************
- *
- ****************************************************************/
-+ (void) setGraphDataPrice:(Graph*)gData ModelRE:(ModelRE*)modelRE
+//======================================================================
+//
+//======================================================================
++(void) setGraphDataPrice:(Graph*)gData ModelRE:(ModelRE*)modelRE
 {
     NSInteger graphMin = NSIntegerMax;
     NSInteger graphMax =  NSIntegerMin;
@@ -29,7 +29,7 @@
 
     /****************************************/
     capRate = modelRE.ope1.capRate + 0.5/100;
-    priceArr = [self getSalePriceArray_capRate:capRate period:period modelRE:modelRE];
+    priceArr = [self getSalePriceArray_capRate:capRate period:period*12 modelRE:modelRE];
     minmax = [self calcMinMax:priceArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -40,7 +40,7 @@
     
     /****************************************/
     capRate = modelRE.ope1.capRate;
-    priceArr = [self getSalePriceArray_capRate:capRate period:period modelRE:modelRE];
+    priceArr = [self getSalePriceArray_capRate:capRate period:period*12 modelRE:modelRE];
     minmax = [self calcMinMax:priceArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -51,7 +51,7 @@
 
     /****************************************/
     capRate = modelRE.ope1.capRate - 0.5/100;
-    priceArr = [self getSalePriceArray_capRate:capRate period:period modelRE:modelRE];
+    priceArr = [self getSalePriceArray_capRate:capRate period:period*12 modelRE:modelRE];
     minmax = [self calcMinMax:priceArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -61,14 +61,14 @@
     gd_05dn.type            = LINE_GRAPH;
     
     /****************************************/
-    NSArray *holdingArr     = @[[NSValue valueWithCGPoint:CGPointMake(modelRE.holdingPeriod, modelRE.sale.price)]];
+    NSArray *holdingArr     = @[[NSValue valueWithCGPoint:CGPointMake(modelRE.holdingPeriodTerm/12, modelRE.sale.price)]];
     minmax = [self calcMinMax:holdingArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
     /*--------------------------------------*/
     GraphData *gd_holding   = [[GraphData alloc]initWithData:holdingArr];
     gd_holding.precedent    = [NSString stringWithFormat:@"%ld年保有,CAP=%2.1f%%",
-                               modelRE.holdingPeriod,
+                               (long)modelRE.holdingPeriodTerm/12,
                                ((CGFloat)modelRE.opeLast.noi*100/modelRE.sale.price)];
     gd_holding.type         = POINT_GRAPH;
     /****************************************/
@@ -79,10 +79,10 @@
     
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-+ (void) setGraphDataCapGain:(Graph*)gData ModelRE:(ModelRE*)modelRE
+//======================================================================
+//
+//======================================================================
++(void) setGraphDataCapGain:(Graph*)gData ModelRE:(ModelRE*)modelRE
 {
     NSInteger graphMin = NSIntegerMax;
     NSInteger graphMax =  NSIntegerMin;
@@ -95,7 +95,7 @@
     
     /****************************************/
     capRate = modelRE.ope1.capRate + 0.5/100;
-    cgArr = [self getAtCapGainArray_capRate:capRate period:period modelRE:modelRE ];
+    cgArr = [self getAtCapGainArray_capRate:capRate period:period*12 modelRE:modelRE ];
     minmax = [self calcMinMax:cgArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -106,7 +106,7 @@
     
     /****************************************/
     capRate = modelRE.ope1.capRate;
-    cgArr = [self getAtCapGainArray_capRate:capRate period:period modelRE:modelRE ];
+    cgArr = [self getAtCapGainArray_capRate:capRate period:period*12 modelRE:modelRE ];
     minmax = [self calcMinMax:cgArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -117,7 +117,7 @@
     
     /****************************************/
     capRate = modelRE.ope1.capRate - 0.5/100;
-    cgArr = [self getAtCapGainArray_capRate:capRate period:period modelRE:modelRE ];
+    cgArr = [self getAtCapGainArray_capRate:capRate period:period*12 modelRE:modelRE ];
     minmax = [self calcMinMax:cgArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
@@ -127,14 +127,14 @@
     gd_05dn.type            = LINE_GRAPH;
     
     /****************************************/
-    NSArray *holdingArr     = @[[NSValue valueWithCGPoint:CGPointMake(modelRE.holdingPeriod, modelRE.sale.atcf-modelRE.investment.equity)]];
+    NSArray *holdingArr     = @[[NSValue valueWithCGPoint:CGPointMake(modelRE.holdingPeriodTerm/12, modelRE.sale.atcf-modelRE.investment.equity)]];
     minmax = [self calcMinMax:holdingArr minmax:CGPointMake(graphMin, graphMax)];
     graphMin = minmax.x;
     graphMax = minmax.y;
     /*--------------------------------------*/
     GraphData *gd_holding   = [[GraphData alloc]initWithData:holdingArr];
     gd_holding.precedent    = [NSString stringWithFormat:@"%ld年保有,CAP=%2.1f%%",
-                               modelRE.holdingPeriod,
+                               (long)modelRE.holdingPeriodTerm/12,
                                ((CGFloat)modelRE.opeLast.noi*100/modelRE.sale.price)];
     gd_holding.type         = POINT_GRAPH;
     /****************************************/
@@ -145,13 +145,13 @@
     
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-+ (CGPoint) calcMinMax:(NSArray*)arr minmax:(CGPoint)minmax
+//======================================================================
+//
+//======================================================================
++(CGPoint) calcMinMax:(NSArray*)arr minmax:(CGPoint)minmax
 {
-    NSInteger min = minmax.x;
-    NSInteger max = minmax.y;
+    CGFloat min = minmax.x;
+    CGFloat max = minmax.y;
     
     CGPoint tmpPoint;
     for(int i=0; i< [arr count]; i++){
@@ -167,20 +167,23 @@
     return CGPointMake(min, max);
 }
 
-/****************************************************************
- * 指定したキャップレートでの[年数,売却価格]配列の取得
- ****************************************************************/
-+ (NSArray*) getSalePriceArray_capRate:(CGFloat)capRate period:(NSInteger)period modelRE:(ModelRE*)modelRE
+//======================================================================
+// 指定したキャップレートでの[年数,売却価格]配列の取得
+//======================================================================
++(NSArray*) getSalePriceArray_capRate:(CGFloat)capRate period:(NSInteger)period modelRE:(ModelRE*)modelRE
 {
     NSMutableArray *priceArr = [NSMutableArray array];
     
     OpeAll *tmpOpeAll = [[OpeAll alloc]init];
-    [tmpOpeAll calcOpeAll:period investment:modelRE.investment house:modelRE.estate.house declineRate:modelRE.declineRate];
+    [tmpOpeAll calcOpeAll:period
+               investment:modelRE.investment
+                   estate:modelRE.estate
+              declineRate:modelRE.declineRate];
     
     Operation   *tmpOpe;
     CGPoint     tmpPoint;
     NSInteger   tmpPrice;
-    for(int i=0; i<period; i++){
+    for(int i=0; i<period/12; i++){
         tmpOpe = [tmpOpeAll.opeArr objectAtIndex:i];
         tmpPrice = tmpOpe.noi / capRate;
         tmpPoint = CGPointMake(i+1, tmpPrice);
@@ -189,24 +192,27 @@
     return priceArr;
 }
 
-/****************************************************************
- * 指定したキャップレートでの[年数,税引後CapGain]配列の取得
- ****************************************************************/
-+ (NSArray*) getAtCapGainArray_capRate:(CGFloat)capRate period:(NSInteger)period modelRE:(ModelRE*)modelRE
+//======================================================================
+// 指定したキャップレートでの[年数,税引後CapGain]配列の取得
+//======================================================================
++(NSArray*) getAtCapGainArray_capRate:(CGFloat)capRate period:(NSInteger)period modelRE:(ModelRE*)modelRE
 {
     NSMutableArray *cfArr = [NSMutableArray array];
     
     OpeAll *tmpOpeAll = [[OpeAll alloc]init];
-    [tmpOpeAll calcOpeAll:period investment:modelRE.investment house:modelRE.estate.house declineRate:modelRE.declineRate];
+    [tmpOpeAll calcOpeAll:period
+               investment:modelRE.investment
+                   estate:modelRE.estate
+              declineRate:modelRE.declineRate];
     
     Sale *tmpSale       = [[Sale alloc]init];
     Operation   *tmpOpe;
     CGPoint     tmpPoint;
-    for(int i=0; i<period; i++){
+    for(int i=0; i<period/12; i++){
         tmpOpe = [tmpOpeAll.opeArr objectAtIndex:i];
         tmpSale.price       = tmpOpe.noi / capRate;
         tmpSale.expense     = tmpSale.price * 0.04;
-        [tmpSale calcSale:modelRE.investment holdingPeriod:i+1 house:modelRE.estate.house];
+        [tmpSale calcSale:modelRE.investment holdingPeriod:i+1 estate:modelRE.estate];
         tmpPoint = CGPointMake(i+1, tmpSale.atcf - modelRE.investment.equity);
         [cfArr addObject:[NSValue valueWithCGPoint:tmpPoint]];
     }
@@ -214,6 +220,6 @@
     
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

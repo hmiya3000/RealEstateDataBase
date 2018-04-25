@@ -13,17 +13,23 @@
 @interface ImportViewCtrl ()
 {
     ModelDB         *_modelDB;
+#if 0
     DBRestClient    *_restClient;
+#else
+    DBUserClient    *_userClient;
+#endif
+    NSArray        *_metaArray;
 }
 
 @end
 
 @implementation ImportViewCtrl
 @synthesize filesArray      = _filesArray;
+@synthesize path            = _path;
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -35,10 +41,10 @@
 }
 
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     
     [super viewDidLoad];
@@ -64,51 +70,67 @@
                                     action:@selector(accountButtonTapped:)];
 
     self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects: accountButton,updateButton, nil];
-    
+#if 0
     _restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
     _restClient.delegate = self;
-    
+#else
+//    _userClient = [DBClientsManager authorizedClient];
+#endif
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+#if 0
     if (![[DBSession sharedSession] isLinked]) {
         [[DBSession sharedSession] linkFromController:self];
     }
+#else
+    if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
+        [DBClientsManager authorizeFromController:UIApplication.sharedApplication
+                                       controller:self
+                                          openURL:^(NSURL *url){
+                                            [UIApplication.sharedApplication openURL:url
+                                                                             options:@{}
+                                                                   completionHandler:nil];
+                                          }
+         ];
+    }
+#endif
+    _userClient = [DBClientsManager authorizedClient];
     [self updateData];
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidAppear:(BOOL)animated
+//======================================================================
+//
+//======================================================================
+-(void)viewDidAppear:(BOOL)animated
 {
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return _filesArray.count;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
@@ -116,25 +138,14 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] ;
     }
-//    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     cell.textLabel.text = [_filesArray objectAtIndex:indexPath.row];
     return cell;
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+//======================================================================
+//
+//======================================================================
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete時の処理をここに書く
@@ -158,12 +169,13 @@
 }
 
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//======================================================================
+//
+//======================================================================
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+#if 0
     NSString *filename      = [_filesArray objectAtIndex:indexPath.row];
     NSString *dropboxPath = @"/";
     dropboxPath = [dropboxPath stringByAppendingPathComponent:filename];
@@ -171,105 +183,160 @@
     NSArray  *path          = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
     NSString *localPath     = [documentsDirectory stringByAppendingPathComponent:filename];
-
     [_restClient loadFile:dropboxPath intoPath:localPath];
+#else
+    NSString *webPath = [_metaArray objectAtIndex:indexPath.row];
+    NSString *filename = [_filesArray objectAtIndex:indexPath.row];
 
-#if 0
-    DBPath* dropboxPath  = [[DBPath root] childPath:[_filesArray objectAtIndex:indexPath.row]];
-
-    // completedFirstSyncがfalseの間はreadString:が待ちになる。これはファイルごと１回だけ発生します。
-    // readString:をメインスレッドで実行すると警告が出ます
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        DBError *error;
-        DBFile *file = [[DBFilesystem sharedFilesystem] openFile:dropboxPath error:&error];
-        // 待ちが発生する場合はprogress dialogを表示（メインスレッド）
-        if ([file status] && !(file.status.cached)) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            });
-        }
-        NSString *contents = [file readString:nil];
-        // 読み込み完了後の画面表示
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [_modelDB importData:contents];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        });
-    });
+    NSArray  *path          = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [path objectAtIndex:0];
+    NSString *localPath     = [documentsDirectory stringByAppendingPathComponent:filename];
+    [self downloadFilePath:localPath webPath:webPath];
 #endif
     return;
 }
+//======================================================================
+- (void)downloadFilePath:(NSString *)localPath webPath:(NSString*)webPath
+{
+    DBUserClient *userClient = DBClientsManager.authorizedClient;
+    NSURL *destURL = [NSURL fileURLWithPath:localPath];
+    
+    DBDownloadUrlTask *task = [userClient.filesRoutes downloadUrl:webPath
+                                                        overwrite:YES
+                                                      destination:destURL];
+    
+    
+    [task setResponseBlock:^(id  _Nullable result, id  _Nullable routeError, DBRequestError * _Nullable networkError, NSURL * _Nonnull destination){
+        if(routeError || networkError){
+            // 失敗
+//            NSLog(@"There was an error loading the file: %@", error);
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            return;
+        }
+        // 成功
+        NSError *error;
+        NSString *contents = [[NSString alloc] initWithContentsOfFile:localPath encoding:NSShiftJISStringEncoding error:&error];
+        
+        [_modelDB importData:contents];
+        // ファイルマネージャを作成
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        BOOL result2 = [fileManager removeItemAtPath:localPath error:&error];
+        if (result2) {
+            NSLog(@"削除成功：%@", localPath);
+        } else {
+            NSLog(@"削除失敗：%@", error.description);
+        }
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
 
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
+    } queue:[NSOperationQueue mainQueue]];
+    [task start];
+}
 
-/****************************************************************
- *
- ****************************************************************/
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+
+//======================================================================
+//
+//======================================================================
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return NO;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)updateButtonTapped:(id)sender
 {
     [self updateData];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)updateData
+//======================================================================
+//
+//======================================================================
+-(void)updateData
 {
-    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [_restClient loadMetadata:@"/"];
-    
 #if 0
-    // completedFirstSyncがfalseの間はlistFolder:が待ちになる。これはログイン後の１回だけ発生します。
-    // listFolder:をメインスレッドで実行すると警告が出ます
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // 待ちが発生する場合はprogress dialogを表示（メインスレッド）
-        if ([DBFilesystem sharedFilesystem] && ![[DBFilesystem sharedFilesystem] completedFirstSync]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            });
-        }
-        // listを読み込み
-        NSError *error;
-        DBPath *path = [DBPath root];
-        NSArray *dbArray = [[DBFilesystem sharedFilesystem] listFolder:path error:&error];
-        NSMutableArray *tmpArray = [[NSMutableArray alloc]initWithCapacity:[dbArray count]];
-        for (DBFileInfo *info in dbArray) {
-            if ( [info.path.name hasSuffix:@".csv"] == true
-                || [info.path.name hasSuffix:@".CSV"] == true ){
-                [tmpArray addObject:info.path.name];
-            }
-        }
-        _filesArray = [NSArray arrayWithArray:tmpArray];
-        NSLog(@"files:%@",[_filesArray description]);
-        // progress dialogを非表示
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-        });
-        // tableViewを更新
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    });
+    [_restClient loadMetadata:@"/"];
+#else
+    self.path = @"";
+    [self loadDirMetadataWithClient:_userClient cursor:nil];
 #endif
 }
 
-/****************************************************************
- * DropBox上のファイルリストのロード成功
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client loadedMetadata:(DBMetadata *)metadata
+//======================================================================
+- (void)loadDirMetadataWithClient:(DBUserClient *)client cursor:(NSString *)cursor
+{
+    DBRpcTask *task = [client.filesRoutes listFolder:self.path];
+
+    if(cursor)
+        task = [client.filesRoutes listFolderContinue:cursor];
+
+    [task setResponseBlock:^(id result, id routeError, DBRequestError *netError){
+        if(routeError || netError){
+            // 失敗
+            NSLog(@"取得失敗");
+            return;
+        }
+    
+        DBFILESListFolderResult *folderResult = result;
+        NSMutableArray *tmpArray = [[NSMutableArray alloc]initWithCapacity:10];
+        NSMutableArray *tmpArray2 = [[NSMutableArray alloc]initWithCapacity:10];
+        for(DBFILESMetadata *childMeta in folderResult.entries){
+            // 子のメタデータを一覧できる
+            if([childMeta isKindOfClass:DBFILESFileMetadata.class]){
+                if ( [childMeta.name hasSuffix:@".csv"] || [childMeta.name hasSuffix:@".CSV"]){
+                    [tmpArray addObject:childMeta.name];
+                    [tmpArray2 addObject:childMeta.pathLower];
+                }
+            }
+        }
+        _filesArray = [NSArray arrayWithArray:tmpArray];
+        _metaArray  = [NSArray arrayWithArray:tmpArray2];
+        [self.tableView reloadData];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+
+#if 0
+        if(folderResult.hasMore.boolValue){
+            // まだ子がいる場合は再帰的に読み込む
+            [self loadDirMetadataWithClient:client cursor:folderResult.cursor];
+        }else{
+            // 読み込み完了
+        }
+#endif
+    }];
+    [task start];
+}
+#if 0
+-(void)loadedFile:(NSString *)localPath
+      contentType:(NSString *)contentType metadata:(DBMetadata *)metadata
+{
+    NSLog(@"File loaded into path: %@", localPath);
+    
+    NSError *error;
+    NSString *contents = [[NSString alloc] initWithContentsOfFile:localPath encoding:NSShiftJISStringEncoding error:&error];
+    
+    [_modelDB importData:contents];
+    
+    // ファイルマネージャを作成
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL result = [fileManager removeItemAtPath:localPath error:&error];
+    
+    if (result) {
+        NSLog(@"削除成功：%@", localPath);
+    } else {
+        NSLog(@"削除失敗：%@", error.description);
+    }
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+#endif
+//======================================================================
+// DropBox上のファイルリストのロード成功
+//======================================================================
+#if 0
+-(void)restClient:(DBRestClient *)client loadedMetadata:(DBMetadata *)metadata
 {
     if (metadata.isDirectory) {
 
@@ -287,19 +354,19 @@
     [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
-/****************************************************************
- * DropBox上のファイルリストのロード失敗
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client loadMetadataFailedWithError:(NSError *)error
+//======================================================================
+// DropBox上のファイルリストのロード失敗
+//======================================================================
+-(void)restClient:(DBRestClient *)client loadMetadataFailedWithError:(NSError *)error
 {
     NSLog(@"Error loading metadata: %@", error);
     [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
-/****************************************************************
- * DropBox上のファイルのローカルへのロード成功
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client loadedFile:(NSString *)localPath
+//======================================================================
+// DropBox上のファイルのローカルへのロード成功
+//======================================================================
+-(void)restClient:(DBRestClient *)client loadedFile:(NSString *)localPath
        contentType:(NSString *)contentType metadata:(DBMetadata *)metadata
 {
     NSLog(@"File loaded into path: %@", localPath);
@@ -322,37 +389,39 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
+#endif
 
-/****************************************************************
- * DropBox上のファイルのローカルへのロード失敗
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client loadFileFailedWithError:(NSError *)error
+//======================================================================
+// DropBox上のファイルのローカルへのロード失敗
+//======================================================================
+#if 0
+-(void)restClient:(DBRestClient *)client loadFileFailedWithError:(NSError *)error
 {
     NSLog(@"There was an error loading the file: %@", error);
     [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
-
-/****************************************************************
- *
- ****************************************************************/
+#endif
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)accountButtonTapped:(id)sender
 {
-    [[DBSession sharedSession] linkFromController:self];
+//    [[DBSession sharedSession] linkFromController:self];
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)deleteFile:(NSString*)filename
+//======================================================================
+//
+//======================================================================
+-(void)deleteFile:(NSString*)filename
 {
     //NSFileManager* fileManager = [NSFileManager defaultManager];
     //NSString *path = [self.currentDirectory stringByAppendingPathComponent:filename];
@@ -364,24 +433,6 @@
 #endif
 }
 
-
-#if 0
-/****************************************************************
- *
- ****************************************************************/
-- (NSString *)uniqueNameStartWith:(NSString*)prefix endWith:(NSString*)suffix among:(NSArray*)names
-{
-    for (int i=0; i<INT_MAX; i++) {
-        NSString *uniqueName = (i==0) ? [NSString stringWithFormat:@"%@%@",prefix,suffix] :
-        [NSString stringWithFormat:@"%@(%d)%@",prefix,i,suffix];
-        if (![names containsObject:uniqueName]) {
-            return uniqueName;
-        }
-    }
-    return nil;
-}
-#endif
-
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

@@ -27,9 +27,9 @@
 
 @implementation InputExpenseExampleViewCtrl
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -39,10 +39,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     NSString *model = [UIDevice currentDevice].model;
@@ -57,8 +57,9 @@
     }
     /****************************************/
     _modelRE    = [ModelRE sharedManager];
-    _expense    = [[Expense alloc]initWithPrice:_modelRE.estate.prices.price
-                                     loanBorrow:_modelRE.investment.loan.loanBorrow];
+    _expense    = [[Expense alloc]initWithPrice:_modelRE.investment.price
+                                     loanBorrow:_modelRE.investment.loan.loanBorrow
+                                        acquTax:[_modelRE.estate getAcquTax]];
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
@@ -99,20 +100,19 @@
     
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self viewMake];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -137,17 +137,17 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //    NSLog(@"%s",__FUNCTION__);
@@ -155,10 +155,10 @@
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     NSLog(@"%s",__FUNCTION__);
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
@@ -176,10 +176,10 @@
     [self viewMake];
 }
 
-/**
- * ビューがタップされたとき
- */
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    NSLog(@"タップされました．");
 //    [self dismissViewControllerAnimated:YES completion:nil];
@@ -187,14 +187,6 @@
 
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+//======================================================================
 @end
+//======================================================================

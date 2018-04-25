@@ -20,11 +20,11 @@
 @property (nonatomic, readonly) UIImageView *imageView;
 @property (nonatomic, readonly) UIImageView *secondImageView;
 
-- (void)setTitle:(NSString*)title image:(UIImage*)image;
-- (void)setSecondTitle:(NSString*)title image:(UIImage*)image;
+-(void)setTitle:(NSString*)title image:(UIImage*)image;
+-(void)setSecondTitle:(NSString*)title image:(UIImage*)image;
 
-- (void)activate;
-- (void)deactivate;
+-(void)activate;
+-(void)deactivate;
 
 @end
 
@@ -32,11 +32,11 @@
 
 @interface SVSegmentedControl()
 
-- (void)activate;
-- (void)snap:(BOOL)animated;
-- (void)crossFadeThumbContent;
-- (void)toggle;
-- (void)setupAccessibility;
+-(void)activate;
+-(void)snap:(BOOL)animated;
+-(void)crossFadeThumbContent;
+-(void)toggle;
+-(void)setupAccessibility;
 
 @property (nonatomic, strong) SVSegmentedThumb *thumb;
 @property (nonatomic, strong) NSMutableArray *thumbRects;
@@ -104,13 +104,13 @@
     return _thumb;
 }
 
-- (void)sizeToFit
+-(void)sizeToFit
 {
     self.frame = CGRectZero;
     [self updateSectionRects];
 }
 
-- (void)updateSectionRects {
+-(void)updateSectionRects {
     
     int c = (int)[self.sectionTitles count];
 	int i = 0;
@@ -151,7 +151,7 @@
     [self setThumbValuesForIndex:self.selectedSegmentIndex];
 }
 
-- (void)calculateSegmentWidth {
+-(void)calculateSegmentWidth {
     if(CGRectIsEmpty(self.frame)) {
         self.segmentWidth = 0;
         int i = 0;
@@ -184,23 +184,23 @@
 
 #pragma mark - Accessibility
 
-- (void)setFrame:(CGRect)frame {
+-(void)setFrame:(CGRect)frame {
     [super setFrame:frame];
     [self setNeedsDisplay];
 }
 
-- (void)setBounds:(CGRect)bounds {
+-(void)setBounds:(CGRect)bounds {
     [super setBounds:bounds];
     self.segmentWidth = round(bounds.size.width/self.sectionTitles.count);
     [self setupAccessibility];
 }
 
-- (void)setCenter:(CGPoint)center {
+-(void)setCenter:(CGPoint)center {
     [super setCenter:center];
     [self setupAccessibility];
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
+-(void)willMoveToSuperview:(UIView *)newSuperview {
     
     if (newSuperview == nil)
         return; // control is being _removed_ from super view
@@ -208,7 +208,7 @@
     [self updateSectionRects];
 }
 
-- (void)setupAccessibility {
+-(void)setupAccessibility {
     [self.accessibilityElements removeAllObjects];
     
     NSUInteger i = 0;
@@ -307,7 +307,7 @@
     return YES;
 }
 
-- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+-(void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     [super endTrackingWithTouch:touch withEvent:event];
     
     CGPoint cPos = [touch locationInView:self];
@@ -347,7 +347,7 @@
     }
 }
 
-- (void)cancelTrackingWithEvent:(UIEvent *)event {
+-(void)cancelTrackingWithEvent:(UIEvent *)event {
     [super cancelTrackingWithEvent:event];
     
     if(self.trackingThumb)
@@ -356,7 +356,7 @@
 
 #pragma mark -
 
-- (void)snap:(BOOL)animated {
+-(void)snap:(BOOL)animated {
     
 	[self.thumb deactivate];
     
@@ -383,7 +383,7 @@
 		self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
 }
 
-- (void)crossFadeThumbContent {
+-(void)crossFadeThumbContent {
     float segmentOverlap = ((int)(self.thumb.center.x * 10 / self.segmentWidth))/10.0f; // how far along are we dragging through the current segment
     int hoverIndex = floor(segmentOverlap); // the segment the touch is current hovering
     BOOL secondTitleOnLeft = (segmentOverlap - hoverIndex) < 0.5;
@@ -405,7 +405,7 @@
     [self setThumbValuesForIndex:hoverIndex];
 }
 
-- (void)activate {
+-(void)activate {
 	
 	self.trackingThumb = self.moved = NO;
 	
@@ -422,7 +422,7 @@
 }
 
 
-- (void)toggle {
+-(void)toggle {
 	
 	if(self.snapToIndex == 0)
 		self.snapToIndex = 1;
@@ -433,11 +433,11 @@
 }
 
 
-- (void)moveThumbToIndex:(NSUInteger)index animate:(BOOL)animate {
+-(void)moveThumbToIndex:(NSUInteger)index animate:(BOOL)animate {
     [self setSelectedSegmentIndex:index animated:animate];
 }
 
-- (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated {
+-(void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated {
     _selectedSegmentIndex = index;
     
     if(self.superview) {
@@ -470,7 +470,7 @@
 
 #pragma mark - SectionTitles
 
-- (void)setSectionTitles:(NSArray *)sectionTitles
+-(void)setSectionTitles:(NSArray *)sectionTitles
 {
     if (_sectionTitles != sectionTitles) {
         _sectionTitles = [sectionTitles copy];
@@ -487,7 +487,7 @@
 
 #pragma mark -
 
-- (void)setBackgroundImage:(UIImage *)newImage {
+-(void)setBackgroundImage:(UIImage *)newImage {
     
     if(_backgroundImage)
         _backgroundImage = nil;
@@ -504,23 +504,23 @@
     return nil;
 }
 
-- (void)setThumbValuesForIndex:(NSUInteger)index {
+-(void)setThumbValuesForIndex:(NSUInteger)index {
     [self.thumb setTitle:[self.sectionTitles objectAtIndex:index]
                    image:[self sectionImage:[self imageForSectionIndex:index] withTintColor:self.thumb.textColor]];
 }
 
-- (void)setThumbSecondValuesForIndex:(NSUInteger)index {
+-(void)setThumbSecondValuesForIndex:(NSUInteger)index {
     [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:index]
                          image:[self sectionImage:[self imageForSectionIndex:index] withTintColor:self.thumb.textColor]];
 }
 
 #pragma mark - Deprecated methods
 
-- (void)setSelectedIndex:(NSUInteger)index {
+-(void)setSelectedIndex:(NSUInteger)index {
     [self setSelectedSegmentIndex:index animated:NO];
 }
 
-- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated {
+-(void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated {
     [self setSelectedSegmentIndex:index animated:animated];
 }
 
@@ -531,7 +531,7 @@
 #pragma mark - Drawing
 
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect {
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
@@ -698,7 +698,7 @@
     return image;
 }
 
-- (void)drawInnerGlowWithPaths:(NSArray *)paths bounds:(CGRect)bounds color:(UIColor *)color offset:(CGSize)offset blur:(CGFloat)blur
+-(void)drawInnerGlowWithPaths:(NSArray *)paths bounds:(CGRect)bounds color:(UIColor *)color offset:(CGSize)offset blur:(CGFloat)blur
 {
     UIImage *mask = [self maskWithPaths:paths bounds:bounds];
     UIImage *invertedImage = [self invertedImageWithMask:mask color:color];

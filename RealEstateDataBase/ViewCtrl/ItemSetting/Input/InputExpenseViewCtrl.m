@@ -11,29 +11,31 @@
 
 @interface InputExpenseViewCtrl ()
 {
-    UILabel             *_l_expense;
-    UITextView          *_tv_tips;
-    UIView              *_uv;
-    NSInteger           _value;
+    UILabel                 *_l_expense;
+    UITextView              *_tv_tips;
+    UIView                  *_uv;
+    NSInteger               _value;
 
-    bool                _b_sample;
-    UIViewController    *_exampleVC;
-    UIButton            *_b_example;
-    UILabel             *_l_price;
-    UILabel             *_l_priceVal;
-    UILabel             *_l_workArea;
+    bool                    _b_sample;
+    UIViewController        *_exampleVC;
+    UIButton                *_b_example;
+    UILabel                 *_l_brokerageFee;
+    UISwitch                *_sw_brokerageFee;
+    UILabel                 *_l_price;
+    UILabel                 *_l_priceVal;
+    UILabel                 *_l_workArea;
     
-    UICalc              *_uicalc;
+    UICalc                  *_uicalc;
 }
 @end
 
 @implementation InputExpenseViewCtrl
 #define BTAG_SAMPLE     1
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"諸費用";
@@ -49,11 +51,21 @@
     _l_expense     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]]];
     [_scrollView addSubview:_l_expense];
     /****************************************/
+    _l_brokerageFee        = [UIUtil makeLabel:@"仲介手数料"];
+    [_l_brokerageFee setTextAlignment:NSTextAlignmentLeft];
+    [_scrollView addSubview:_l_brokerageFee];
+    /****************************************/
+    _sw_brokerageFee        = [[UISwitch alloc]init];
+    _sw_brokerageFee.on     = _modelRE.estate.isBrokerageFee;
+    [_sw_brokerageFee addTarget:self action:@selector(switchChange:) forControlEvents:UIControlEventValueChanged];
+    _sw_brokerageFee.tag   = 0;
+    [_scrollView addSubview:_sw_brokerageFee];
+    /****************************************/
     _l_price        = [UIUtil makeLabel:@"物件価格"];
     [_l_price setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_price];
     /****************************************/
-    _l_priceVal     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.estate.prices.price/10000]]];
+    _l_priceVal     = [UIUtil makeLabel:[NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_modelRE.investment.price/10000]]];
     [_l_priceVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_priceVal];
     /****************************************/
@@ -86,20 +98,19 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self viewMake];
     [self enterIn:_value];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -116,6 +127,9 @@
     if ( _pos.isPortrait == true ){
         [UIUtil setRectLabel:_l_expense     x:pos_x     y:pos_y viewWidth:_pos.len30 viewHeight:dy  color:[UIUtil color_Ivory] ];
         pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_brokerageFee    x:pos_x y:pos_y length:length*2];
+        _sw_brokerageFee.center = CGPointMake( pos_x+2.5*dx,pos_y+dy/2);
+        pos_y = pos_y + dy;
         [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len10];
         [UIUtil setLabel:_l_priceVal    x:pos_x+dx*2    y:pos_y length:_pos.len10];
         pos_y = pos_y + dy*0.6;
@@ -124,6 +138,9 @@
         [UIUtil setButton:_b_example x:pos_x y:pos_y length:_pos.len10];
     }else {
         [UIUtil setRectLabel:_l_expense     x:pos_x     y:pos_y viewWidth:_pos.len15 viewHeight:dy  color:[UIUtil color_Ivory] ];
+        pos_y = pos_y + dy;
+        [UIUtil setLabel:_l_brokerageFee    x:pos_x y:pos_y length:_pos.len15/2];
+        _sw_brokerageFee.center = CGPointMake( pos_x+dx*1.25,pos_y+dy/2);
         pos_y = pos_y + dy;
         [UIUtil setLabel:_l_price       x:pos_x         y:pos_y length:_pos.len15/2];
         [UIUtil setLabel:_l_priceVal    x:pos_x+dx*0.75 y:pos_y length:_pos.len15/2];
@@ -149,33 +166,34 @@
     return;
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [super view_Tapped:sender];
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     [self viewMake];
     return;
 }
 
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false || _b_sample == false ){
         _modelRE.investment.expense     = _value*10000;
+        _modelRE.estate.isBrokerageFee = _sw_brokerageFee.on;
         [_modelRE adjustEquity];
         [_modelRE valToFile];
     }
@@ -183,9 +201,9 @@
     [super viewWillDisappear:animated];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
@@ -198,48 +216,57 @@
     }
     return;
 }
+//===============================================================
+-(void) switchChange:(UISwitch *)sw
+{
+    return;
+#if 0
+    if (sw.tag == 0){
+        sw.on
+        
+        
+        switch (sw.tag) {
+        case STAG_MULTIYEAR:
+            sw.on = _addOnMgr.multiYear;
+            if ( _addOnMgr.multiYear == false ){
+                [self startAddonViewCtrl];
+            }
+            break;
+    }
+#endif
+}
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
 
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-
-/****************************************************************
- *
- ****************************************************************/
-- (void) updateArea:(NSString*)inputArea work:(NSString *)workArea
+//======================================================================
+//
+//======================================================================
+-(void) updateArea:(NSString*)inputArea work:(NSString *)workArea
 {
     _l_workArea.text    = [NSString stringWithFormat:@"%@", workArea ];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void) enterIn:(CGFloat)value
+//======================================================================
+//
+//======================================================================
+-(void) enterIn:(CGFloat)value
 {
     _value              = value;
     _l_expense.text    = [NSString stringWithFormat:@"%@万円",[UIUtil yenValue:_value]];
 }
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+//======================================================================
 @end
+//======================================================================

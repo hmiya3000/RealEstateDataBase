@@ -9,27 +9,27 @@
 #import <Foundation/Foundation.h>
 #import "CalcKey.h"
 
-/****************************************************************/
+//======================================================================
 @protocol UICalcDelegate <NSObject>
 
-- (void) updateArea:(NSString*)inputArea work:(NSString*)workArea;
-- (void) enterIn:(CGFloat)value;
+-(void) updateArea:(NSString*)inputArea work:(NSString*)workArea;
+-(void) enterIn:(CGFloat)value;
 
 @end
-/****************************************************************/
+//======================================================================
 @interface UICalc : NSObject
 {
     NSString*   _workArea;
     NSString*   _inputArea;
 }
-/****************************************************************/
+//======================================================================
 - (id) initWithValue:(CGFloat)value;
-- (void) uvinit:(UIView*)view;
-- (void) setuv:(CGRect)rect;
-/****************************************************************/
+-(void) uvinit:(UIView*)view;
+-(void) setuv:(CGRect)rect;
+//======================================================================
 @property   (nonatomic,assign)      id<UICalcDelegate> delegate;
 @property   (nonatomic,readonly)    NSString    *workArea;
 @property   (nonatomic,readonly)    NSString    *inputArea;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

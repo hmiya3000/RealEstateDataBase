@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "Investment.h"
-#import "House.h"
+#import "Estate.h"
 
-/****************************************************************/
+//======================================================================
 @interface Sale : NSObject
 {
     /*--------------------------------------*/
@@ -25,9 +25,9 @@
     NSInteger               _atcf;              //税引後利益
     NSInteger               _sellYear;          //売却年
 }
-/****************************************************************/
-- (void) calcSale:(Investment*)investment holdingPeriod:(NSInteger)holdingPeriod house:(House*)house;
-/****************************************************************/
+//======================================================================
+-(void) calcSale:(Investment*)investment holdingPeriod:(NSInteger)holdingPeriodYear estate:(Estate*)estate;
+//======================================================================
 @property   (nonatomic,readwrite)   NSInteger   price;
 @property   (nonatomic,readwrite)   NSInteger   expense;
 /*--------------------------------------*/
@@ -38,6 +38,6 @@
 @property   (nonatomic,readonly)    NSInteger   transferTax;
 @property   (nonatomic,readonly)    NSInteger   atcf;
 @property   (nonatomic,readonly)    NSInteger   sellYear;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

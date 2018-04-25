@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DrawTool.h"
 
+//======================================================================
 @interface GridTable : DrawTool
 {
     NSArray         *_table;
@@ -17,15 +18,17 @@
     CGFloat         _widthLastCol;
     CGFloat         _heightSum;
 }
+//======================================================================
 + (UIView*) makeGridTable;
 + (void)setRectScroll:(UIView*)view rect:(CGRect)frame;
 + (void)setScroll:(UIView*)view table:(NSArray*)allArr;
-
-
+//======================================================================
 @property   (nonatomic,readwrite)   NSArray     *table;
 @property   (nonatomic,readonly)    CGFloat     widthTitle;
 @property   (nonatomic,readonly)    CGFloat     widthSum;
 @property   (nonatomic,readonly)    CGFloat     widthLastCol;
 @property   (nonatomic,readonly)    CGFloat     heightSum;
 
+//======================================================================
 @end
+//======================================================================

@@ -9,9 +9,9 @@
 #import "SettingLoan.h"
 
 @implementation SettingLoan
-/****************************************************************/
+//======================================================================
 static SettingLoan* sharedSettingLoan = nil;
-/****************************************************************/
+//======================================================================
 @synthesize loan0       = _loan0;
 @synthesize loan1       = _loan1;
 @synthesize loan2       = _loan2;
@@ -21,9 +21,9 @@ static SettingLoan* sharedSettingLoan = nil;
 @synthesize startYear   = _startYear;
 @synthesize startMonth  = _startMonth;
 @synthesize sc          = _sc;
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 +(SettingLoan*)sharedManager
 {
     @synchronized(self){
@@ -33,9 +33,9 @@ static SettingLoan* sharedSettingLoan = nil;
     }
     return sharedSettingLoan;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 +(id)allocWithZone:(NSZone *)zone
 {
     @synchronized(self){
@@ -46,17 +46,17 @@ static SettingLoan* sharedSettingLoan = nil;
     }
     return nil;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(id)copyWithZone:(NSZone *)zone
 {
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (id)init {
+//======================================================================
+//
+//======================================================================
+-(id)init {
     self = [super init];
     if (self) {
         _loan0 = [[Loan alloc]init];
@@ -82,43 +82,43 @@ static SettingLoan* sharedSettingLoan = nil;
     }
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)setLoanBorrows:(float)lb
 {
     _loan0.loanBorrow    = lb;
     _loan1.loanBorrow    = lb;
     _loan2.loanBorrow    = lb;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (SVSegmentedControl*)makeSegmentedControl:(CGFloat)x y:(CGFloat)y length:(CGFloat)length
+//======================================================================
+//
+//======================================================================
+-(SVSegmentedControl*)makeSegmentedControl:(CGFloat)x y:(CGFloat)y length:(CGFloat)length
 {
     _sc.frame   = CGRectMake(x, y, length, 30);
     return _sc;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPeriodMax
 {
     NSInteger periodMax = 0;
-    if ( _loan0.periodYear > periodMax ){
-        periodMax = _loan0.periodYear;
+    if ( _loan0.periodTerm > periodMax ){
+        periodMax = _loan0.periodTerm;
     }
-    if ( _loan1.periodYear > periodMax ){
-        periodMax = _loan1.periodYear;
+    if ( _loan1.periodTerm > periodMax ){
+        periodMax = _loan1.periodTerm;
     }
-    if ( _loan2.periodYear > periodMax ){
-        periodMax = _loan2.periodYear;
+    if ( _loan2.periodTerm > periodMax ){
+        periodMax = _loan2.periodTerm;
     }
     return periodMax;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPmtMax
 {
     NSInteger pmt0;
@@ -126,9 +126,9 @@ static SettingLoan* sharedSettingLoan = nil;
     NSInteger pmt2;
 
     /* 元利均等返済の場合の最大支払い額 */
-    pmt0 = [_loan0 getPmtYear:_loan0.periodYear];
-    pmt1 = [_loan1 getPmtYear:_loan1.periodYear];
-    pmt2 = [_loan2 getPmtYear:_loan2.periodYear];
+    pmt0 = [_loan0 getPmtYear:_loan0.periodTerm/12];
+    pmt1 = [_loan1 getPmtYear:_loan1.periodTerm/12];
+    pmt2 = [_loan2 getPmtYear:_loan2.periodTerm/12];
 
     NSInteger pmtMax=0;
     if ( pmt0 > pmtMax){
@@ -157,21 +157,19 @@ static SettingLoan* sharedSettingLoan = nil;
     
     return pmtMax;
 }
-
-/****************************************************************
- * データファイル初期化
- ****************************************************************/
+//======================================================================
+// データファイル初期化
+//======================================================================
 -(void)initData
 {
     [self deleteData];
     [self setDefaultData];
     [self saveData];
 }
-
-/****************************************************************
- * データファイルの有無確認
- ****************************************************************/
-- (BOOL)isExistDataFile
+//======================================================================
+// データファイルの有無確認
+//======================================================================
+-(BOOL)isExistDataFile
 {
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
@@ -184,10 +182,9 @@ static SettingLoan* sharedSettingLoan = nil;
     return [fileManager fileExistsAtPath:plistFilePath];
     
 }
-
-/****************************************************************
- * データファイルの削除
- ****************************************************************/
+//======================================================================
+// データファイルの削除
+//======================================================================
 -(void)deleteData
 {
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -209,11 +206,10 @@ static SettingLoan* sharedSettingLoan = nil;
     }
     return;
 }
-
-/****************************************************************
- * デフォルトデータによる初期設定
- ****************************************************************/
-- (void)setDefaultData
+//======================================================================
+// デフォルトデータによる初期設定
+//======================================================================
+-(void)setDefaultData
 {
     _name0  = @"固定3年";
     _name1  = @"固定10年";
@@ -221,25 +217,25 @@ static SettingLoan* sharedSettingLoan = nil;
     
     [_loan0 setAllProperty_loannBorrow:1000*10000
                               rateYear:0.75/100
-                            periodYear:35
+                            periodTerm:35*12
                           levelPayment:true];
     [_loan1 setAllProperty_loannBorrow:_loan0.loanBorrow
                               rateYear:1.30/100
-                            periodYear:35
+                            periodTerm:35*12
                           levelPayment:true];
     [_loan2 setAllProperty_loannBorrow:_loan0.loanBorrow
                               rateYear:1.76/100
-                            periodYear:35
+                            periodTerm:35*12
                           levelPayment:true];
     
     _startYear      = [UIUtil getThisYear];
     _startMonth     = [UIUtil getThisMonth];
 
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)saveData
+//======================================================================
+//
+//======================================================================
+-(void)saveData
 {
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
@@ -259,9 +255,9 @@ static SettingLoan* sharedSettingLoan = nil;
     [settings setObject:[NSNumber numberWithInteger:_loan1.loanBorrow]          forKey:@"借入金1"];
     [settings setObject:[NSNumber numberWithInteger:_loan2.loanBorrow]          forKey:@"借入金2"];
     /*--------------------------------------*/
-    [settings setObject:[NSNumber numberWithInteger:_loan0.periodYear]          forKey:@"借入期間0"];
-    [settings setObject:[NSNumber numberWithInteger:_loan1.periodYear]          forKey:@"借入期間1"];
-    [settings setObject:[NSNumber numberWithInteger:_loan2.periodYear]          forKey:@"借入期間2"];
+    [settings setObject:[NSNumber numberWithInteger:_loan0.periodTerm]          forKey:@"借入期間0"];
+    [settings setObject:[NSNumber numberWithInteger:_loan1.periodTerm]          forKey:@"借入期間1"];
+    [settings setObject:[NSNumber numberWithInteger:_loan2.periodTerm]          forKey:@"借入期間2"];
     /*--------------------------------------*/
     [settings setObject:[NSNumber numberWithFloat:_loan0.rateYear]              forKey:@"金利0"];
     [settings setObject:[NSNumber numberWithFloat:_loan1.rateYear]              forKey:@"金利1"];
@@ -279,10 +275,10 @@ static SettingLoan* sharedSettingLoan = nil;
     [settings writeToFile:plistFilePath atomically:YES];
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)loadData
+//======================================================================
+//
+//======================================================================
+-(void)loadData
 {
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
@@ -299,9 +295,9 @@ static SettingLoan* sharedSettingLoan = nil;
     _loan1.loanBorrow   = [[setting objectForKey:@"借入金1"] longValue];
     _loan2.loanBorrow   = [[setting objectForKey:@"借入金2"] longValue];
     /*--------------------------------------*/
-    _loan0.periodYear   = [[setting objectForKey:@"借入期間0"] longValue];
-    _loan1.periodYear   = [[setting objectForKey:@"借入期間1"] longValue];
-    _loan2.periodYear   = [[setting objectForKey:@"借入期間2"] longValue];
+    _loan0.periodTerm   = [[setting objectForKey:@"借入期間0"] longValue];
+    _loan1.periodTerm   = [[setting objectForKey:@"借入期間1"] longValue];
+    _loan2.periodTerm   = [[setting objectForKey:@"借入期間2"] longValue];
     /*--------------------------------------*/
     _loan0.rateYear     = [[setting objectForKey:@"金利0"] floatValue];
     _loan1.rateYear     = [[setting objectForKey:@"金利1"] floatValue];
@@ -317,6 +313,6 @@ static SettingLoan* sharedSettingLoan = nil;
     
     
 }
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

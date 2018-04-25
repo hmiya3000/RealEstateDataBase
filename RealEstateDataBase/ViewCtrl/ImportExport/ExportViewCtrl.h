@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <DropboxSDK/DropboxSDK.h>
+#import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 
-@interface ExportViewCtrl : UIViewController<DBRestClientDelegate>
+@interface ExportViewCtrl : UIViewController
 
 @end

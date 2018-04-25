@@ -9,14 +9,62 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RealEstateDataBase/ViewCtrl/ItemSetting/ItemSettingViewCtrl.m"
-            timestampString = "478537240.20136"
+            filePath = "RealEstateDataBase/lib/Obj/Loan.m"
+            timestampString = "514736509.685967"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
-            landmarkName = "-getKeyIndexPath:"
-            landmarkType = "5">
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "-calcAll"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RealEstateDataBase/lib/Obj/Investment.m"
+            timestampString = "545986614.803171"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "-getOperation_start_term:new_gpi_term:end_term:aqu_tax_term:prop_tax:acqu_tax:gpi1:gpi2:loan:amortizationCosts:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RealEstateDataBase/lib/Obj/OpeAll.m"
+            timestampString = "517296481.336224"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "-calcOpeAll:investment:estate:declineRate:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RealEstateDataBase/lib/Obj/OpeAll.m"
+            timestampString = "517296502.330954"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "-calcOpeAll:investment:estate:declineRate:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

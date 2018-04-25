@@ -9,14 +9,18 @@
 #import "Operation.h"
 
 @implementation Operation
-/****************************************************************/
+//======================================================================
 @synthesize gpi                 = _gpi;
 @synthesize egi                 = _egi;
 @synthesize emptyLoss           = _emptyLoss;
 @synthesize opex                = _opex;
+@synthesize opex_tax            = _opex_tax;
+@synthesize opex_mng            = _opex_mng;
+@synthesize opex_etc            = _opex_etc;
 @synthesize noi                 = _noi;
 @synthesize ads                 = _ads;
 @synthesize btcf                = _btcf;
+@synthesize initCost            = _initCost;
 @synthesize taxIncome           = _taxIncome;
 @synthesize amCost              = _amCost;
 @synthesize tax                 = _tax;
@@ -31,6 +35,11 @@
 @synthesize ltv                 = _ltv;
 @synthesize capRate             = _capRate;
 
-/****************************************************************/
+@synthesize rentUnitPrice       = _rentUnitPrice;
+@synthesize yieldNfc            = _yieldNfc;
+@synthesize yieldAmo            = _yieldAmo;
+
+
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

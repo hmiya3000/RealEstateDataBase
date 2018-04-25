@@ -9,11 +9,14 @@
 #import "InputLoanSettingViewCtrl.h"
 #import "Graph.h"
 #import "GraphData.h"
+#import "LoanPeriodPV.h"
 
 @interface InputLoanSettingViewCtrl ()
 {
     Loan                *_loan;
     
+    LoanPeriodPV        *_periodPV;
+
     UILabel             *_l_bg;
     UILabel             *_l_rate;
     UILabel             *_l_period;
@@ -21,6 +24,7 @@
     
     UITextField         *_t_rate;
     UITextField         *_t_period;
+    UIButton            *_b_period;
     UIButton            *_b_loanPattern;
 
     
@@ -41,23 +45,24 @@
 
 @implementation InputLoanSettingViewCtrl
 
-#define BTAG_LOAN_PATTERN   1
+#define BTAG_PERIOD         1
+#define BTAG_LOAN_PATTERN   2
 
 #define TTAG_RATE           1
 #define TTAG_PERIOD         2
 #define TTAG_NAME           3
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"金利設定";
     
     _loan = [[Loan alloc]initWithLoanBorrow:_modelRE.investment.loan.loanBorrow
                                    rateYear:_modelRE.investment.loan.rateYear
-                                 periodYear:_modelRE.investment.loan.periodYear
+                                 periodTerm:_modelRE.investment.loan.periodTerm
                                levelPayment:_modelRE.investment.loan.levelPayment];
     
     
@@ -82,10 +87,16 @@
     [_t_rate     setDelegate:self];
     [_scrollView addSubview:_t_rate];
     /*--------------------------------------*/
+#if 0
     _t_period       = [UIUtil makeTextFieldDec:@"99" tgt:self];
     [_t_period   setTag:TTAG_PERIOD];
     [_t_period   setDelegate:self];
     [_scrollView addSubview:_t_period];
+#endif
+    /*--------------------------------------*/
+    _b_period    = [UIUtil makeButton:@"" tag:BTAG_PERIOD];
+    [_b_period addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:_b_period];
     /*--------------------------------------*/
     _b_loanPattern    = [UIUtil makeButton:@"" tag:BTAG_LOAN_PATTERN];
     [_b_loanPattern addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -126,6 +137,9 @@
     [_scrollView addSubview:_tv_tips];
     /****************************************/
     _scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+
+    _periodPV = [[LoanPeriodPV alloc]initWitTarget:self frame:self.view.bounds];
+
     
     UITapGestureRecognizer *tapGesture =
     [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(view_Tapped:)];
@@ -133,20 +147,19 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -169,7 +182,8 @@
         /*--------------------------------------*/
         pos_y = pos_y + dy;
         [UIUtil setTextField:_t_rate            x:pos_x         y:pos_y length:length];
-        [UIUtil setTextField:_t_period          x:pos_x+dx      y:pos_y length:length];
+//        [UIUtil setTextField:_t_period          x:pos_x+dx      y:pos_y length:length];
+        [UIUtil setTextButton:_b_period         x:pos_x+dx*1    y:pos_y length:length];
         [UIUtil setTextButton:_b_loanPattern    x:pos_x+dx*2    y:pos_y length:length];
         /****************************************/
         pos_y = pos_y + dy;
@@ -198,7 +212,8 @@
         /*--------------------------------------*/
         pos_y = pos_y + dy;
         [UIUtil setTextField:_t_rate            x:pos_x         y:pos_y length:length];
-        [UIUtil setTextField:_t_period          x:pos_x+dx      y:pos_y length:length];
+//        [UIUtil setTextField:_t_period          x:pos_x+dx      y:pos_y length:length];
+        [UIUtil setTextButton:_b_period         x:pos_x+dx*1    y:pos_y length:length];
         [UIUtil setTextButton:_b_loanPattern    x:pos_x+dx*2    y:pos_y length:length];
         /****************************************/
         pos_y = pos_y + dy;
@@ -224,82 +239,83 @@
     return;
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [super view_Tapped:sender];
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     [self viewMake];
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     [self readTextFieldData];
     return YES;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)closeKeyboard:(id)sender
 {
     [UIUtil closeKeyboard:sender];
     [self readTextFieldData];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void) readTextFieldData
 {
     /*--------------------------------------*/
     float tmp_rate;
     tmp_rate = [_t_rate.text floatValue]/100;
-    if ( 100 > tmp_rate && tmp_rate >  0 ){
+    if ( 1 > tmp_rate && tmp_rate >  0 ){
         _loan.rateYear          = tmp_rate;
     }
     /*--------------------------------------*/
     NSInteger tmp_period;
     tmp_period = [_t_period.text integerValue];
     if ( 100 > tmp_period && tmp_period > 0 ){
-        _loan.periodYear = tmp_period;
+        _loan.periodTerm = tmp_period*12;
     
     }
     /*--------------------------------------*/
     [self rewriteProperty];
 }
 
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false ){
+        [self readTextFieldData];
         _modelRE.investment.loan.rateYear       = _loan.rateYear;
-        _modelRE.investment.loan.periodYear     = _loan.periodYear;
+        _modelRE.investment.loan.periodTerm     = _loan.periodTerm;
         _modelRE.investment.loan.levelPayment   = _loan.levelPayment;
         [_modelRE valToFile];
     }
     [super viewWillDisappear:animated];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
@@ -315,35 +331,62 @@
         _loan.levelPayment = true;
 #endif
         [self rewriteProperty];
+    } else if (sender.tag == BTAG_PERIOD){
+        [_periodPV setIndex_year:_loan.periodTerm/12 month:_loan.periodTerm%12];
+        [_periodPV showPickerView:self.view];
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
     return;
 }
 
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
+//======================================================================
+//
+//======================================================================
+-(BOOL)closePopup:(id)sender
+{
+    _loan.periodTerm = _periodPV.year*12 + _periodPV.month;
+    [self rewriteProperty];
+    return YES;
+    
+}
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     _t_rate.text        = [NSString stringWithFormat:@"%g",_loan.rateYear*100];
-    _t_period.text      = [NSString stringWithFormat:@"%ld",(long)_loan.periodYear];
+    _t_period.text      = [NSString stringWithFormat:@"%ld",(long)_loan.periodTerm/12];
+
+    NSString *periodStr;
+    if ( _loan.periodTerm%12 != 0 ){
+        periodStr = [NSString stringWithFormat:@"%ld年%ldヶ月",
+                     _loan.periodTerm/12,
+                     _loan.periodTerm%12];
+    } else {
+        periodStr = [NSString stringWithFormat:@"%ld年",
+                     _loan.periodTerm/12];
+        
+    }
+    [_b_period setTitle:periodStr forState:UIControlStateNormal];
+
     if (_loan.levelPayment == true ){
         [_b_loanPattern setTitle:@"元利均等" forState:UIControlStateNormal];
     }else {
@@ -362,9 +405,10 @@
     gd_ppmt.type        = BAR_GPAPH;
     
     [_g_pmt setGraphDataAll:[[NSArray alloc]initWithObjects:gd_pmt,gd_ppmt,nil]];
-    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear+1 ymax:[_loan getPmtYear:1]];
+    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodTerm/12+1 ymax:[_loan getPmtYear:1]];
     _g_pmt.title        = @"借入返済内訳";
     [_g_pmt setNeedsDisplay];
 }
-
+//======================================================================
 @end
+//======================================================================

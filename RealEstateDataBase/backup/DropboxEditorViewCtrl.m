@@ -7,7 +7,6 @@
 //
 
 #import "DropboxEditorViewCtrl.h"
-#import <DropboxSDK/DropboxSDK.h>
 #import "MBProgressHUD.h"
 
 @interface DropboxEditorViewCtrl ()
@@ -19,20 +18,20 @@
 @implementation DropboxEditorViewCtrl
 
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLayoutSubviews
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLayoutSubviews
 {
     CGSize size = self.view.frame.size;
     self.nameField.frame = CGRectMake(0,100,size.width,44);
     self.documentTextView.frame = CGRectMake(0,144,size.width,size.height-44);
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
 #if 0
     [super viewDidLoad];
@@ -49,10 +48,10 @@
 #endif
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)loadFile
+//======================================================================
+//
+//======================================================================
+-(void)loadFile
 {
 #if 0
     // completedFirstSyncがfalseの間はreadString:が待ちになる。これはファイルごと１回だけ発生します。
@@ -76,19 +75,19 @@
     });
 #endif
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillDisappear:(BOOL)animated
+//======================================================================
+//
+//======================================================================
+-(void)viewWillDisappear:(BOOL)animated
 {
     if (![self.documentTextView.text isEqualToString:self.fileText]) {
         [self saveFile];
     }
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)saveFile
+//======================================================================
+//
+//======================================================================
+-(void)saveFile
 {
 #if 0
     DBError *error;
@@ -103,9 +102,9 @@
 #endif
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     if (textField == self.nameField) {
@@ -113,9 +112,9 @@
     }
     return YES;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 #pragma mark -
 - (BOOL)renameFile:(NSString*)newName {
 #if 0
@@ -147,7 +146,7 @@
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }

@@ -10,6 +10,7 @@
 #import "UIUtil.h"
 #import "ModelDB.h"
 #import "Pos.h"
+#import "MBProgressHUD.h"
 
 @interface ExportViewCtrl ()
 {
@@ -23,7 +24,7 @@
 
     NSString                    *_localPath;
     NSString                    *_tmpfile;
-    DBRestClient                *_restClient;
+    DBUserClient                *_userClient;
 }
 @end
 
@@ -31,9 +32,9 @@
 
 #define BTAG_EXEC       1
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -45,10 +46,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     _modelDB = [ModelDB sharedManager];
@@ -67,10 +68,6 @@
                                     target:self
                                     action:@selector(accountButtonTapped:)];
     self.navigationItem.rightBarButtonItem = accountButton;
-    
-    _restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
-    _restClient.delegate = self;
-    
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
@@ -97,28 +94,29 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
-    if (![[DBSession sharedSession] isLinked]) {
-        [[DBSession sharedSession] linkFromController:self];
+    if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
+        [DBClientsManager authorizeFromController:UIApplication.sharedApplication
+                                       controller:self
+                                          openURL:^(NSURL *url){
+                                              [UIApplication.sharedApplication openURL:url
+                                                                               options:@{}
+                                                                     completionHandler:nil];
+                                          }
+         ];
     }
-
-#if 0
-    [[DBAccountManager sharedManager] linkFromController:self];
-#endif
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -156,26 +154,25 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
-
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -189,91 +186,83 @@
     }
     [self viewMake];
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)accountButtonTapped:(id)sender
 {
-    [[DBSession sharedSession] linkFromController:self];
+//    [[DBSession sharedSession] linkFromController:self];
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
+- (void)uploadFileWithClient:(DBUserClient *)client uploadData:(NSString *)uploadData inputData:(NSData*)inputData
+{
+    DBFILESWriteMode *mode = [[DBFILESWriteMode alloc] initWithOverwrite];
+    DBUploadTask *task = [client.filesRoutes uploadData:uploadData
+                                                mode:mode
+                                          autorename:@(YES)
+                                      clientModified:nil
+                                                mute:@(NO)
+                                      propertyGroups:nil
+                                           inputData:inputData];
+    [task setResponseBlock:^(DBFILESFileMetadata *result, DBFILESUploadError *routeError, DBRequestError *networkError) {
+        if (result) {
+            NSLog(@"%@\n", result);
+        } else {
+            NSLog(@"%@\n%@\n", routeError, networkError);
+        }
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    [task start];
+}
+
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     if ( sender.tag == BTAG_EXEC ){
+        
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         // Write a file to the local documents directory
         _tmpfile  = [_modelDB getExportFilename];
         _localPath = [_modelDB makeLocalFile:_tmpfile];
         NSLog(@"~~~~~~%@",_localPath);
-        
-        // Upload file to Dropbox
         NSString *destDir = @"/";
-        [_restClient uploadFile:_tmpfile toPath:destDir withParentRev:nil fromPath:_localPath];
-        
-        
-#if 0
-        DBPath *dropboxPath;
-        dropboxPath = [[DBPath root] childPath:[_modelDB getExportFilename]];
-        [_modelDB exportAllFiles:dropboxPath];
-#endif
-        [self dismissViewControllerAnimated:YES completion:nil];
+        NSString *uploadData = [NSString stringWithFormat:@"%@%@",destDir,_tmpfile];
+        NSData *inputData = [[NSData alloc]initWithContentsOfFile:_localPath];
+        _userClient = [DBClientsManager authorizedClient];
+        // Upload file to Dropbox
+        [self uploadFileWithClient:_userClient uploadData:uploadData inputData:inputData];
     }
 }
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client uploadedFile:(NSString *)destPath
-              from:(NSString *)srcPath metadata:(DBMetadata *)metadata {
-    NSLog(@"File uploaded successfully to path: %@", metadata.path);
-    
-    
-    // ファイルマネージャを作成
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSError *error;
-    BOOL result = [fileManager removeItemAtPath:_localPath error:&error];
-
-    if (result) {
-        NSLog(@"削除成功：%@", _tmpfile);
-    } else {
-        NSLog(@"削除失敗：%@", error.description);
-    }
-}
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)restClient:(DBRestClient *)client uploadFileFailedWithError:(NSError *)error {
-    NSLog(@"File upload failed with error: %@", error);
-}
-
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

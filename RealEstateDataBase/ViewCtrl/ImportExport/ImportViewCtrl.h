@@ -7,15 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <DropboxSDK/DropboxSDK.h>
+#import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 
-@interface ImportViewCtrl : UITableViewController<DBRestClientDelegate>
+@interface ImportViewCtrl : UITableViewController
 {
     NSArray         *_filesArray;
+    NSString        *_path;
 }
 
 ///@property (nonatomic, strong) DBDatastore *datastore;
 @property (nonatomic) NSArray *filesArray;
+@property (nonatomic) NSString *path;
 
 
 @end

@@ -13,7 +13,7 @@
 {
     NSString    *_text;
 }
-- (void)keyDown;
-- (void)keyUp;
+-(void)keyDown;
+-(void)keyUp;
 @property   (nonatomic) NSString    *text;
 @end

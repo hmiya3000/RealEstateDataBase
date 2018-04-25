@@ -20,12 +20,12 @@
     UIViewController    *_masterVC;
     bool                _b_cancel;
 }
-/****************************************************************/
-- (void)clickButton:(UIButton*)sender;
-- (void)view_Tapped:(UITapGestureRecognizer *)sender;
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
-/****************************************************************/
+//======================================================================
+-(void)clickButton:(UIButton*)sender;
+-(void)view_Tapped:(UITapGestureRecognizer *)sender;
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration;
+//======================================================================
 @property   (nonatomic,readwrite)    UIViewController    *masterVC;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

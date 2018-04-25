@@ -70,12 +70,12 @@
 @end
 
 @implementation SaleViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize masterVC    = _masterVC;
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -87,10 +87,10 @@
     }
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     _modelRE        = [ModelRE sharedManager];
@@ -257,20 +257,19 @@
     [_scrollView addSubview:_l_capGainVal];
     /****************************************/
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -380,26 +379,26 @@
 
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -413,25 +412,27 @@
     }
     [self viewMake];
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
     _l_name.text                = _modelRE.estate.name;
-    _l_capRate.text             = [NSString stringWithFormat:@"%ld年目キャップレート",(long)_modelRE.holdingPeriod];
+    _l_capRate.text             = [NSString stringWithFormat:@"%ld年目キャップレート",(long)_modelRE.holdingPeriodTerm/12];
     _l_capRateVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.opeLast.capRate*100];
     [UIUtil labelYen:_l_priceSaleVal        yen:_modelRE.sale.price];
-    _l_buildYearSaleVal.text    = [NSString stringWithFormat:@"築%ld年",(long)(_modelRE.sale.sellYear - _modelRE.estate.house.buildYear)];
+    
+    NSInteger saleTerm = _modelRE.estate.house.acquisitionTerm + _modelRE.holdingPeriodTerm - _modelRE.estate.house.buildTerm;
+    _l_buildYearSaleVal.text    = [NSString stringWithFormat:@"築%ld年%ldヶ月",(long)[UIUtil getYear_term:saleTerm],(long)[UIUtil getMonth_term:saleTerm]];
     _l_interestSaleVal.text     = [NSString stringWithFormat:@"%2.2f%%",((CGFloat)_modelRE.opeLast.gpi*100/_modelRE.sale.price)];
     _l_capRateSaleVal.text      = [NSString stringWithFormat:@"%2.2f%%",((CGFloat)_modelRE.opeLast.noi*100/_modelRE.sale.price)];
     /*--------------------------------------*/
@@ -448,7 +449,7 @@
     [UIUtil labelYen:_l_lbVal               yen:-_modelRE.sale.loanBorrow];
     [UIUtil labelYen:_l_btcfVal             yen: _modelRE.sale.btcf];
     [UIUtil labelYen:_l_amCostsVal          yen:-_modelRE.sale.amCosts];
-    [UIUtil labelYen:_l_bookValueVal        yen:_modelRE.investment.prices.price + _modelRE.investment.expense -_modelRE.sale.amCosts];
+    [UIUtil labelYen:_l_bookValueVal        yen:_modelRE.investment.price + _modelRE.investment.expense -_modelRE.sale.amCosts];
     [UIUtil labelYen:_l_transferIncomeVal   yen: _modelRE.sale.transferIncome];
     [UIUtil labelYen:_l_transferTaxVal      yen:-_modelRE.sale.transferTax];
     [UIUtil labelYen:_l_atcfVal             yen: _modelRE.sale.atcf];
@@ -457,14 +458,14 @@
     
 
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "InputViewCtrl.h"
 
-@interface InputHoldingPeriodViewCtrl : InputViewCtrl
+@interface InputHoldingPeriodViewCtrl : InputViewCtrl<UIPickerViewDelegate, UIPickerViewDataSource>
+
 
 @end

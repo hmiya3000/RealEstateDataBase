@@ -21,7 +21,7 @@
 
 @implementation DisclaimerViewCtrl
 
-- (void)viewDidLoad {
+-(void)viewDidLoad {
     [super viewDidLoad];
 
     /****************************************/
@@ -49,7 +49,7 @@
     [self.view addGestureRecognizer:tapGesture];
     
 }
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+-(void)webViewDidFinishLoad:(UIWebView *)webView
 {
     NSString *jString;
     NSString *model = [UIDevice currentDevice].model;
@@ -61,19 +61,18 @@
     [_wv stringByEvaluatingJavaScriptFromString:jString];
 
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -95,7 +94,7 @@
 /**
  * ビューがタップされたとき
  */
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    NSLog(@"タップされました．");
     //    [self dismissViewControllerAnimated:YES completion:nil];

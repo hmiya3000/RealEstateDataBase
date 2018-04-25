@@ -28,6 +28,7 @@
 @synthesize masterFrame = _masterFrame;
 @synthesize detailFrame = _detailFrame;
 
+//======================================================================
 - (id)initWithUIViewCtrl:(UIViewController*)uivc
 {
     self = [super init];
@@ -122,5 +123,6 @@
     }
     return self;
 }
-
+//======================================================================
 @end
+//======================================================================

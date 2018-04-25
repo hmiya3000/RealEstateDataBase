@@ -8,7 +8,6 @@
 
 #import "PDFViewCtrl.h"
 #import <CoreText/CoreText.h>
-#import <DropboxSDK/DropboxSDK.h>
 #import "PDFView.h"
 
 @interface PDFViewCtrl ()
@@ -18,9 +17,9 @@
 
 @implementation PDFViewCtrl
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -30,10 +29,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     UIBarButtonItem *retButton =
@@ -71,7 +70,7 @@
     [self.view addSubview:myview];
 #endif
 }
-- (void)viewWillAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
     // 親クラスの呼び出し
     [super viewWillAppear:animated];
@@ -84,7 +83,7 @@
 #pragma mark -- Image --
 //--------------------------------------------------------------//
 
-- (void)_renewPages
+-(void)_renewPages
 {
     CGRect          rect;
     CGPDFPageRef    page;
@@ -218,9 +217,9 @@
     _mainScrollView.contentOffset = _subScrollView.frame.origin;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -228,8 +227,8 @@
 
 
 
-/****************************************************************/
-- (void) pdfMake2
+//======================================================================
+-(void) pdfMake2
 {
     // 画像の準備
     UIImage *image = [UIImage imageNamed:@"haruka.png"];
@@ -263,7 +262,7 @@
     
 }
 
-- (void)drawString:(NSString *)string rect:(CGRect)rect color:(CGColorRef)color fontSize:(float)fontSize ul:(BOOL)ul
+-(void)drawString:(NSString *)string rect:(CGRect)rect color:(CGColorRef)color fontSize:(float)fontSize ul:(BOOL)ul
 {
     // 文字色やサイズを設定する
     CTFontRef font = CTFontCreateUIFontForLanguage(kCTFontSystemFontType, fontSize, NULL);
@@ -312,7 +311,7 @@
 #pragma mark -- UIScrollViewDelegate --
 //--------------------------------------------------------------//
 
-- (void)scrollViewDidEndDragging:(UIScrollView*)scrollView
+-(void)scrollViewDidEndDragging:(UIScrollView*)scrollView
                   willDecelerate:(BOOL)decelerate
 {
     // メインスクロールビューの場合
@@ -324,7 +323,7 @@
     }
 }
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
+-(void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView
 {
     // メインスクロールビューの場合
     if (scrollView == _mainScrollView) {
@@ -348,7 +347,7 @@
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }

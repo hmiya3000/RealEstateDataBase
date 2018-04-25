@@ -7,6 +7,7 @@
 //
 
 #import "InputLandAssessmentViewCtrl.h"
+#import "MapUtil.h"
 
 @interface InputLandAssessmentViewCtrl ()
 {
@@ -20,6 +21,8 @@
     
     UIWebView               *_wv;
 
+    MapUtil                 *_mapUtil;
+    CLLocationCoordinate2D  _loc2d;
     
 }
 @end
@@ -29,10 +32,10 @@
 
 #define TTAG_LASSESS          1
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"路線価";
@@ -67,12 +70,19 @@
     _wv = [[UIWebView alloc] init];
     _wv.delegate = self;
     _wv.scalesPageToFit = YES;
-    NSURL *url = [NSURL URLWithString:@"http://www.rosenka.nta.go.jp/main_h27/index.htm"];
-
-    NSURLRequest *req = [NSURLRequest requestWithURL:url];
-    [_wv loadRequest:req];
     [_scrollView addSubview:_wv];
     /****************************************/
+    
+    _loc2d.latitude     = _modelRE.estate.land.latitude;
+    _loc2d.longitude    = _modelRE.estate.land.longitude;
+    _mapUtil = [[MapUtil alloc] init];
+    if ( [MapUtil isSetLoc:_loc2d] == true ){
+        //緯度経度から都道府県の取得
+        [_mapUtil locateToAddress:self selector:@selector(callbackMap2AddrWithResult:error:) locate2d:_loc2d];
+    } else {
+        //大体の住所から緯度経度を取得、その後、都道府県を取得
+        [_mapUtil addressToLocate:self selector:@selector(callbackAddr2MapWithResult:error:) address:_modelRE.estate.land.address];
+    }
     
     
     UITapGestureRecognizer *tapGesture =
@@ -81,20 +91,107 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//===============================================================
+// 緯度経度の取得のコールバック。緯度経度から都道府県の取得を実行
+//===============================================================
+-(void)callbackAddr2MapWithResult:(NSDictionary *)resultDictionary error:(NSError *)error
+{
+    _loc2d =  [resultDictionary[@"locate"] MKCoordinateValue];
+    [_mapUtil locateToAddress:self selector:@selector(callbackMap2AddrWithResult:error:) locate2d:_loc2d];
+}
+//===============================================================
+//都道府県の取得のコールバック
+//===============================================================
+ -(void)callbackMap2AddrWithResult:(NSDictionary *)resultDictionary error:(NSError *)error
+{
+    NSLog(@"callbackForWorkWithResult:error: is called.");
+    NSLog(@"resultDictonary = %@", resultDictionary);
+    NSLog(@"error = %@", error);
+
+    NSString *url = @"http://www.rosenka.nta.go.jp/main_h29/";
+    NSInteger code = [MapUtil prefectureToCode:resultDictionary[@"administrativeArea"]];
+    switch(code){
+        case CODE_HOKKAIDO:     url = [url stringByAppendingString:@"sapporo/hokkaido/"];   break;
+            //------------
+        case CODE_AOMORI:       url = [url stringByAppendingString:@"sendai/aomori/"];      break;
+        case CODE_IWATE:        url = [url stringByAppendingString:@"sendai/iwate/"];       break;
+        case CODE_MIYAGI:       url = [url stringByAppendingString:@"sendai/miyagi/"];      break;
+        case CODE_AKITA:        url = [url stringByAppendingString:@"sendai/akita/"];       break;
+        case CODE_YAMAGATA:     url = [url stringByAppendingString:@"sendai/yamagata/"];    break;
+        case CODE_FUKUSHIMA:    url = [url stringByAppendingString:@"sendai/fukusima/"];    break;
+        //------------
+        case CODE_IBARAKI:      url = [url stringByAppendingString:@"kanto/ibaraki/"];      break;
+        case CODE_TOCHIGI:      url = [url stringByAppendingString:@"kanto/tochigi/"];      break;
+        case CODE_GUNMA:        url = [url stringByAppendingString:@"kanto/gunma/"];        break;
+        case CODE_SAITAMA:      url = [url stringByAppendingString:@"kanto/saitama/"];      break;
+        case CODE_CHIBA:        url = [url stringByAppendingString:@"tokyo/chiba/"];        break;
+        case CODE_TOKYO:        url = [url stringByAppendingString:@"tokyo/tokyo/"];        break;
+        case CODE_KANAGAWA:     url = [url stringByAppendingString:@"tokyo/kanagawa/"];     break;
+        //------------
+        case CODE_NIIGATA:      url = [url stringByAppendingString:@"kanto/niigata/"];      break;
+        case CODE_TOYAMA:       url = [url stringByAppendingString:@"kanazawa/toyama/"];    break;
+        case CODE_ISHIKAWA:     url = [url stringByAppendingString:@"kanazawa/isikawa/"];   break;
+        case CODE_FUKUI:        url = [url stringByAppendingString:@"kanazawa/fukui/"];     break;
+        case CODE_YAMANASHI:    url = [url stringByAppendingString:@"tokyo/yamanasi/"];     break;
+        case CODE_NAGANO:       url = [url stringByAppendingString:@"kanto/nagano/"];       break;
+        case CODE_GIFU:         url = [url stringByAppendingString:@"nagoya/gifu/"];        break;
+        case CODE_SHIZUOKA:     url = [url stringByAppendingString:@"nagoya/sizuoka/"];     break;
+        case CODE_AICHI:        url = [url stringByAppendingString:@"nagoya/aichi/"];       break;
+        case CODE_MIE:          url = [url stringByAppendingString:@"nagoya/mie/"];         break;
+        //------------
+        case CODE_SHIGA:        url = [url stringByAppendingString:@"osaka/shiga/"];        break;
+        case CODE_KYOTO:        url = [url stringByAppendingString:@"osaka/kyoto/"];        break;
+        case CODE_OSAKA:        url = [url stringByAppendingString:@"osaka/osaka/"];        break;
+        case CODE_HYOGO:        url = [url stringByAppendingString:@"osaka/hyogo/"];        break;
+        case CODE_NARA:         url = [url stringByAppendingString:@"osaka/nara/"];         break;
+        case CODE_WAKAYAMA:     url = [url stringByAppendingString:@"osaka/wakayama/"];     break;
+        //------------
+        case CODE_TOTTORI:      url = [url stringByAppendingString:@"hirosima/tottori/"];   break;
+        case CODE_SHIMANE:      url = [url stringByAppendingString:@"hirosima/simane/"];    break;
+        case CODE_OKAYAMA:      url = [url stringByAppendingString:@"hirosima/okayama/"];   break;
+        case CODE_HIROSHIMA:    url = [url stringByAppendingString:@"hirosima/hirosima/"];  break;
+        case CODE_YAMAGUCHI:    url = [url stringByAppendingString:@"hirosima/yamaguti/"];  break;
+        //------------
+        case CODE_TOKUSHIMA:    url = [url stringByAppendingString:@"takamatu/tokusima/"];  break;
+        case CODE_KAGAWA:       url = [url stringByAppendingString:@"takamatu/kagawa/"];    break;
+        case CODE_EHIME:        url = [url stringByAppendingString:@"takamatu/ehime/"];     break;
+        case CODE_KOCHI:        url = [url stringByAppendingString:@"takamatu/koti/"];      break;
+        //------------
+        case CODE_FUKUOKA:      url = [url stringByAppendingString:@"fukuoka/fukuoka/"];    break;
+        case CODE_SAGA:         url = [url stringByAppendingString:@"fukuoka/saga/"];       break;
+        case CODE_NAGASAKI:     url = [url stringByAppendingString:@"fukuoka/nagasaki/"];   break;
+        case CODE_KUMAMOTO:     url = [url stringByAppendingString:@"kumamoto/kumamoto/"];  break;
+        case CODE_OITA:         url = [url stringByAppendingString:@"kumamoto/oita/"];      break;
+        case CODE_MIYAZAKI:     url = [url stringByAppendingString:@"kumamoto/miyazaki/"];  break;
+        case CODE_KAGOSHIMA:    url = [url stringByAppendingString:@"kumamoto/kagosima/"];  break;
+        case CODE_OKINAWA:      url = [url stringByAppendingString:@"okinawa/okinawa/"];    break;
+            //------------
+        case CODE_UNKNOWN:
+        default:
+            break;
+    }
+    if (code != CODE_UNKNOWN){
+        url = [url stringByAppendingString:@"pref_frm.htm"];
+    }else{
+        url = @"http://www.rosenka.nta.go.jp/index.htm";
+    }
+    NSURL *url2 = [NSURL URLWithString:url];
+    NSURLRequest *req = [NSURLRequest requestWithURL:url2];
+    [_wv loadRequest:req];
+}
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -157,29 +254,29 @@
     return;
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [super view_Tapped:sender];
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     [self viewMake];
     return;
 }
 
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false ){
@@ -190,36 +287,36 @@
 }
 
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)closeKeyboard:(id)sender
 {
     [UIUtil closeKeyboard:sender];
     [self readTextFieldData];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     [self readTextFieldData];
     return YES;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void) readTextFieldData
 {
     /*--------------------------------------*/
@@ -231,39 +328,30 @@
     /*--------------------------------------*/
     [self rewriteProperty];
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     _t_lAssess.text     = [NSString stringWithFormat:@"%ld", (long)_value];
 }
 
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+//======================================================================
 @end
+//======================================================================

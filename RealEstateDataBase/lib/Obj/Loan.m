@@ -9,7 +9,7 @@
 #import "Loan.h"
 #import "Finance.h"
 
-/****************************************************************/
+//======================================================================
 @implementation Loan
 {
     NSMutableArray  *_pmtArr;
@@ -17,56 +17,52 @@
     NSMutableArray  *_ipmtArr;
     NSMutableArray  *_lbArr;
 }
-/****************************************************************/
+//======================================================================
 @synthesize     loanBorrow      = _loanBorrow;
 @synthesize     rateYear        = _rateYear;
-@synthesize     periodYear      = _periodYear;
+@synthesize     periodTerm      = _periodTerm;
 @synthesize     levelPayment    = _levelPayment;
-/****************************************************************
- *
- ****************************************************************/
-- (id)copyWithZone:(NSZone*)zone
+//======================================================================
+-(id)copyWithZone:(NSZone*)zone
 {
     // 複製を保存するためのインスタンスを生成します。
     Loan* result = [[[self class] allocWithZone:zone] init];
     
     if (result){
         result.loanBorrow   = _loanBorrow;
-        result.periodYear   = _periodYear;
+        result.periodTerm   = _periodTerm;
         result.rateYear     = _rateYear;
         result.levelPayment = _levelPayment;
     }
     
     return result;
 }
-/****************************************************************
- *
- ****************************************************************/
--(id)initWithLoanBorrow:(NSInteger)lb rateYear:(CGFloat)ry periodYear:(NSInteger)py levelPayment:(BOOL)lp
+//======================================================================
+-(id)initWithLoanBorrow:(NSInteger)lb rateYear:(CGFloat)ry periodTerm:(NSInteger)pt levelPayment:(BOOL)lp
 {
     self = [super init];
     if ( self != nil){
-        [self setAllProperty_loannBorrow:lb rateYear:ry periodYear:py levelPayment:lp];
+        [self setAllProperty_loannBorrow:lb rateYear:ry periodTerm:pt levelPayment:lp];
     }
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)setAllProperty_loannBorrow:(NSInteger)lb rateYear:(CGFloat)ry periodYear:(NSInteger)py levelPayment:(BOOL)lp
+//======================================================================
+//
+//======================================================================
+-(void)setAllProperty_loannBorrow:(NSInteger)lb rateYear:(CGFloat)ry periodTerm:(NSInteger)pt levelPayment:(BOOL)lp
 {
-    _loanBorrow = lb;
-    _rateYear   = ry;
-    _periodYear = py;
-    _levelPayment = lp;
+    _loanBorrow     = lb;
+    _rateYear       = ry;
+    _periodTerm     = pt;
+    _levelPayment   = lp;
     [self calcAll];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)setLoanBorrow:(NSInteger)loanBorrow
+//======================================================================
+//
+//======================================================================
+-(void)setLoanBorrow:(NSInteger)loanBorrow
 {
     if (  _loanBorrow != loanBorrow ){
         _loanBorrow = loanBorrow;
@@ -74,10 +70,10 @@
     }
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)setRateYear:(CGFloat)rateYear
+//======================================================================
+//
+//======================================================================
+-(void)setRateYear:(CGFloat)rateYear
 {
     if (  _rateYear != rateYear ){
         _rateYear = rateYear;
@@ -85,21 +81,21 @@
     }
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)setPeriodYear:(NSInteger)periodYear
+//======================================================================
+//
+//======================================================================
+-(void)setPeriodTerm:(NSInteger)periodTerm
 {
-    if (  _periodYear != periodYear ){
-        _periodYear = periodYear;
+    if (  _periodTerm != periodTerm ){
+        _periodTerm = periodTerm;
         [self calcAll];
     }
     return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)setLevelPayment:(BOOL)levelPayment
+//======================================================================
+//
+//======================================================================
+-(void)setLevelPayment:(BOOL)levelPayment
 {
     if (  _levelPayment != levelPayment ){
         _levelPayment = levelPayment;
@@ -108,10 +104,10 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)calcAll
+//======================================================================
+//
+//======================================================================
+-(void)calcAll
 {
     NSInteger lb_term   = 0;
     NSInteger pmt_term  = 0;
@@ -127,16 +123,27 @@
     if ( _levelPayment == true ){
         /* 元利均等方式 */
         pmt_term = -(NSInteger)[Finance pmt_rate:_rateYear/12
-                                          period:_periodYear*12
+                                          period:_periodTerm
                                            value:_loanBorrow];
         lb_term = (long)_loanBorrow;
-        for ( NSInteger term=0; term < _periodYear*12; term++){
+
+        /*---------------*/
+        tmpNum = [[NSNumber alloc]initWithInteger:0];
+        [_pmtArr addObject:tmpNum];
+        tmpNum = [[NSNumber alloc]initWithInteger:0];
+        [_ppmtArr addObject:tmpNum];
+        tmpNum = [[NSNumber alloc]initWithInteger:0];
+        [_ipmtArr addObject:tmpNum];
+        tmpNum = [[NSNumber alloc]initWithInteger:lb_term];
+        [_lbArr addObject:tmpNum];
+        /*---------------*/
+        for ( NSInteger term=1; term <= _periodTerm; term++){
             /*---------------*/
-            ipmt_term   = (NSInteger)(lb_term * _rateYear/12);
-            if ( term < _periodYear*12 -1){
+            ipmt_term   = (NSInteger)(lb_term * _rateYear/12+0.4);
+            if ( term <= _periodTerm-1 ){
                 ppmt_term   = pmt_term - ipmt_term;
                 lb_term     = lb_term - ppmt_term;
-            } else if ( term == _periodYear*12 -1 ){
+            } else if ( term == _periodTerm ){
                 /* 最終回は端数処理 */
                 ppmt_term   = lb_term;
                 pmt_term    = ppmt_term + ipmt_term;
@@ -155,15 +162,15 @@
     } else {
         /* 元金均等方式 */
         ppmt_term  = -(NSInteger)[Finance ppmtP_rate:_rateYear/12
-                                              period:_periodYear*12
+                                              period:_periodTerm
                                                value:_loanBorrow];
         lb_term = (NSInteger)_loanBorrow;
-        for ( NSInteger term=0; term < _periodYear*12; term++){
+        for ( NSInteger term=0; term < _periodTerm; term++){
             /*---------------*/
             ipmt_term = (NSInteger)(lb_term * _rateYear/12);
-            if ( term < _periodYear*12 -1){
+            if ( term < _periodTerm -1){
                 lb_term     = lb_term - ppmt_term;
-            } else if ( term == _periodYear*12 -1){
+            } else if ( term == _periodTerm -1){
                 /* 最終回は端数処理 */
                 ppmt_term   = lb_term;
                 lb_term     = 0;
@@ -184,41 +191,41 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getLb:(NSInteger)tgtTerm
 {
-    if ( tgtTerm > 0 && tgtTerm <= _periodYear*12 ){
-        NSNumber *tmpNum = [_lbArr objectAtIndex:tgtTerm-1];
+    if ( tgtTerm >= 0 && tgtTerm <= _periodTerm ){
+        NSNumber *tmpNum = [_lbArr objectAtIndex:tgtTerm];
         return [tmpNum integerValue];
     } else {
         return 0;
     }
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getLbYear:(NSInteger)tgtYear
 {
     NSInteger tgtTerm = tgtYear * 12;
     return [self getLb:tgtTerm];
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPmt:(NSInteger)tgtTerm
 {
-    if ( tgtTerm > 0 && tgtTerm <= _periodYear*12 ){
-        NSNumber *tmpNum = [_pmtArr objectAtIndex:tgtTerm-1];
+    if ( tgtTerm >= 0 && tgtTerm <= _periodTerm ){
+        NSNumber *tmpNum = [_pmtArr objectAtIndex:tgtTerm];
         return [tmpNum integerValue];
     } else {
         return 0;
     }
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPmtYear:(NSInteger)tgtYear
 {
     NSInteger tgtTerm = (tgtYear-1) * 12 +1;
@@ -228,21 +235,21 @@
     }
     return sum;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPpmt:(NSInteger)tgtTerm
 {
-    if ( tgtTerm > 0 && tgtTerm <= _periodYear*12 ){
-        NSNumber *tmpNum = [_ppmtArr objectAtIndex:tgtTerm-1];
+    if ( tgtTerm >= 0 && tgtTerm <= _periodTerm ){
+        NSNumber *tmpNum = [_ppmtArr objectAtIndex:tgtTerm];
         return [tmpNum integerValue];
     } else {
         return 0;
     }
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getPpmtYear:(NSInteger)tgtYear
 {
     NSInteger tgtTerm = (tgtYear-1) * 12 +1;
@@ -252,21 +259,21 @@
     }
     return sum;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getIpmt:(NSInteger)tgtTerm
 {
-    if ( tgtTerm > 0 && tgtTerm <= _periodYear*12 ){
-        NSNumber *tmpNum = [_ipmtArr objectAtIndex:tgtTerm-1];
+    if ( tgtTerm >= 0 && tgtTerm <= _periodTerm ){
+        NSNumber *tmpNum = [_ipmtArr objectAtIndex:tgtTerm];
         return [tmpNum integerValue];
     } else {
         return 0;
     }
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getIpmtYear:(NSInteger)tgtYear
 {
     NSInteger tgtTerm = (tgtYear-1) * 12 +1;
@@ -276,80 +283,94 @@
     }
     return sum;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSInteger)getIpmtAll
 {
     NSInteger sum = 0;
     NSInteger lb = _loanBorrow;
     NSInteger ipmt;
-    for(int i=0; i< _periodYear*12; i++){
+    for(int i=1; i<= _periodTerm; i++){
         ipmt = (NSInteger)(lb * _rateYear/12);
         sum = sum + ipmt;
-        lb  = lb - ([self getPmt:i+1] - ipmt);
+        lb  = lb - ([self getPmt:i] - ipmt);
         //            NSLog(@"pmt %d ipmt %d i %d",[self getPmt:i+1],ipmt,i);
     }
     return sum;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSArray*)getPmtArrayYear
 {
     NSMutableArray *arr = [NSMutableArray array];
     
     CGPoint tmpRect;
-    for( int i=1; i<= _periodYear; i ++){
+    for( int i=1; i<= _periodTerm/12; i++){
         tmpRect = CGPointMake( i,[self getPmtYear:i] );
         [arr addObject:[NSValue valueWithCGPoint:tmpRect]];
     }
     return arr;
     
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSArray*)getPpmtArrayYear
 {
     NSMutableArray *arr = [NSMutableArray array];
     
     CGPoint tmpRect;
-    for( int i=1; i<= _periodYear; i ++){
+    for( int i=1; i<= _periodTerm/12; i++){
         tmpRect = CGPointMake( i,[self getPpmtYear:i] );
         [arr addObject:[NSValue valueWithCGPoint:tmpRect]];
     }
     return arr;
     
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSArray*)getIpmtArrayYear
 {
     NSMutableArray *arr = [NSMutableArray array];
     
     CGPoint tmpRect;
-    for( int i=1; i<= _periodYear; i ++){
+    for( int i=1; i<= _periodTerm/12; i++){
         tmpRect = CGPointMake( i,[self getIpmtYear:i] );
         [arr addObject:[NSValue valueWithCGPoint:tmpRect]];
     }
     return arr;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(NSArray*)getLbArrayYear
 {
     NSMutableArray *arr = [NSMutableArray array];
     
     CGPoint tmpRect;
-    for( int i=1; i<= _periodYear; i ++){
+    for( int i=1; i<= _periodTerm/12; i++){
         tmpRect = CGPointMake( i,[self getLbYear:i] );
         [arr addObject:[NSValue valueWithCGPoint:tmpRect]];
     }
     return arr;
 }
-/****************************************************************/
+//======================================================================
+//
+//======================================================================
+-(NSArray*)getLbArrayTerm
+{
+    NSMutableArray *arr = [NSMutableArray array];
+    
+    CGPoint tmpRect;
+    for( int i=0; i<= _periodTerm; i++){
+        tmpRect = CGPointMake( i/12.0+1,[self getLb:i] );
+        [arr addObject:[NSValue valueWithCGPoint:tmpRect]];
+    }
+    return arr;
+}
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

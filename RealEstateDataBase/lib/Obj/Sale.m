@@ -7,8 +7,9 @@
 //
 
 #import "Sale.h"
+#import "UIUtil.h"
 @implementation Sale
-/****************************************************************/
+//======================================================================
 @synthesize price               = _price;
 @synthesize expense             = _expense;
 @synthesize loanBorrow          = _loanBorrow;
@@ -18,20 +19,20 @@
 @synthesize transferTax         = _transferTax;
 @synthesize atcf                = _atcf;
 @synthesize sellYear            = _sellYear;
-/****************************************************************/
-- (void) calcSale:(Investment*)investment holdingPeriod:(NSInteger)holdingPeriod house:(House*)house
+//======================================================================
+-(void) calcSale:(Investment*)investment holdingPeriod:(NSInteger)holdingPeriodYear estate:(Estate*)estate
 {
     /*--------------------------------------*/
-    _loanBorrow         = [investment.loan getLbYear:holdingPeriod];
+    _loanBorrow         = [investment.loan getLbYear:holdingPeriodYear];
     _btcf               = _price - _expense - _loanBorrow;
-    _sellYear           = house.yearAquisition + holdingPeriod;
+    _sellYear           = [UIUtil getYear_term:estate.house.acquisitionTerm+holdingPeriodYear*12 ];
     /*--------------------------------------*/
     //減価償却費の集計
-    _amCosts = [house getAmortizationCostsSum_period:holdingPeriod];
+    _amCosts = [estate.house getAmortizationCostsSum_period:holdingPeriodYear*12];
 
     //取得価格
     NSInteger priceAquisition;
-    priceAquisition        = investment.prices.price + investment.expense + house.improvementCosts - _amCosts;
+    priceAquisition        = investment.price + investment.expense + estate.house.improvementCosts - _amCosts;
 
     //譲渡所得の算出
     _transferIncome         = _price - priceAquisition -_expense;
@@ -41,7 +42,7 @@
     NSInteger regidentTax;
     NSInteger incomeTaxSp;
     if ( _transferIncome > 0 ){
-        if ( holdingPeriod > 5 ){
+        if ( holdingPeriodYear > 5 ){
             //5年以上保有の場合の譲渡税(個人)
             incomeTax       = _transferIncome * 0.15;
             regidentTax     = _transferIncome * 0.05;
@@ -62,6 +63,6 @@
     
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

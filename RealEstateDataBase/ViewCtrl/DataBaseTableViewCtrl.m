@@ -42,7 +42,7 @@
 @end
 
 @implementation DataBaseTableViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize detailVC    = _detailVC;
 @synthesize detailTab   = _detailTab;
 /****************************************************************
@@ -77,7 +77,7 @@
 /****************************************************************
  * セルの選択時で、次のビューを開く
  ****************************************************************/
-- (void)selectCell:(NSIndexPath*)indexPath
+-(void)selectCell:(NSIndexPath*)indexPath
 {
     [self clrEditing];      /* 編集モードを戻す */
     [_db loadIndex:indexPath.row];        /* ロードしてからview作成 */
@@ -109,7 +109,7 @@
 /****************************************************************
  * ビューのロード
  ****************************************************************/
-- (void)viewDidLoad
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     
@@ -133,7 +133,7 @@
 /****************************************************************
  * ビューの作成
  ****************************************************************/
-- (void)viewMake
+-(void)viewMake
 {
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR;
@@ -156,10 +156,10 @@
     
 }
 
-/****************************************************************
- * ビューの表示直前に呼ばれる
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.tableView reloadData];
@@ -195,7 +195,7 @@
 /****************************************************************
  * ビューの表示直後に呼ばれる
  ****************************************************************/
-- (void)viewDidAppear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     return;
@@ -227,7 +227,7 @@
 /****************************************************************
  * セルの選択時に呼ばれる
  ****************************************************************/
-- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *model = [UIDevice currentDevice].model;
     if ( [model hasPrefix:@"iPhone"] ){
@@ -261,7 +261,7 @@
 /****************************************************************
  * 編集を実行すると呼ばれる
  ****************************************************************/
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete時の処理をここに書く
@@ -287,7 +287,7 @@
 /****************************************************************
  * レコードの移動
  ****************************************************************/
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+-(void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
     if (toIndexPath.row < _db.list.count) {
         [_db moveIndex:fromIndexPath.row ToIndex:toIndexPath.row];
@@ -295,10 +295,10 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+//======================================================================
+//
+//======================================================================
+-(BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the item to be re-orderable.
     return YES;
@@ -307,7 +307,7 @@
 /****************************************************************
  * 編集モードを戻す
  ****************************************************************/
-- (void)clrEditing
+-(void)clrEditing
 {
     self.editing = NO;
     self.navigationItem.rightBarButtonItem.title = @"編集";
@@ -316,7 +316,7 @@
 /****************************************************************
  * 編集ボタン
  ****************************************************************/
-- (void)didTapEditButton
+-(void)didTapEditButton
 {
     [self setEditing:!self.editing animated:YES];
     if ( self.detailTab != nil ){
@@ -331,10 +331,10 @@
     
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)inputItem
+//======================================================================
+//
+//======================================================================
+-(void)inputItem
 {
     [self clrEditing];      /* 編集モードを戻す */
     if ( self.detailTab != nil ){
@@ -356,7 +356,7 @@
 /****************************************************************
  * UISplitViewControllerDelegate
  ****************************************************************/
-- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
+-(BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
 {
     return NO;
 }

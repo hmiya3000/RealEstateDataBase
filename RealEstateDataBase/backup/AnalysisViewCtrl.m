@@ -42,9 +42,9 @@
 
 @implementation AnalysisViewCtrl
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -57,10 +57,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad {
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad {
     [super viewDidLoad];
     UIBarButtonItem *retButton =
     [[UIBarButtonItem alloc] initWithTitle:@"物件リスト"
@@ -147,20 +147,19 @@
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -272,7 +271,7 @@
 /****************************************************************
  * 回転時に処理したい内容
  ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -289,14 +288,14 @@
 /****************************************************************
  * ビューがタップされたとき
  ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
@@ -311,9 +310,9 @@
     _l_ltvVal.text          = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.ltv*100];
     _l_capRateVal.text      = [NSString stringWithFormat:@"%2.2f%%",_modelRE.ope1.capRate*100];
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -322,7 +321,7 @@
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }

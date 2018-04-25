@@ -7,20 +7,22 @@
 //
 
 #import "InputAddressViewCtrl.h"
-#import "GeoCode.h"
+#import "MapUtil.h"
 
 @interface InputAddressViewCtrl ()
 {
-    UILabel         *_l_title;
-    UITextView      *_tv_address;
-    UIButton        *_btn_addr2map;
-    UIButton        *_btn_map2addr;
-    UIButton        *_btn_now;
-    UIButton        *_btn_pinclr;
+    UILabel                 *_l_title;
+    UITextView              *_tv_address;
+    UIButton                *_btn_addr2map;
+    UIButton                *_btn_map2addr;
+    UIButton                *_btn_now;
+    UIButton                *_btn_pinclr;
     
-    UIButton        *_btn_enter;
-    UIButton        *_btn_cancel;
+    UIButton                *_btn_enter;
+    UIButton                *_btn_cancel;
     
+    MapUtil                 *_mapUtil;
+
     NSString                *_addrOfMap;
     MKMapView               *_mapView;
     MKPointAnnotation       *_pin;
@@ -38,15 +40,16 @@
 #define BTAG_PINCLR         4
 #define BTAG_NOW            5
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.title = @"住所";
     /****************************************/
+    _mapUtil = [[MapUtil alloc] init];
     /****************************************/
     _scrollView     = [[UIScrollView alloc]initWithFrame:self.view.bounds];
     [self.view addSubview:_scrollView];
@@ -95,7 +98,7 @@
     _loc2d.latitude     = _modelRE.estate.land.latitude;
     _loc2d.longitude    = _modelRE.estate.land.longitude;
 
-    if ( [self isSetLoc:_loc2d] == false ){
+    if ( [MapUtil isSetLoc:_loc2d] == false ){
         //緯度経度未定
         [_btn_pinclr setTitle:@"ここに設定" forState:UIControlStateNormal];
         [self addr2map];
@@ -122,23 +125,21 @@
     longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                      action:@selector(handleLongPressGesture:)];
     [_mapView addGestureRecognizer:longPressGesture];
-    
-    
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake
 {
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
@@ -174,28 +175,28 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)rewriteProperty
 {
     return;
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [super view_Tapped:sender];
     [_tv_address resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)gesture
+//======================================================================
+//
+//======================================================================
+-(void)handleLongPressGesture:(UILongPressGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {  // 長押し検出開始時のみ動作
         
@@ -208,10 +209,9 @@
     }
     return;
 }
-
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)setAnnotation:(CLLocationCoordinate2D) point mapMove:(BOOL)mapMove
             animated:(BOOL)animated
 {
@@ -223,10 +223,9 @@
     [_mapView addAnnotation:_pin];
     
 }
-
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (MKAnnotationView *)mapView:(MKMapView *)mapView
             viewForAnnotation:(id )annotation
 {
@@ -243,19 +242,18 @@
     pinView.annotation = annotation;
     return pinView;
 }
-
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:interfaceOrientation duration:duration];
     [self viewMake];
     return;
 }
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false ){
@@ -266,58 +264,43 @@
     }
     [super viewWillDisappear:animated];
 }
-
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(BOOL)textViewShouldEndEditing:(UITextView*)textView
 {
     [self addr2map];
     return YES;
 }
-
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     [super clickButton:sender];
     [self.navigationController popViewControllerAnimated:YES];
     return;
 }
-
-/****************************************************************
- *
- ****************************************************************/
-- (bool)isSetLoc:(CLLocationCoordinate2D)loc2d
-{
-    if( loc2d.latitude == 0 || loc2d.longitude == 0 ){
-        return false;
-    } else {
-        return true;
-    }
-}
-
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickMapButton:(UIButton*)sender
 {
     switch (sender.tag) {
         case BTAG_MAP2ADDR:
-            if ( [self isSetLoc:_loc2d] == true ){
+            if ( [MapUtil isSetLoc:_loc2d] == true ){
                 [self map2addr];
             }
             break;
         case BTAG_ADDR2MAP:
-            if ( [self isSetLoc:_loc2d] == true ){
+            if ( [MapUtil isSetLoc:_loc2d] == true ){
                 [self location2map:_loc2d];
             } else {
                 [self addr2map];
             }
             break;
         case BTAG_PINCLR:
-            if ( [self isSetLoc:_loc2d] == true ){
+            if ( [MapUtil isSetLoc:_loc2d] == true ){
                 //確定だったので未定状態に戻す
                 [_btn_pinclr setTitle:@"ここに設定" forState:UIControlStateNormal];
                 _loc2d.latitude     = 0;
@@ -342,86 +325,37 @@
     }
     return;
 }
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)map2addr
+//======================================================================
+//
+//======================================================================
+-(void)map2addr
 {
-    __block  NSString *address = @"";
-    // リバースジオコーディング
-    
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:_loc2d.latitude
-                                                      longitude:_loc2d.longitude];
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
-        if(error) {
-            NSLog(@"リバースジオコーディング失敗");
-        } else {
-            if(0 < [placemarks count]) {
-                for(CLPlacemark *placemark in placemarks) {
-                    NSLog(@"addressDictionary: [%@]", [placemark.addressDictionary description]);
-                    NSLog(@"name: [%@]", placemark.name);
+    [_mapUtil locateToAddress:self selector:@selector(callbackMap2AddrWithResult:error:) locate2d:_loc2d];
 
-                    NSLog(@"postalCode: [%@]", placemark.postalCode);
-
-                    NSLog(@"country: [%@]", placemark.country);
-                    NSLog(@"administrativeArea: [%@]", placemark.administrativeArea);
-                    NSLog(@"subAdministrativeArea: [%@]", placemark.subAdministrativeArea);
-                    NSLog(@"locality: [%@]", placemark.locality);
-                    NSLog(@"subLocality: [%@]", placemark.subLocality);
-                    NSLog(@"thoroughfare: [%@]", placemark.thoroughfare);
-                    NSLog(@"subThoroughfare: [%@]", placemark.subThoroughfare);
-                    
-                    NSLog(@"ISOcountryCode: [%@]", placemark.ISOcountryCode);
-                    NSLog(@"inlandWater: [%@]", placemark.inlandWater);
-                    NSLog(@"ocean: [%@]", placemark.ocean);
-                    NSLog(@"areasOfInterest: [%@]", placemark.areasOfInterest);
-                    NSLog(@"----------");
-                    NSLog(@"address:%@%@%@%@%@", placemark.country, placemark.administrativeArea, placemark.locality, placemark.thoroughfare, placemark.subThoroughfare);
-
-                    address = placemark.administrativeArea;
-                    address = @"";
-                    if ( placemark.locality != nil ){
-                        address = [address stringByAppendingString:placemark.locality];
-                    }
-                    if ( placemark.thoroughfare != nil ){
-                        address = [address stringByAppendingString:placemark.thoroughfare];
-                    }
-                    if ( placemark.subThoroughfare != nil ){
-                        address = [address stringByAppendingString:placemark.subThoroughfare];
-                    }
-#if 0
-                    address = [NSString stringWithFormat:@"%@%@%@%@",
-                               placemark.administrativeArea,
-                               placemark.locality,
-                               placemark.thoroughfare,
-                               placemark.subThoroughfare];
-#endif
-                    //--------------------------------
-                    _addrOfMap = address;
-                    UIAlertController *al_address;
-                    al_address = [UIAlertController alertControllerWithTitle:@"住所の更新"
-                                                                     message:[NSString stringWithFormat:@"%@ に更新しますか",_addrOfMap]
-                                                               preferredStyle:UIAlertControllerStyleAlert];
-                    [al_address addAction:[UIAlertAction actionWithTitle:@"更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                        _tv_address.text = address;
-                    }]];
-                    [al_address addAction:[UIAlertAction actionWithTitle:@"そのまま" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                        //何もしない
-                    }]];
-                    [self presentViewController:al_address animated:YES completion:nil];
-                }
-            }
-        }
-    }];
-    
-    return;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)location2map:(CLLocationCoordinate2D)loc2d
+//======================================================================
+//
+//======================================================================
+-(void)callbackMap2AddrWithResult:(NSDictionary *)resultDictionary error:(NSError *)error
+{
+    NSString *address = resultDictionary[@"address"];
+    _addrOfMap = address;
+    UIAlertController *al_address;
+    al_address = [UIAlertController alertControllerWithTitle:@"住所の更新"
+                                                     message:[NSString stringWithFormat:@"%@ に更新しますか",_addrOfMap]
+                                              preferredStyle:UIAlertControllerStyleAlert];
+    [al_address addAction:[UIAlertAction actionWithTitle:@"更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        _tv_address.text = address;
+    }]];
+    [al_address addAction:[UIAlertAction actionWithTitle:@"そのまま" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        //何もしない
+    }]];
+    [self presentViewController:al_address animated:YES completion:nil];
+}
+//======================================================================
+//
+//======================================================================
+-(void)location2map:(CLLocationCoordinate2D)loc2d
 {
     MKCoordinateRegion region = _mapView.region;
     region.center = loc2d;
@@ -431,54 +365,44 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)addr2map
+//======================================================================
+//
+//======================================================================
+-(void)addr2map
 {
-    NSString    *address =_tv_address.text;
-    
-    // 正ジオコーディング
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder geocodeAddressString:address inRegion:nil completionHandler:^(NSArray *placemarks, NSError *error){
-        if(error){
-            // エラーが発生している
-            NSLog(@"エラー %@", error);
-        } else {
-            // 取得成功
-            CLPlacemark *place = [placemarks firstObject];
-            _locAdd2d = place.location.coordinate;
-            //--------------------------------
-            // ピンの周りに円を表示
-            MKCircle* circle = [MKCircle circleWithCenterCoordinate:_locAdd2d radius:100];  // 半径100m
-            [_mapView removeOverlays:_mapView.overlays];
-            [_mapView addOverlay:circle];
-            [self location2map:_locAdd2d];
-            //--------------------------------
-        }
-    }];
-
+    [_mapUtil addressToLocate:self selector:@selector(callbackAddr2MapWithResult:error:) address:_tv_address.text];
 }
-
-/****************************************************************
- *
- ****************************************************************/
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
+//======================================================================
+//
+//======================================================================
+-(void)callbackAddr2MapWithResult:(NSDictionary *)resultDictionary error:(NSError *)error
+{
+    _locAdd2d =  [resultDictionary[@"locate"] MKCoordinateValue];
+    //--------------------------------
+    // ピンの周りに円を表示
+    MKCircle* circle = [MKCircle circleWithCenterCoordinate:_locAdd2d radius:100];  // 半径100m
+    [_mapView removeOverlays:_mapView.overlays];
+    [_mapView addOverlay:circle];
+    [self location2map:_locAdd2d];
+}
+//======================================================================
+//
+//======================================================================
+- (MKCircleRenderer *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
 {
     MKCircle* circle = overlay;
-    MKCircleView* circleOverlayView =   [[MKCircleView alloc] initWithCircle:circle];
-    
+    MKCircleRenderer* circleOverlayView =   [[MKCircleRenderer alloc] initWithCircle:circle];
+
     circleOverlayView.strokeColor = [UIColor  colorWithRed:0 green:0 blue:0 alpha:0.5];
     circleOverlayView.lineWidth = 2.;
     circleOverlayView.fillColor = [UIColor  colorWithRed:1.0 green:1.0 blue:0.88 alpha:0];
 
     return circleOverlayView;
 }
-
-/****************************************************************
- *
- ****************************************************************/
-- (void)toMapApp
+//======================================================================
+//
+//======================================================================
+-(void)toMapApp
 {
     NSString *url = [NSString stringWithFormat:@"googlemaps://?q=%f,%f", _loc2d.latitude, _loc2d.longitude];
 //    NSString *url = [NSString stringWithFormat:@"googlemaps://?q=%f,%f(%@)", _loc2d.latitude, _loc2d.longitude, _modelRE.estate.name];
@@ -523,6 +447,15 @@
         }
         
 #else
+#if 1
+        UIAlertController *_as_clear;
+        _as_clear = [UIAlertController alertControllerWithTitle:nil
+                                                        message:@"Google Map.app がインストールされていません"
+                                                 preferredStyle:UIAlertControllerStyleAlert];
+        [_as_clear addAction:[UIAlertAction actionWithTitle:@"閉じる"  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            //何もしない
+        }]];
+#else
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
                                                         message:@"Google Map.app がインストールされていません"
                                                        delegate:nil
@@ -530,9 +463,10 @@
                                               otherButtonTitles:nil];
         [alert show];
 #endif
+#endif
     }
     return;
 }
-/****************************************************************/
- @end
-/****************************************************************/
+//======================================================================
+@end
+//======================================================================

@@ -44,9 +44,9 @@
 
 @implementation CacheFlowViewCtrl
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -59,10 +59,10 @@
     return self;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad {
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad {
     [super viewDidLoad];
 
     /****************************************/
@@ -160,20 +160,19 @@
     [self.view addGestureRecognizer:tapGesture];
     
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -300,7 +299,7 @@
 /****************************************************************
  * 回転時に処理したい内容
  ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -317,22 +316,22 @@
 /****************************************************************
  * ビューがタップされたとき
  ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
-    [UIUtil labelYen:_l_priceVal        yen:(_modelRE.investment.prices.price+_modelRE.investment.expense)];
+    [UIUtil labelYen:_l_priceVal        yen:(_modelRE.investment.price+_modelRE.investment.expense)];
     [UIUtil labelYen:_l_equityVal       yen:_modelRE.investment.equity];
     [UIUtil labelYen:_l_loanBorrowVal   yen:_modelRE.investment.loan.loanBorrow];
-    [UIUtil labelYen:_l_gpiVal          yen:_modelRE.investment.prices.gpi];
+    [UIUtil labelYen:_l_gpiVal          yen:_modelRE.investment.gpi];
     _l_empex.text           = [NSString stringWithFormat:@"空室損(%2.1f%%)",_modelRE.investment.emptyRate*100];
     [UIUtil labelYen:_l_empexVal        yen:-_modelRE.ope1.emptyLoss];
     [UIUtil labelYen:_l_egiVal          yen:_modelRE.ope1.egi];
@@ -348,7 +347,7 @@
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }

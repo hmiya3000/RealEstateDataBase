@@ -27,8 +27,8 @@
 @property (nonatomic, readonly) BOOL isAtLastIndex;
 @property (nonatomic, readonly) BOOL isAtFirstIndex;
 
-- (void)activate;
-- (void)deactivate;
+-(void)activate;
+-(void)deactivate;
 
 @end
 
@@ -148,7 +148,7 @@
 }
 
 
-- (void)drawRect:(CGRect)rect {
+-(void)drawRect:(CGRect)rect {
     CGRect thumbRect = CGRectMake(self.segmentedControl.thumbEdgeInset.left,
                                   self.segmentedControl.thumbEdgeInset.top,
                                   rect.size.width-self.segmentedControl.thumbEdgeInset.left-self.segmentedControl.thumbEdgeInset.right,
@@ -251,7 +251,7 @@
 #pragma mark -
 #pragma mark Setters
 
-- (void)setTitle:(NSString*)title image:(UIImage*)image {
+-(void)setTitle:(NSString*)title image:(UIImage*)image {
     [UIView setAnimationsEnabled:NO];
     
     self.label.text = title;
@@ -261,7 +261,7 @@
     [UIView setAnimationsEnabled:YES];
 }
 
-- (void)setSecondTitle:(NSString*)title image:(UIImage*)image {
+-(void)setSecondTitle:(NSString*)title image:(UIImage*)image {
     [UIView setAnimationsEnabled:NO];
     
     self.secondLabel.text = title;
@@ -271,7 +271,7 @@
     [UIView setAnimationsEnabled:YES];
 }
 
-- (void)arrangeLabel:(UILabel*)label imageView:(UIImageView*)imageView {
+-(void)arrangeLabel:(UILabel*)label imageView:(UIImageView*)imageView {
     CGSize titleSize = [label.text sizeWithAttributes:@{NSFontAttributeName:self.font}];
 //    CGSize titleSize = [label.text sizeWithFont:self.font];
     CGFloat titleWidth = titleSize.width;
@@ -298,7 +298,7 @@
                              titleSize.height);
 }
 
-- (void)setBackgroundImage:(UIImage *)newImage {
+-(void)setBackgroundImage:(UIImage *)newImage {
     
     if(backgroundImage)
         backgroundImage = nil;
@@ -311,7 +311,7 @@
     }
 }
 
-- (void)setTintColor:(UIColor *)newColor {
+-(void)setTintColor:(UIColor *)newColor {
     
     if(tintColor)
         tintColor = nil;
@@ -322,18 +322,18 @@
 	[self setNeedsDisplay];
 }
 
-- (void)setFont:(UIFont *)newFont {
+-(void)setFont:(UIFont *)newFont {
     self.label.font = newFont;
     self.secondLabel.font = newFont;
 }
 
-- (void)setTextColor:(UIColor *)newColor {
+-(void)setTextColor:(UIColor *)newColor {
     textColor = newColor;
 	self.label.textColor = newColor;
     self.secondLabel.textColor = newColor;
 }
 
-- (void)setTextShadowColor:(UIColor *)newColor {
+-(void)setTextShadowColor:(UIColor *)newColor {
     textShadowColor = newColor;
 	self.label.shadowColor = newColor;
     self.secondLabel.shadowColor = newColor;
@@ -341,7 +341,7 @@
     self.secondImageView.layer.shadowColor = newColor.CGColor;
 }
 
-- (void)setTextShadowOffset:(CGSize)newOffset {
+-(void)setTextShadowOffset:(CGSize)newOffset {
     textShadowOffset = newOffset;
 	self.label.shadowOffset = newOffset;
     self.secondLabel.shadowOffset = newOffset;
@@ -352,7 +352,7 @@
 
 #pragma mark -
 
-- (void)setFrame:(CGRect)newFrame {
+-(void)setFrame:(CGRect)newFrame {
 	[super setFrame:newFrame];
     
     CGFloat posY = ceil((self.segmentedControl.height-self.font.pointSize+self.font.descender)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom+2;
@@ -364,7 +364,7 @@
 	self.label.frame = self.secondLabel.frame = CGRectMake(0, posY, newFrame.size.width, self.font.pointSize);
 }
 
-- (void)setSelected:(BOOL)s {
+-(void)setSelected:(BOOL)s {
 	
 	selected = s;
 	
@@ -376,7 +376,7 @@
 	[self setNeedsDisplay];
 }
 
-- (void)activate {
+-(void)activate {
 	[self setSelected:NO];
     
     if(!self.segmentedControl.crossFadeLabelsOnDrag) {
@@ -385,7 +385,7 @@
     }
 }
 
-- (void)deactivate {
+-(void)deactivate {
 	[self setSelected:YES];
     
     if(!self.segmentedControl.crossFadeLabelsOnDrag) {

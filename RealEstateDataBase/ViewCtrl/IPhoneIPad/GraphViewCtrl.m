@@ -56,12 +56,12 @@
 @end
 
 @implementation GraphViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize masterVC    = _masterVC;
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -73,10 +73,10 @@
     }
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     _modelRE        = [ModelRE sharedManager];
@@ -202,20 +202,19 @@
     }
     /****************************************/
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -319,26 +318,26 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -352,28 +351,33 @@
     }
     [self viewMake];
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
     
     /****************************************/
-    [UIUtil labelYen:_l_valuLandVal         yen:_modelRE.estate.land.valuation];
+    [UIUtil labelYen:_l_valuLandVal         yen:_modelRE.estate.land.assessValue];
     [UIUtil labelYen:_l_valuHouseVal        yen:_modelRE.estate.house.valuation];
-    [UIUtil labelYen:_l_valuAllVal          yen:_modelRE.estate.land.valuation+_modelRE.estate.house.valuation];
+    [UIUtil labelYen:_l_valuAllVal          yen:_modelRE.estate.land.assessValue+_modelRE.estate.house.valuation];
     /****************************************/
-    NSInteger amCost = [_modelRE.estate.house getAmortizationCosts_term:1];
+    NSInteger amCost = 0;
+    for( NSInteger term=0; term<12; term++){
+        amCost = amCost + [_modelRE.estate.house getAmortizationCosts_term:term];
+    }
+
+    
     NSInteger btIncome = _modelRE.ope1.taxIncome+amCost;
     CGFloat   debtRp    = [_modelRE.investment.loan getLb:1] / btIncome;
     [UIUtil labelYen:_l_BtIncomeVal         yen:btIncome];
@@ -393,7 +397,7 @@
     gd_ppmt.type        = BAR_GPAPH;
       
     _g_pmt.GraphDataAll = [[NSArray alloc]initWithObjects:gd_pmt,gd_ppmt,nil];
-    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodYear+0.5 ymax:[_loan getPmtYear:1]];
+    [_g_pmt setGraphtMinMax_xmin:0 ymin:0 xmax:_loan.periodTerm/12+0.5 ymax:[_loan getPmtYear:1]];
     _g_pmt.title        = @"借入返済内訳";
     
     [_g_pmt setNeedsDisplay];
@@ -416,14 +420,14 @@
     [_g_drp setNeedsDisplay];
     
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

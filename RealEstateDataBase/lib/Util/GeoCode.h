@@ -11,7 +11,7 @@
 
 @interface GeoCode : NSObject
 
-+ (CLLocationCoordinate2D)AddressToLocation2D:(NSString*)address;
-+ (NSString*)Location2DToAddress:(CLLocationCoordinate2D)location2D;
++ (CLLocationCoordinate2D)AddressToyLocation2D:(NSString*)address;
++ (NSString*)Locationjj2DToAddress:(CLLocationCoordinate2D)location2D;
 
 @end

@@ -9,6 +9,7 @@
 #import "TotalAnalysisViewCtrl.h"
 #import "UIUtil.h"
 #import "ModelRE.h"
+#import "ModelCF.h"
 #import "Pos.h"
 #import "GridTable.h"
 #import "Graph.h"
@@ -59,6 +60,7 @@
     UILabel             *_l_btIrrVal;
     UILabel             *_l_atIrr;
     UILabel             *_l_atIrrVal;
+    Graph               *_g_cf;
     Graph               *_g_npv;
     UITextView          *_tv_comment;
 }
@@ -66,14 +68,14 @@
 @end
 
 @implementation TotalAnalysisViewCtrl
-/****************************************************************/
+//======================================================================
 @synthesize masterVC    = _masterVC;
 
 
 #define CMT_NPV_TIPS @"■正味現在価値(NPV)と内部収益率(IRR)\n\n例えば100万円を3%で1年預けると1年後には103万円になります.つまり1年後の103万円は現在の100万円と同じ価値と言えます.\n\n投資において数年に渡って得られるCFを現在価値に換算し、初期投資額を差し引いたものを\"正味現在価値(NPV)\"と呼びます.また前述の利率は将来価値を現在価値への\"割引率\"、または\"期待収益率\"と呼びます.\n\n想定した期待収益率でNPV>0となれば投資価値があると考えます.また、NPV=0となる期待収益率を\"内部収益率(IRR)\"と呼び、これが大きいほど投資効率が高いと考えます"
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (id)init
 {
     self = [super init];
@@ -85,10 +87,10 @@
     }
     return self;
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     _modelRE        = [ModelRE sharedManager];
@@ -151,6 +153,9 @@
     /****************************************/
     _l_TitleCF         = [UIUtil makeLabel:@"キャッシュフロー"];
     [_scrollView addSubview:_l_TitleCF];
+    /*--------------------------------------*/
+    _g_cf   = [[Graph alloc]init];
+    [_scrollView addSubview:_g_cf];
     /*--------------------------------------*/
     _l_btcfOpe         = [UIUtil makeLabel:@"税引前累積運営CF"];
     [_l_btcfOpe setTextAlignment:NSTextAlignmentLeft];
@@ -255,20 +260,19 @@
     
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -316,7 +320,7 @@
     /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setRectLabel:_l_TitleCF x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_Yellow]];
-    /*--------------------------------------*/
+    //----------------------------------------
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_btcfOpe             x:pos_x         y:pos_y length:lengthR];
     [UIUtil setLabel:_l_btcfOpeVal          x:pos_x+dx*1.5  y:pos_y length:lengthR];
@@ -332,6 +336,11 @@
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_btInOut              x:pos_x        y:pos_y length:lengthR];
     [UIUtil setLabel:_l_btInOutVal           x:pos_x+dx*1.5 y:pos_y length:lengthR];
+    /*--------------------------------------*/
+    pos_y = pos_y + dy;
+    [_g_cf      setFrame:CGRectMake(_pos.x_left, pos_y, _pos.len30, dy*4.5)];
+    [_g_cf setNeedsDisplay];
+    pos_y = pos_y + dy*4;
     /****************************************/
     pos_y = pos_y + dy;
     [UIUtil setLabel:_l_atcfOpe             x:pos_x         y:pos_y length:lengthR];
@@ -374,26 +383,26 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -407,27 +416,31 @@
     }
     [self viewMake];
 }
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    [_t_name resignFirstResponder];
     //    NSLog(@"タップされました．");
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     [_modelRE calcAll];
     _l_name.text            = _modelRE.estate.name;
     /****************************************/
-    [UIUtil labelYen:_l_priceBuyVal     yen:_modelRE.investment.prices.price];
+    [UIUtil labelYen:_l_priceBuyVal     yen:_modelRE.investment.price];
     [UIUtil labelYen:_l_equityVal       yen:_modelRE.investment.equity];
-    _l_holdingPeriodVal.text    = [NSString stringWithFormat:@"%ld年",(long)_modelRE.holdingPeriod];
+    _l_holdingPeriodVal.text    = [NSString stringWithFormat:@"%ld年%ldヶ月",(long)_modelRE.holdingPeriodTerm/12,(long)_modelRE.holdingPeriodTerm%12];
     [UIUtil labelYen:_l_priceSaleVal    yen:_modelRE.sale.price];
     /****************************************/
+    [ModelCF setGraphData:_g_cf ModelRE:_modelRE ];
+    _g_cf.title         = @"キャッシュフロー推移";
+    [_g_cf setNeedsDisplay];
+    /*--------------------------------------*/
     [UIUtil labelYen:_l_btcfSaleVal yen:_modelRE.sale.btcf];
     [UIUtil labelYen:_l_btcfOpeVal  yen:_modelRE.btcfOpeAll];
     [UIUtil labelYen:_l_btcfAllVal  yen:_modelRE.btcfTotal];
@@ -475,10 +488,10 @@
     
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (NSString*) getStrComment1
+//======================================================================
+//
+//======================================================================
+-(NSString*) getStrComment1
 {
     NSString *str;
     if ( _modelRE.npv > 0 ){
@@ -490,14 +503,14 @@
     str = [str stringByAppendingString:CMT_NPV_TIPS];
     return str;
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 - (IBAction)retButtonTapped:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

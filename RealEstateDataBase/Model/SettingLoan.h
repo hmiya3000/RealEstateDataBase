@@ -10,7 +10,7 @@
 #import "Loan.h"
 #import "UIUtil.h"
 
-/****************************************************************/
+//======================================================================
 @interface SettingLoan : NSObject
 {
     Loan        *_loan0;
@@ -26,16 +26,16 @@
     
     SVSegmentedControl  *_sc;
 }
-/****************************************************************/
-+ (SettingLoan*)sharedManager;
-- (void)setLoanBorrows:(float)lb;
-- (SVSegmentedControl*)makeSegmentedControl:(CGFloat)x y:(CGFloat)y length:(CGFloat)length;
-- (NSInteger)getPeriodMax;
-- (NSInteger)getPmtMax;
-- (void)initData;
-- (void)saveData;
-- (void)loadData;
-/****************************************************************/
+//======================================================================
++(SettingLoan*)sharedManager;
+-(void)setLoanBorrows:(float)lb;
+-(SVSegmentedControl*)makeSegmentedControl:(CGFloat)x y:(CGFloat)y length:(CGFloat)length;
+-(NSInteger)getPeriodMax;
+-(NSInteger)getPmtMax;
+-(void)initData;
+-(void)saveData;
+-(void)loadData;
+//======================================================================
 @property   (nonatomic)     Loan                    *loan0;
 @property   (nonatomic)     Loan                    *loan1;
 @property   (nonatomic)     Loan                    *loan2;
@@ -45,6 +45,6 @@
 @property   (nonatomic)     NSInteger               startYear;
 @property   (nonatomic)     NSInteger               startMonth;
 @property   (nonatomic)     SVSegmentedControl      *sc;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

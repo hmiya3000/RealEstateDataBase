@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import <DropboxSDK/DropboxSDK.h>
+#import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 #import "UIUtil.h"
 #import "AddonMgr.h"
 #import "ViewMgr.h"
@@ -15,7 +15,7 @@
 #import "DataBaseIPhoneViewCtrl.h"
 #import "DataBaseIPadViewCtrl.h"
 
-/****************************************************************/
+//======================================================================
 @implementation AppDelegate
 {
     UIWindow                    *_window;
@@ -24,24 +24,26 @@
     DataBaseIPhoneViewCtrl      *_iPhoneVC;
     
 }
-/****************************************************************/
+//======================================================================
 @synthesize managedObjectContext        = _managedObjectContext;
 @synthesize managedObjectModel          = _managedObjectModel;
 @synthesize persistentStoreCoordinator  = _persistentStoreCoordinator;
-/****************************************************************/
+//======================================================================
 #define APP_KEY     @"330rpbyqebi60n2"
 #define APP_SECRET  @"rhh5cev809t6ak2"
-/****************************************************************/
+//======================================================================
 
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+-(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [DBClientsManager setupWithAppKey:APP_KEY];
+#if 0 //api v1
     DBSession *dbSession = [[DBSession alloc]
                             initWithAppKey:APP_KEY
                             appSecret:APP_SECRET
                             root: kDBRootAppFolder]; // either kDBRootAppFolder or kDBRootDropbox
     [DBSession setSharedSession:dbSession];
-    
+#endif
 
     _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     _window.backgroundColor = [UIUtil color_LightYellow];
@@ -86,77 +88,69 @@
     return YES;
 }
 
-/****************************************************************/
-- (BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
+//======================================================================
+-(BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
 {
     return NO;
 }
 
-/****************************************************************/
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+//======================================================================
+-(BOOL)application:(UIApplication *)app openURL:(NSURL *)url
   sourceApplication:(NSString *)source annotation:(id)annotation
 {
-    if ([[DBSession sharedSession] handleOpenURL:url]) {
-        if ([[DBSession sharedSession] isLinked]) {
-            NSLog(@"App linked successfully!");
-            // At this point you can start making API calls
+    DBOAuthResult *authResult = [DBClientsManager handleRedirectURL:url];
+    if(authResult != nil){
+        if(authResult.isSuccess){
+            // 成功
+            if (DBClientsManager.authorizedClient || DBClientsManager.authorizedTeamClient){
+                NSLog(@"App linked successfully!");
+                // At this point you can start making API calls
+            }
+        }else if(authResult.isCancel){
+            // キャンセル
+        }else if(authResult.isError){
+            // 失敗
         }
         return YES;
     }
+    
     // Add whatever other url handling code your app requires here
     NSLog(@"Not App linked successfully!");
     return NO;
-
-    
-#if 0
-    NSLog(@"%s",__FUNCTION__);
-    DBAccount *account = [[DBAccountManager sharedManager] handleOpenURL:url];
-    if (account) {
-        NSLog(@"App linked successfully!");
-        // Migrate any local datastores to the linked account
-        DBDatastoreManager *localManager = [DBDatastoreManager localManagerForAccountManager:
-                                            [DBAccountManager sharedManager]];
-        [localManager migrateToAccount:account error:nil];
-        // Now use Dropbox datastores
-        [DBDatastoreManager setSharedManager:[DBDatastoreManager managerForAccount:account]];
-        return YES;
-    }
-    return NO;
-#endif
 }
 
-/****************************************************************/
-- (void)applicationWillResignActive:(UIApplication *)application
+//======================================================================
+-(void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+-(void)applicationDidEnterBackground:(UIApplication *)application
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
+-(void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
+-(void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
+-(void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
 
-- (void)saveContext
+-(void)saveContext
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
@@ -242,7 +236,7 @@
     
     return _persistentStoreCoordinator;
 }
-/****************************************************************/
+//======================================================================
 
 
 
@@ -253,19 +247,19 @@
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
-/****************************************************************
- *
- ****************************************************************/
-- (void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//======================================================================
+//
+//======================================================================
+-(void) paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
     AddonMgr *addonMgr = [AddonMgr sharedManager];
     
@@ -313,7 +307,17 @@
                 [queue finishTransaction:transaction];
                 NSError *error = transaction.error;
                 NSString *errormsg = [NSString stringWithFormat:@"%@ [%ld]",error.localizedDescription, (long)error.code];
+#if 1
+                UIAlertController *_as_clear;
+                _as_clear = [UIAlertController alertControllerWithTitle:@"エラー"
+                                                                message:errormsg
+                                                         preferredStyle:UIAlertControllerStyleAlert];
+                [_as_clear addAction:[UIAlertAction actionWithTitle:@"OK"  style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    //何もしない
+                }]];
+#else
                 [[[UIAlertView alloc]initWithTitle:@"エラー" message:errormsg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+#endif
                 if ( transaction.error.code != SKErrorPaymentCancelled ){
                     //支払いキャンセル
                     NSLog(@"支払いキャンセル");
@@ -333,7 +337,7 @@
 /****************************************************************
  * すべての購入が正常終了した時に実行
  ****************************************************************/
-- (void) paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
+-(void) paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"PurchasedAll" object:transactions];
     return;
@@ -342,7 +346,7 @@
 /****************************************************************
  * すべてのリストアが正常終了した時に実行
  ****************************************************************/
-- (void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
+-(void) paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RestoreOK" object:queue];
     return;
@@ -351,13 +355,13 @@
 /****************************************************************
  * リストアが失敗した時に実行
  ****************************************************************/
-- (void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
+-(void) paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RestoreNG" object:error];
     return;
 }
 
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

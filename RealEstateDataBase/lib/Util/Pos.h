@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+//======================================================================
 @interface Pos : NSObject
 {
     CGFloat     _x_left;
@@ -29,8 +30,9 @@
     
     BOOL        _isPortrait;
 }
+//======================================================================
 - (id)initWithUIViewCtrl:(UIViewController*)uiview;
-
+//======================================================================
 @property   (nonatomic,readonly)    CGFloat x_left;
 @property   (nonatomic,readonly)    CGFloat x_center;
 @property   (nonatomic,readonly)    CGFloat x_ini;
@@ -48,4 +50,6 @@
 @property   (nonatomic,readonly)    CGRect  masterFrame;
 @property   (nonatomic,readonly)    CGRect  detailFrame;
 
+//======================================================================
 @end
+//======================================================================

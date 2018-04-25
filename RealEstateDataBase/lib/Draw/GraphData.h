@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Graph.h"
 
+//======================================================================
 @interface GraphData : NSObject
 {
     NSArray*        _data;
@@ -20,9 +21,9 @@
     CGFloat         _ymin;
     CGFloat         _ymax;
 }
-/****************************************************************/
+//======================================================================
 - (id)initWithData:(NSArray*)data;
-/****************************************************************/
+//======================================================================
 @property   (nonatomic,readwrite)   NSArray*        data;
 @property   (nonatomic,readwrite)   UIColor*        color;
 @property   (nonatomic,readwrite)   NSString*       precedent;
@@ -32,6 +33,6 @@
 @property   (nonatomic,readonly)    CGFloat         ymin;
 @property   (nonatomic,readonly)    CGFloat         ymax;
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

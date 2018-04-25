@@ -14,61 +14,61 @@
 @interface RentViewCtrl ()
 {
     
-    UIScrollView        *_scrollView;
-    UILabel             *_l_title;
-    UILabel             *_l_interest;
-    UILabel             *_l_gpi;
-    UILabel             *_l_gpiMonth;
-    UILabel             *_l_rooms;
-    UILabel             *_l_floorArea;
-    UILabel             *_l_rentMonth;
-    UILabel             *_l_roomArea;
+    UIScrollView            *_scrollView;
+    UILabel                 *_l_title;
+    UILabel                 *_l_interest;
+    UILabel                 *_l_gpi;
+    UILabel                 *_l_gpiMonth;
+    UILabel                 *_l_rooms;
+    UILabel                 *_l_floorArea;
+    UILabel                 *_l_rentMonth;
+    UILabel                 *_l_roomArea;
 
-    UILabel             *_l_interestVal;
-    UILabel             *_l_gpiVal;
-    UILabel             *_l_gpiMonthVal;
-    UITextField         *_t_rooms;
-    UITextField         *_t_floorArea;
-    UILabel             *_l_rentMonthVal;
-    UILabel             *_l_roomAreaVal;
+    UILabel                 *_l_interestVal;
+    UILabel                 *_l_gpiVal;
+    UILabel                 *_l_gpiMonthVal;
+    UITextField             *_t_rooms;
+    UITextField             *_t_floorArea;
+    UILabel                 *_l_rentMonthVal;
+    UILabel                 *_l_roomAreaVal;
 
-    UILabel             *_l_titleOpe;
-    UILabel             *_l_opeGpi;
-    UILabel             *_l_opeGpiVal;
-    UILabel             *_l_opeEmptyLoss;
-    UILabel             *_l_opeEmptyLossVal;
-    UILabel             *_l_opeEgi;
-    UILabel             *_l_opeEgiVal;
-    UILabel             *_l_opeOpex;
-    UILabel             *_l_opeOpexVal;
-    UILabel             *_l_opeNoi;
-    UILabel             *_l_opeNoiVal;
-    UILabel             *_l_opeAds;
-    UILabel             *_l_opeAdsVal;
-    UILabel             *_l_opeBtcf;
-    UILabel             *_l_opeBtcfVal;
+    UILabel                 *_l_titleOpe;
+    UILabel                 *_l_opeGpi;
+    UILabel                 *_l_opeGpiVal;
+    UILabel                 *_l_opeEmptyLoss;
+    UILabel                 *_l_opeEmptyLossVal;
+    UILabel                 *_l_opeEgi;
+    UILabel                 *_l_opeEgiVal;
+    UILabel                 *_l_opeOpex;
+    UILabel                 *_l_opeOpexVal;
+    UILabel                 *_l_opeNoi;
+    UILabel                 *_l_opeNoiVal;
+    UILabel                 *_l_opeAds;
+    UILabel                 *_l_opeAdsVal;
+    UILabel                 *_l_opeBtcf;
+    UILabel                 *_l_opeBtcfVal;
     
-    UISlider            *_sl;
-    UIButton            *_b_rent;
+    UISlider                *_sl;
+    UIButton                *_b_rent;
     
-    NSInteger           _gpi;
-    NSInteger           _price;
-    NSInteger           _rooms;
-    CGFloat             _floorArea;
+    NSInteger               _gpi;
+    NSInteger               _price;
+    NSInteger               _rooms;
+    CGFloat                 _floorArea;
     
 }
 @end
-/****************************************************************/
+//======================================================================
 
 @implementation RentViewCtrl
-/****************************************************************/
+//======================================================================
 
 #define TTAG_ROOMS          4
 #define TTAG_FLOOR_AREA     5
 #define BTAG_RENT           1
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 /*
 - (id)init
 {
@@ -81,15 +81,15 @@
     }
     return self;
 }*/
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewDidLoad
+//======================================================================
+//
+//======================================================================
+-(void)viewDidLoad
 {
     [super viewDidLoad];
     self.title  = @"利回り検証";
-    _gpi        = _modelRE.estate.prices.gpi;
-    _price      = _modelRE.estate.prices.price;
+    _gpi        = _modelRE.investment.gpi;
+    _price      = _modelRE.investment.price;
     _rooms      = _modelRE.estate.house.rooms;
     _floorArea  = _modelRE.estate.house.area;
     
@@ -206,9 +206,9 @@
     [_l_opeNoiVal setTextAlignment:NSTextAlignmentRight];
     [_scrollView addSubview:_l_opeNoiVal];
     /****************************************/
-    _l_opeAds = [UIUtil makeLabel:[NSString stringWithFormat:@"借入返済(%1.2f%%,%d年)",
+    _l_opeAds = [UIUtil makeLabel:[NSString stringWithFormat:@"借入返済(%1.2f%%,%ld年)",
                                    _modelRE.investment.loan.rateYear*100,
-                                   _modelRE.investment.loan.periodYear]];
+                                   _modelRE.investment.loan.periodTerm/12]];
     [_l_opeAds setTextAlignment:NSTextAlignmentLeft];
     [_scrollView addSubview:_l_opeAds];
     /*--------------------------------------*/
@@ -237,20 +237,19 @@
     [self registerForKeyboardNotifications];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewWillAppear:(BOOL)animated
+//======================================================================
+// ビューの表示直前に呼ばれる
+//======================================================================
+-(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self rewriteProperty];
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
-- (void)viewMake
-{
+//======================================================================
+// ビューのレイアウト作成
+//======================================================================
+-(void)viewMake{
     /****************************************/
     CGFloat pos_x,pos_y,dx,dy,length,lengthR,length30;
     _pos = [[Pos alloc]initWithUIViewCtrl:self];
@@ -343,26 +342,26 @@
     return;
 }
 
-/****************************************************************
- * 回転していいかの判別
- ****************************************************************/
-- (BOOL)shouldAutorotate
+//======================================================================
+// 回転していいかの判別
+//======================================================================
+-(BOOL)shouldAutorotate
 {
     return YES;
 }
 
-/****************************************************************
- * 回転処理の許可
- ****************************************************************/
+//======================================================================
+// 回転処理の許可
+//======================================================================
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
 
-/****************************************************************
- * 回転時に処理したい内容
- ****************************************************************/
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+//======================================================================
+// 回転時に処理したい内容
+//======================================================================
+-(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     UIDeviceOrientation orientation =[[UIDevice currentDevice]orientation];
     switch (orientation) {
@@ -376,9 +375,9 @@
     }
     [self viewMake];
 }
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+// 表示する値の更新
+//======================================================================
 -(void)rewriteProperty
 {
     /****************************************/
@@ -408,38 +407,37 @@
     /****************************************/
     
 }
-
-/****************************************************************
- * Returnでキーボードを閉じる
- ****************************************************************/
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+//======================================================================
+// Returnでキーボードを閉じる
+//======================================================================
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
     return YES;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
     [self readTextFieldData];
     return YES;
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)closeKeyboard:(id)sender
 {
     [UIUtil closeKeyboard:sender];
     [self readTextFieldData];
 }
 
-/****************************************************************
- * ビューがタップされたとき
- ****************************************************************/
-- (void)view_Tapped:(UITapGestureRecognizer *)sender
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
+-(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     [_t_rooms resignFirstResponder];
     [_t_floorArea resignFirstResponder];
@@ -447,31 +445,29 @@
     //    NSLog(@"タップされました．");
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void) readTextFieldData
 {
     _rooms  = [_t_rooms.text integerValue];
     _floorArea  = [_t_floorArea.text floatValue];
-    if( _modelRE.estate.prices.gpi != 0){
-        _sl.value = (float)_gpi/_modelRE.estate.prices.gpi;
+    if( _modelRE.investment.gpi != 0){
+        _sl.value = (float)_gpi/_modelRE.investment.gpi;
     } else {
-        _sl.value = (float)_gpi/(_modelRE.estate.prices.price * 0.08);
+        _sl.value = (float)_gpi/(_modelRE.investment.price * 0.08);
     }
     /*--------------------------------------*/
     [self rewriteProperty];
 }
-
-/****************************************************************
- * Viewが消える直前
- ****************************************************************/
+//======================================================================
+// Viewが消える直前
+//======================================================================
 -(void) viewWillDisappear:(BOOL)animated
 {
     if ( _b_cancel == false ){
         [_modelRE setPrice:_price];
-        _modelRE.estate.prices.gpi      = _gpi;
-        _modelRE.investment.prices.gpi  = _gpi;
+        _modelRE.investment.gpi         = _gpi;
         _modelRE.estate.house.area      = _floorArea;
         _modelRE.estate.house.rooms     = _rooms;
         [_modelRE valToFile];
@@ -479,26 +475,24 @@
     [super viewWillDisappear:animated];
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)slider:(UISlider*)slider
 {
     // ここに何かの処理を記述する
     // （引数の slider には呼び出し元のUISliderオブジェクトが引き渡されてきます）
-    if( _modelRE.estate.prices.gpi != 0){
-        _gpi = (NSInteger)((slider.value*_modelRE.estate.prices.gpi) /(_rooms*12) /100)*(_rooms*12)*100;
+    if( _modelRE.investment.gpi != 0){
+        _gpi = (NSInteger)((slider.value*_modelRE.investment.gpi) /(_rooms*12) /100)*(_rooms*12)*100;
     } else {
-        _gpi = (NSInteger)((slider.value*(_modelRE.estate.prices.price * 0.08)) /(_rooms*12) /100)*(_rooms*12)*100;
+        _gpi = (NSInteger)((slider.value*(_modelRE.investment.price * 0.08)) /(_rooms*12) /100)*(_rooms*12)*100;
     }
     [self rewriteProperty];
-
-    
 }
 
-/****************************************************************
- *
- ****************************************************************/
+//======================================================================
+//
+//======================================================================
 -(void)clickButton:(UIButton*)sender
 {
     if (sender.tag==BTAG_RENT){
@@ -510,10 +504,10 @@
     return;
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)registerForKeyboardNotifications
+//======================================================================
+//
+//======================================================================
+-(void)registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWasShown:)
@@ -523,10 +517,10 @@
                                                  name:UIKeyboardWillHideNotification object:nil];
 }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)keyboardWasShown:(NSNotification*)aNotification
+//======================================================================
+//
+//======================================================================
+-(void)keyboardWasShown:(NSNotification*)aNotification
 {
 /*
     CGPoint scrollPoint = CGPointMake(0.0,20.0);
@@ -543,15 +537,15 @@
 */
  }
 
-/****************************************************************
- *
- ****************************************************************/
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+//======================================================================
+//
+//======================================================================
+-(void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
 //    [_scrollView setContentOffset:CGPointZero animated:YES];
     return;
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

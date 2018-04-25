@@ -24,7 +24,8 @@
     
     CGFloat             _declineRate;
     CGFloat             _discountRate;
-    NSInteger           _holdingPeriod;
+    NSInteger           _holdingPeriodTerm;
+    NSInteger           _holdingPeriodTermForOpe;
     NSInteger           _npv;
     CGFloat             _irr;
     CGFloat             _btIrr;
@@ -41,32 +42,36 @@
     NSInteger           _atcfAccumMax;
     
 }
-/****************************************************************/
-+ (ModelRE*)sharedManager;
-+ (id)allocWithZone:(NSZone *)zone;
-- (id)copyWithZone:(NSZone *)zone;
-- (void) autoInput;
-- (void) valToFile;
-- (void) fileToVal:(NSString*)serial name:(NSString*)name;
-- (void) deleteItem:(NSString*)serial;
-- (NSString*) getString:(NSString*)key;
-- (void) setPrice:(NSInteger)price;
-- (void) adjustEquity;
-- (void) adjustLoanBorrow;
+//======================================================================
++(ModelRE*)sharedManager;
++(id)allocWithZone:(NSZone *)zone;
+-(id)copyWithZone:(NSZone *)zone;
+-(void) autoInput;
+-(void) valToFile;
+-(void) fileToVal:(NSString*)serial name:(NSString*)name;
+-(void) deleteItem:(NSString*)serial;
+-(NSString*) getString:(NSString*)key;
+-(void) setPrice:(NSInteger)price;
+-(void) adjustEquity;
+-(void) adjustLoanBorrow;
 
-- (NSArray*) getOperationArray;
-- (NSArray*) getBTCashFlowAccum:(NSInteger)period;
-- (NSArray*) getATCashFlowAccum:(NSInteger)period;
-- (void) calcAll;
-- (NSArray*) getNpvArray;
-- (NSArray*) getIrrArray;
-- (NSArray*) getDebtRepaymentPeriodArray;
+-(NSArray*) getOperationArray;
+-(NSArray*) getBTCashFlowAccum:(NSInteger)period;
+-(NSArray*) getATCashFlowAccum:(NSInteger)period;
+-(void) calcAll;
+-(NSArray*) getNpvArray;
+//-(NSArray*) getIrrArray;
+-(NSArray*) getDebtRepaymentPeriodArray;
+-(NSArray*) getRentRollArray:(NSInteger)rentRoll startYear:(NSInteger)startYear endYear:(NSInteger)endYear declineRate:(CGFloat)declineRate;
+-(NSArray*) getAllValArrayYear;
+-(NSArray*) getLandValArrayYear;
+-(NSArray*) getVacantArray:(NSInteger)gpiMonth emptyRate:(CGFloat)emptyRate bootMonth:(NSInteger)bootMonth;
 
-- (NSString*) titleString;
-- (NSString*) valToString:(NSString*)serial name:(NSString*)name;
-- (void) stringToVal:(NSString*)dataStr keyString:(NSString*)keyStr;
+-(NSString*) titleString;
+-(NSString*) valToString:(NSString*)serial name:(NSString*)name;
+-(void) stringToVal:(NSString*)dataStr keyString:(NSString*)keyStr;
 
-/****************************************************************/
+//======================================================================
 @property   (nonatomic,readwrite)   Investment  *investment;
 @property   (nonatomic,readwrite)   Estate      *estate;
 @property   (nonatomic,readwrite)   NSString    *loanName;
@@ -76,7 +81,8 @@
 
 @property   (nonatomic,readwrite)   CGFloat     declineRate;
 @property   (nonatomic,readwrite)   CGFloat     discountRate;
-@property   (nonatomic,readwrite)   NSInteger   holdingPeriod;
+@property   (nonatomic,readwrite)   NSInteger   holdingPeriodTerm;
+@property   (nonatomic,readwrite)   NSInteger   holdingPeriodTermForOpe;
 @property   (nonatomic,readonly)    NSInteger   npv;
 @property   (nonatomic,readonly)    CGFloat     btIrr;
 @property   (nonatomic,readonly)    CGFloat     atIrr;
@@ -89,6 +95,6 @@
 @property   (nonatomic,readonly)    NSInteger   btcfAccumMax;
 @property   (nonatomic,readonly)    NSInteger   atcfAccumMin;
 @property   (nonatomic,readonly)    NSInteger   atcfAccumMax;
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

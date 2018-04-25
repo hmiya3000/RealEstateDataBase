@@ -13,12 +13,12 @@
 @interface ModelCF ()
 
 @end
-/****************************************************************/
+//======================================================================
 @implementation ModelCF
-/****************************************************************
- *
- ****************************************************************/
-+ (void) setGraphData:(Graph*)gData ModelRE:(ModelRE*)modelRE
+//======================================================================
+//
+//======================================================================
++(void)setGraphData:(Graph*)gData ModelRE:(ModelRE*)modelRE
 {
     AddonMgr *addonMgr = [AddonMgr sharedManager];
     
@@ -27,33 +27,22 @@
 
     Loan *loan = modelRE.investment.loan;
     
-    NSInteger cfPeriod;
-    NSInteger graphPeriod;
-    
-    if ( addonMgr.saleAnalysys == true ){
-        cfPeriod    = modelRE.holdingPeriod;
-        graphPeriod = cfPeriod+1;
-    } else if ( addonMgr.multiYear == true ){
-        cfPeriod    = modelRE.investment.loan.periodYear;
-        graphPeriod = cfPeriod;
-    } else {
-        cfPeriod    = modelRE.holdingPeriod;
-        graphPeriod = cfPeriod;
-    }
+    NSInteger cfYear    = modelRE.holdingPeriodTermForOpe/12;
+    NSInteger graphYear = cfYear+1;
 
-    NSArray *arr_btcf       = [modelRE getBTCashFlowAccum:cfPeriod];
-    NSArray *arr_atcf       = [modelRE getATCashFlowAccum:cfPeriod];
+    NSArray *arr_btcf       = [modelRE getBTCashFlowAccum:cfYear];
+    NSArray *arr_atcf       = [modelRE getATCashFlowAccum:cfYear];
     NSArray *arr_loanTmp    = [loan getLbArrayYear];
     NSMutableArray *arr_loan = [[NSMutableArray alloc]init];
 
     
-    for( int i=0; i<= graphPeriod; i++){
+    for( int i=0; i<= graphYear; i++){
         if ( i == 0 ){
             [arr_loan addObject:[NSValue valueWithCGPoint:CGPointMake(0,loan.loanBorrow)]];
         } else {
             if ( addonMgr.saleAnalysys == true ){
                 //保有期間の運営と最後は売却
-                if ( i <= graphPeriod-1 ){
+                if ( i <= graphYear-1 ){
                     if ( i < [arr_loanTmp count] ){
                         [arr_loan addObject:[arr_loanTmp objectAtIndex:i-1]];
                     } else {
@@ -98,10 +87,10 @@
         graphMax = loan.loanBorrow;
     }
     /*--------------------------------------*/
-    [gData setGraphtMinMax_xmin:-1 ymin:graphMin xmax:graphPeriod+0.5 ymax:(graphMax)];
+    [gData setGraphtMinMax_xmin:-1 ymin:graphMin xmax:graphYear+0.5 ymax:(graphMax)];
     return;
 }
 
-/****************************************************************/
+//======================================================================
 @end
-/****************************************************************/
+//======================================================================

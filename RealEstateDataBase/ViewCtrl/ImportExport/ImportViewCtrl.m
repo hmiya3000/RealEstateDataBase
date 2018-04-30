@@ -74,10 +74,37 @@
     _restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
     _restClient.delegate = self;
 #else
-//    _userClient = [DBClientsManager authorizedClient];
+    // 個人用アカウントの認証状態を確認
+    if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
+        [self auth];
+    }
+    //    _userClient = [DBClientsManager authorizedClient];
 #endif
 }
-
+//======================================================================
+- (void)auth{
+    [DBClientsManager authorizeFromController:[UIApplication sharedApplication]
+                                   controller:[[self class] topMostController]
+                                      openURL:^(NSURL *url) {
+#if 0 //OS10
+                                          [UIApplication.sharedApplication openURL:url
+                                                                           options:@{}
+                                                                 completionHandler:nil];
+#else
+                                          [UIApplication.sharedApplication openURL:url];
+#endif
+                                      }];
+}
+//======================================================================
++ (UIViewController*)topMostController {
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
 //======================================================================
 // ビューの表示直前に呼ばれる
 //======================================================================
@@ -89,6 +116,7 @@
         [[DBSession sharedSession] linkFromController:self];
     }
 #else
+#if 0
     if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
         [DBClientsManager authorizeFromController:UIApplication.sharedApplication
                                        controller:self
@@ -99,6 +127,7 @@
                                           }
          ];
     }
+#endif
 #endif
     _userClient = [DBClientsManager authorizedClient];
     [self updateData];

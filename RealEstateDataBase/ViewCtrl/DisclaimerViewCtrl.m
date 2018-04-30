@@ -7,12 +7,14 @@
 //
 
 #import "DisclaimerViewCtrl.h"
+#import "UIUtil.h"
 #import "Pos.h"
 
 @interface DisclaimerViewCtrl ()
 {
     Pos                     *_pos;
     UIScrollView            *_scrollView;
+    UIButton                *_b_close;
     UIWebView               *_wv;
     
 }
@@ -20,6 +22,7 @@
 @end
 
 @implementation DisclaimerViewCtrl
+#define BTAG_CLOSE  1
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -41,7 +44,12 @@
 
 
     [_scrollView addSubview:_wv];
+    /****************************************/
+    _b_close  = [UIUtil makeButton:@"閉じる" tag:BTAG_CLOSE];
+    [_b_close addTarget:self action:@selector(clickButton:) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:_b_close];
     
+    /****************************************/
     UITapGestureRecognizer *tapGesture =
     [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(view_Tapped:)];
     
@@ -87,13 +95,27 @@
     /****************************************/
     pos_y = 0.2*dy;
     pos_y = pos_y + dy;
-    _wv.frame = CGRectMake(pos_x, pos_y, _pos.len30, _pos.frame.size.height - pos_y-dy*2);
-    return;
+    _wv.frame = CGRectMake(pos_x, pos_y, _pos.len30, _pos.frame.size.height - pos_y-dy*3);
+    /*--------------------------------------*/
+    pos_y   =  _pos.frame.size.height - dy*3;
+    [UIUtil setButton:_b_close x:pos_x y:pos_y length:length30];
+    /*--------------------------------------*/
+
 }
 
-/**
- * ビューがタップされたとき
- */
+//======================================================================
+//
+//======================================================================
+-(void)clickButton:(UIButton*)sender
+    {
+        if ( sender.tag == BTAG_CLOSE){
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+        return;
+    }
+//======================================================================
+// ビューがタップされたとき
+//======================================================================
 -(void)view_Tapped:(UITapGestureRecognizer *)sender
 {
     //    NSLog(@"タップされました．");

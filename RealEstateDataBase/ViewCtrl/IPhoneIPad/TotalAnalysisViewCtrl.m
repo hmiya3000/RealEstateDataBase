@@ -294,6 +294,8 @@
         }
         _scrollView.bounces = YES;
     } else {
+        _scrollView.contentSize = CGSizeMake(_pos.frame.size.width, _pos.frame.size.height*1.2);
+        _scrollView.bounces = YES;
     }
     /****************************************/
     pos_y = 0.2*dy;

@@ -9,13 +9,61 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RealEstateDataBase/ViewCtrl/IPhoneIPad/SummaryViewCtrl.m"
-            timestampString = "545983403.621883"
+            filePath = "RealEstateDataBase/ViewCtrl/ImportExport/ImportViewCtrl.m"
+            timestampString = "546683478.804894"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "455"
-            endingLineNumber = "455"
-            landmarkName = "-rewriteProperty"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
+            landmarkName = "-downloadFilePath:webPath:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RealEstateDataBase/ViewCtrl/ImportExport/ImportViewCtrl.m"
+            timestampString = "546683478.805041"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "-viewWillAppear:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RealEstateDataBase/ViewCtrl/ImportExport/ImportViewCtrl.m"
+            timestampString = "546683478.805117"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/ObjectiveDropboxOfficial/Source/ObjectiveDropboxOfficial/Platform/ObjectiveDropboxOfficial_iOS/DBClientsManager+MobileAuth-iOS.m"
+            timestampString = "546674989.698451"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "+authorizeFromController:controller:openURL:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -93,6 +93,34 @@
     
     // ビューにジェスチャーを追加
     [self.view addGestureRecognizer:tapGesture];
+    // 個人用アカウントの認証状態を確認
+    if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
+        [self auth];
+    }
+}
+//======================================================================
+- (void)auth{
+        [DBClientsManager authorizeFromController:[UIApplication sharedApplication]
+                                       controller:[[self class] topMostController]
+                                          openURL:^(NSURL *url) {
+#if 0 //OS10
+                                              [UIApplication.sharedApplication openURL:url
+                                                                               options:@{}
+                                                                     completionHandler:nil];
+#else
+                                              [UIApplication.sharedApplication openURL:url];
+#endif
+                                          }];
+}
+//======================================================================
++ (UIViewController*)topMostController {
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
 }
 //======================================================================
 // ビューの表示直前に呼ばれる
@@ -100,16 +128,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (!DBClientsManager.authorizedClient && !DBClientsManager.authorizedTeamClient){
-        [DBClientsManager authorizeFromController:UIApplication.sharedApplication
-                                       controller:self
-                                          openURL:^(NSURL *url){
-                                              [UIApplication.sharedApplication openURL:url
-                                                                               options:@{}
-                                                                     completionHandler:nil];
-                                          }
-         ];
-    }
     [self rewriteProperty];
     [self viewMake];
 }

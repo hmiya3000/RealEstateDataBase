@@ -712,7 +712,8 @@ static ModelRE* sharedModelRE = nil;
         // 融資関係
         //----------------------------------------
     } else if ( [key isEqualToString:@"借入金"]){
-        str = [NSString stringWithFormat:@"%@万円(%ld%%融資)",[UIUtil yenValue:_investment.loan.loanBorrow/10000],(long)(_investment.loan.loanBorrow*100/_investment.price)];
+        NSInteger lvt = (_investment.loan.loanBorrow/100)/(_investment.price/10000);
+        str = [NSString stringWithFormat:@"%@万円(%ld%%融資)",[UIUtil yenValue:_investment.loan.loanBorrow/10000],(long)lvt];
     } else if ( [key isEqualToString:@"金利"]){
         str = [NSString stringWithFormat:@"%g%%",_investment.loan.rateYear*100];
     } else if ( [key isEqualToString:@"借入期間"]){

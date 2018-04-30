@@ -311,8 +311,13 @@
     //----------------------------------------
     [UIUtil setRectLabel:_l_name x:pos_x y:pos_y viewWidth:length30 viewHeight:dy color:[UIUtil color_WakatakeIro]];
     pos_y = pos_y + dy;
-    [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*10)];
-    pos_y = pos_y + 10*dy;
+    if ( [model hasPrefix:@"iPhone"] ){
+        [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*10)];
+        pos_y = pos_y + 10*dy;
+    } else {
+        [GridTable setRectScroll:_uv_grid rect:CGRectMake(_pos.x_left, pos_y, length30, dy*11)];
+        pos_y = pos_y + 11*dy;
+    }
     //----------------------------------------
     pos_y   = pos_y + dy;
     [UIUtil setButton:_b_opeTips x:pos_x y:pos_y length:length30];
